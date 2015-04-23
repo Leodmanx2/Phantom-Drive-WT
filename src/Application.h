@@ -3,11 +3,11 @@
 
 #include <iostream>
 #include <SDL2/SDL.h>
+#include "RenderSystem.h"
 
 class Application {
 	private:
-		SDL_Window* m_window;
-		SDL_Renderer* m_renderer;
+		RenderSystem* m_rendererSystem;
 	
 	public:
 		Application();

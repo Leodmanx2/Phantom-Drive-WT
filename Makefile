@@ -3,7 +3,7 @@ PROJECT_NAME = Phantom-Drive
 SRCDIR = $(CURDIR)/src
 OBJDIR = $(CURDIR)/obj
 
-OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o
+OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o $(OBJDIR)/RenderSystem.o $(OBJDIR)/Window.o
 
 FLAGS = -std=c++0x -Wall -c
 
@@ -17,6 +17,12 @@ $(OBJDIR)/main.o: $(SRCDIR)/main.cpp
 
 $(OBJDIR)/Application.o: $(SRCDIR)/Application.cpp $(SRCDIR)/Application.h
 	c++ $(FLAGS) -o $(OBJDIR)/Application.o $(SRCDIR)/Application.cpp
+
+$(OBJDIR)/RenderSystem.o: $(SRCDIR)/RenderSystem.cpp $(SRCDIR)/RenderSystem.h
+	c++ $(FLAGS) -o $(OBJDIR)/RenderSystem.o $(SRCDIR)/RenderSystem.cpp
+	
+$(OBJDIR)/Window.o: $(SRCDIR)/Window.cpp $(SRCDIR)/Window.h
+	c++ $(FLAGS) -o $(OBJDIR)/Window.o $(SRCDIR)/Window.cpp
 
 clean:
 	rm -f $(OBJ) $(PROJECT_NAME)

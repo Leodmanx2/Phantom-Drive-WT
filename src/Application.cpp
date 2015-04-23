@@ -5,23 +5,15 @@ Application::Application() {
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
 	}
 
-	m_window = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
-	if (m_window == nullptr) {
-		std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-		SDL_Quit();
-	}
-
-	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (m_renderer == nullptr) {
-		SDL_DestroyWindow(m_window);
+	try { m_rendererSystem = new RenderSystem(); }
+	catch(int e) {
 		std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
 		SDL_Quit();
 	}
 }
 
 Application::~Application() {
-	SDL_DestroyRenderer(m_renderer);
-	SDL_DestroyWindow(m_window);
+	delete m_rendererSystem;
 	SDL_Quit();
 }
 
