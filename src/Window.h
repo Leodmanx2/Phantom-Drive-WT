@@ -13,7 +13,7 @@ class Window {
 		~Window();
 
 		void resize(unsigned int width, unsigned int height);
-		void setTitle(const std::string* title);
+		void setTitle(const char* title);
 		
 		SDL_Window* SDL_Pointer() const;
 };

@@ -7,7 +7,7 @@
 
 class Application {
 	private:
-		RenderSystem* m_rendererSystem;
+		RenderSystem* m_renderSystem;
 	
 	public:
 		Application();

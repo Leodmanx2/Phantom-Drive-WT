@@ -25,5 +25,7 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::draw() {
-	// TODO: Draw something
+	SDL_SetRenderDrawColor(m_renderer, 135, 225, 245, 255);
+	SDL_RenderClear(m_renderer);
+	SDL_RenderPresent(m_renderer);
 }

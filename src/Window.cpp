@@ -18,11 +18,11 @@ Window::~Window() {
 }
 
 void Window::resize(unsigned int width, unsigned int height) {
-	// TODO: resize() function body
+	SDL_SetWindowSize(m_window, width, height);
 }
 
-void Window::setTitle(const std::string* title) {
-	//TODO: setTitle() function body
+void Window::setTitle(const char* title) {
+	SDL_SetWindowTitle(m_window, title);
 }
 
 SDL_Window* Window::SDL_Pointer() const {
