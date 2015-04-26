@@ -7,25 +7,22 @@ RenderSystem::RenderSystem() {
 		throw -1;
 	}
 	
-	m_renderer = SDL_CreateRenderer(m_window->SDL_Pointer(), 
-	                                -1, 
-	                                SDL_RENDERER_ACCELERATED | 
-	                                SDL_RENDERER_PRESENTVSYNC
-	                                );
+	m_context = SDL_GL_CreateContext(m_window->SDL_Pointer());
 
-	if(m_renderer == nullptr) {
+	if(m_context == nullptr) {
 		delete m_window;
 		throw -1;
 	}
 }
 
 RenderSystem::~RenderSystem() {
-	SDL_DestroyRenderer(m_renderer);
+	SDL_GL_DeleteContext(m_context);
 	delete m_window;
 }
 
 void RenderSystem::draw() {
-	SDL_SetRenderDrawColor(m_renderer, 135, 225, 245, 255);
-	SDL_RenderClear(m_renderer);
-	SDL_RenderPresent(m_renderer);
+	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
+	glClear( GL_COLOR_BUFFER_BIT );
+	
+	SDL_GL_SwapWindow(m_window->SDL_Pointer());
 }

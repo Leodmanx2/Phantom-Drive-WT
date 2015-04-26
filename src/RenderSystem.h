@@ -2,12 +2,13 @@
 #define RENDERSYSTEM_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include <iostream>
 #include "Window.h"
 
 class RenderSystem {
 	private:
-		SDL_Renderer* m_renderer;
+		SDL_GLContext m_context;
 		Window* m_window;
 	
 	public:

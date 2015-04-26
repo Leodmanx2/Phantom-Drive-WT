@@ -2,10 +2,11 @@
 
 Window::Window(unsigned int width, unsigned int height) {
 	m_window = SDL_CreateWindow("Hello World!", 
-	                            100, 
-	                            100, 
+	                            SDL_WINDOWPOS_UNDEFINED, 
+	                            SDL_WINDOWPOS_UNDEFINED, 
 	                            width, 
 	                            height, 
+	                            SDL_WINDOW_OPENGL |
 	                            SDL_WINDOW_SHOWN
 	                            );
 	if(m_window == nullptr) {
