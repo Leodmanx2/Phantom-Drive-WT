@@ -13,6 +13,8 @@ RenderSystem::RenderSystem() {
 		delete m_window;
 		throw -1;
 	}
+	
+	glewInit();
 }
 
 RenderSystem::~RenderSystem() {
@@ -23,6 +25,8 @@ RenderSystem::~RenderSystem() {
 void RenderSystem::draw() {
 	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	glClear( GL_COLOR_BUFFER_BIT );
+	
+	
 	
 	SDL_GL_SwapWindow(m_window->SDL_Pointer());
 }
