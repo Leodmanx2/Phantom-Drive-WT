@@ -1,9 +1,10 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "RenderModel.h"
+
+#include <GL/glew.h>
 
 class Actor {
 	protected:
@@ -13,8 +14,7 @@ class Actor {
 		glm::vec3       m_up;
 		glm::vec3       m_left;
 		
-		// GPU Resources
-		unsigned int    m_vertexBuffer;
+		RenderModel     m_renderModel;
 	
 	public:
 		Actor();
