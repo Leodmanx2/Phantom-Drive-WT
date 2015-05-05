@@ -57,6 +57,13 @@ RenderModel::RenderModel(const char* modelFile,
 		glBufferData(GL_ARRAY_BUFFER, sizeof(NULL), NULL, GL_STATIC_DRAW);
 	}
 	
+	// Prepare texture coordinate (UV) buffer
+	for(int i=0; i<scene.mNumMeshes; ++i) {
+		glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[i]);
+		// TODO: replace NULL below with mesh normals
+		glBufferData(GL_ARRAY_BUFFER, sizeof(NULL), NULL, GL_STATIC_DRAW);
+	}
+	
 	// TODO: Everything related to textures, animations, and lights
 	
 	// Compile shader program
