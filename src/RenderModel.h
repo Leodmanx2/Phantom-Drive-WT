@@ -1,13 +1,17 @@
 #ifndef RENDERMODEL_H
 #define RENDERMODEL_H
 
+#include <assimp/Importer.cpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 class RenderModel {
 	private:
 		// GPU Resources
-		unsigned int    m_vertexBuffer;
-		unsigned int    m_indexBuffer;
-		unsigned int    m_normalBuffer;
-		unsigned int    m_textureCoordBuffer;
+		unsigned int*   m_vertexBuffers;
+		unsigned int*   m_indexBuffers;
+		unsigned int*   m_normalBuffers;
+		unsigned int*   m_textureCoordBuffers;
 		
 		unsigned int    m_shaderProgram;
 
@@ -20,7 +24,7 @@ class RenderModel {
 								
 		~RenderModel();
 		
-		virtual void draw();
+		void draw();
 };
 
 #endif 
