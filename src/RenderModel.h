@@ -27,4 +27,4 @@ class RenderModel {
 		void draw();
 };
 
-#endif 
+#endif
