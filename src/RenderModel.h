@@ -4,6 +4,8 @@
 #include <assimp/Importer.cpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <vector>
+#include <string>
 
 class RenderModel {
 	private:

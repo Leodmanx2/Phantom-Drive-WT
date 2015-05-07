@@ -44,7 +44,7 @@ RenderModel::RenderModel(const char* modelFile,
 		}
 		
 		// Prepare array of indices to send to GPU
-		// Indices are stored in faces. There should be 3 indices per  
+		// Indices are stored in faces. There should be 3 indices per 
 		// face, thanks to the aiProcess_Triangulate flag used in the 
 		// post-processing preset we gave the Assimp importer.
 		std::vector<unsigned int> indices;
