@@ -5,10 +5,13 @@ RenderModel::RenderModel(const char* modelFile,
                          const char* pixelShaderFile, 
                          const char* geometryShaderFile)
 {
+	// TODO: Handle case with no normals
+	// TODO: Handle case with no indices
+	// TODO: Handle case with no texCoords
+	
 	Assimp::Importer importer;
 	
-	// TODO: Direct to appropriate asset directory, or use an interface to asset 
-	//       storage (recommended)
+	// TODO: Direct to appropriate directory, or use an interface to storage
 	const aiScene* scene = importer.ReadFile(std::string(modelFile), 
 	                                         aiProcessPreset_TargetRealtime_Fast)
 
@@ -73,12 +76,42 @@ RenderModel::RenderModel(const char* modelFile,
 	// TODO: Everything related to textures, animations, and lights
 	
 	// Compile shader program
-	// TODO: ^
-	// TODO: Review whether more than one shader per RenderModel is needed
+	// TODO: Direct to appropriate directory, or use an interface to storage
+	// -- Compile vertex shader
+	std::ifstream vsFile(vertexShaderFile);
+	std::stringstream vertexShaderSource;
+	vertexShaderSource << vsFile.rdbuf();
+	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexShaderSource.str().c_str(), NULL);
+	// -- Compile pixel shader
+	std::ifstream psFile(pixelShaderFile);
+	std::stringstream pixelShaderSource;
+	vertexShaderSource << psFile.rdbuf();
+	unsigned int pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(pixelShader, 1, &pixelShaderSource.str().c_str(), NULL);
+	// -- Compile geometry shader
+	if(geometryShaderFile != NULL) {
+		std::ifstream gsFile(geometryShaderFile);
+		std::stringstream geometryShaderSource;
+		geometryShaderSource << gsFile.rdbuf();
+		unsigned int geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometryShader, 1, &geometryShaderSource.str().c_str(), NULL);
+	}
+	// -- Link shaders
+	m_shaderProgram = glCreateProgram();
+	glAttachShader(m_shaderProgram, vertexShader);
+	glAttachShader(m_shaderProgram, pixelShader);
+	if(geometryShaderFile != NULL) {
+		glAttachShader(m_shaderProgram, geometryShader);
+	}
+	glLinkProgram(m_shaderProgram);
+	
+	// TODO: Review whether more than one shader per RenderModel may be needed
 }
 
 RenderModel::~RenderModel() {
-	// vertexCount, normalCount, and uvCount will probably be the same
+	// These values should all be equal, but it saves us some work to calculate 
+	// them separately if we ever change the way RenderModels are initialized.
 	unsigned int vertexCount = sizeof(m_vertexBuffers)/sizeof(m_vertexBuffers[0]);
 	unsigned int indexCount = sizeof(m_indexBuffers)/sizeof(m_indexBuffers[0]);
 	unsigned int normalCount = sizeof(m_normalBuffers)/sizeof(m_normalBuffers[0]);
@@ -94,15 +127,31 @@ RenderModel::~RenderModel() {
 }
 
 RenderModel::draw() {
-	// TODO: Draw all meshes
+	// Draw all meshes
+	// NOTE: Consider the use of a vertex array object
+	// TODO: Add transformations (as OpenGL uniforms)
+	glUseProgram(m_shaderProgram);
 	
-	// This is old code that was used to draw a single triangle
-	// It is kept here as reference for the above TODO.
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,0);
-	
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	for(int i=0; i<sizeof(m_vertexBuffers)/sizeof(m_vertexBuffers[0]); ++i) {
+		unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[i]);
+		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(positionAttribute);
+		
+		unsigned int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
+		glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[i]);
+		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(normalAttribute);
+		
+		unsigned int texCoordAttribute = glGetAttribLocation(m_shaderProgram, "texCoord");
+		glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[i]);
+		glVertexAttribPointer(texCoordAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0); // 3D Coordinates
+		glEnableVertexAttribArray(texCoordAttribute);
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[i]);
+		
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	}
 	
 	glDisableVertexAttribArray(0);
 }
