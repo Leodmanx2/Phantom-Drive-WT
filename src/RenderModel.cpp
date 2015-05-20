@@ -5,8 +5,6 @@ RenderModel::RenderModel(const char* modelFile,
                          const char* pixelShaderFile, 
                          const char* geometryShaderFile)
 {
-	// TODO: Handle case with no normals
-	// TODO: Handle case with no indices
 	// TODO: Handle case with no texCoords
 	
 	Assimp::Importer importer;
