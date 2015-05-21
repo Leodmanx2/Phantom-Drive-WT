@@ -14,8 +14,6 @@ class RenderSystem {
 	private:
 		SDL_GLContext m_context;
 		Window* m_window;
-		
-		Actor* m_actor;
 	
 	public:
 		RenderSystem();

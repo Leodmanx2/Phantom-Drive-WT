@@ -4,7 +4,8 @@ SRCDIR = $(CURDIR)/src
 OBJDIR = $(CURDIR)/obj
 
 OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o $(OBJDIR)/RenderSystem.o \
-      $(OBJDIR)/Window.o $(OBJDIR)/Actor.o $(OBJDIR)/RenderModel.o
+      $(OBJDIR)/Window.o $(OBJDIR)/Actor.o $(OBJDIR)/RenderModel.o \
+			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o
 
 FLAGS = -std=c++0x -Wall -c
 
@@ -30,6 +31,12 @@ $(OBJDIR)/Actor.o: $(SRCDIR)/Actor.cpp $(SRCDIR)/Actor.h
 	
 $(OBJDIR)/RenderModel.o: $(SRCDIR)/RenderModel.cpp $(SRCDIR)/RenderModel.h
 	c++ $(FLAGS) -o $(OBJDIR)/RenderModel.o $(SRCDIR)/RenderModel.cpp
+	
+$(OBJDIR)/RenderModel2D.o: $(SRCDIR)/RenderModel2D.cpp $(SRCDIR)/RenderModel2D.h
+	c++ $(FLAGS) -o $(OBJDIR)/RenderModel2D.o $(SRCDIR)/RenderModel2D.cpp
+	
+$(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h
+	c++ $(FLAGS) -o $(OBJDIR)/RenderModel3D.o $(SRCDIR)/RenderModel3D.cpp
 
 clean:
 	rm -f $(OBJ) $(PROJECT_NAME)

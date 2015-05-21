@@ -15,8 +15,6 @@ RenderSystem::RenderSystem() {
 	}
 	
 	glewInit();
-	
-	m_actor = new Actor();
 }
 
 RenderSystem::~RenderSystem() {
