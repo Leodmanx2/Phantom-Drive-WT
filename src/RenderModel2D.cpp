@@ -21,10 +21,9 @@ RenderModel::RenderModel(const char* modelFile,
 		-0.5f, -0.5f, 0.0f
 	};
 	
-	// NOTE: Not sure if indices start from 0 or 1. Assuming 1 for now.
 	unsigned int indices[] = {
-		1, 2, 3, 
-		1, 3, 4
+		0, 1, 2, 
+		0, 2, 3
 	};
 	
 	// TODO: Read normal map into normal buffer
