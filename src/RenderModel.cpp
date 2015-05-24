@@ -7,15 +7,15 @@ RenderModel::~RenderModel() {
 	unsigned int texCoordCount = sizeof(m_textureCoordBuffers)/sizeof(m_textureCoordBuffers[0]);
 	
 	// Release GPU resources
-	glDeleteBuffers(vertexCount, &m_vertexBuffers);
-	glDeleteBuffers(indexCount, &m_indexBuffers);
-	glDeleteBuffers(normalCount, &m_normalBuffers);
-	glDeleteBuffers(texCoordCount, &m_textureCoordBuffers);
+	glDeleteBuffers(vertexCount, m_vertexBuffers);
+	glDeleteBuffers(indexCount, m_indexBuffers);
+	glDeleteBuffers(normalCount, m_normalBuffers);
+	glDeleteBuffers(texCoordCount, m_textureCoordBuffers);
 
-	glDeleteProgram(m_shaderPrograms);
+	glDeleteProgram(m_shaderProgram);
 }
 
-void loadShaders(const char* vertexShaderFile, 
+void RenderModel::loadShaders(const char* vertexShaderFile, 
                  const char* pixelShaderFile, 
                  const char* geometryShaderFile) {
 	// TODO: Direct to appropriate directory, or use an interface to storage
@@ -24,22 +24,26 @@ void loadShaders(const char* vertexShaderFile,
 	std::stringstream vertexShaderSource;
 	vertexShaderSource << vsFile.rdbuf();
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource.str().c_str(), NULL);
+	const char* vsSource = vertexShaderSource.str().c_str();
+	glShaderSource(vertexShader, 1, &vsSource, NULL);
 	
 	// Compile pixel shader
 	std::ifstream psFile(pixelShaderFile);
 	std::stringstream pixelShaderSource;
 	vertexShaderSource << psFile.rdbuf();
 	unsigned int pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(pixelShader, 1, &pixelShaderSource.str().c_str(), NULL);
+	const char* psSource = pixelShaderSource.str().c_str();
+	glShaderSource(pixelShader, 1, &psSource, NULL);
 	
 	// Compile geometry shader
+	unsigned int geometryShader;
 	if(geometryShaderFile != NULL) {
 		std::ifstream gsFile(geometryShaderFile);
 		std::stringstream geometryShaderSource;
 		geometryShaderSource << gsFile.rdbuf();
-		unsigned int geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-		glShaderSource(geometryShader, 1, &geometryShaderSource.str().c_str(), NULL);
+		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+		const char* gsSource = geometryShaderSource.str().c_str();
+		glShaderSource(geometryShader, 1, &gsSource, NULL);
 	}
 	
 	// Link shaders

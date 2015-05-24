@@ -2,7 +2,7 @@
 #define RENDERMODEL3D_H
 
 #include "RenderModel.h"
-#include <assimp/Importer.cpp>
+#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <fstream>
@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 
-class RenderModel3D : RenderModel {
+class RenderModel3D : public RenderModel {
 	public:
 		// Geometry shader is optional
 		RenderModel3D(const char* modelFile, 

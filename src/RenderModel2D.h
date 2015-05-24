@@ -5,7 +5,7 @@
 
 #include "RenderModel.h"
 
-class RenderModel2D : RenderModel {
+class RenderModel2D : public RenderModel {
 	public:
 		// Geometry shader is optional
 		RenderModel2D(const char* spriteFile, 

@@ -8,8 +8,6 @@
 #include <iostream>
 #include "Window.h"
 
-#include "Actor.h"
-
 class RenderSystem {
 	private:
 		SDL_GLContext m_context;

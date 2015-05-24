@@ -1,8 +1,12 @@
 #ifndef RENDERMODEL_H
 #define RENDERMODEL_H
 
+#include <GL/glew.h>
+#include <fstream>
+#include <sstream>
+
 class RenderModel {
-	private:
+	protected:
 		// GPU Resources
 		unsigned int*   m_vertexBuffers;
 		unsigned int*   m_indexBuffers;

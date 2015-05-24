@@ -5,7 +5,7 @@ Actor::Actor() {
 }
 
 Actor::~Actor() {
-	
+	delete m_renderModel;
 }
 
 void Actor::translate(float longitude, float latitude, float altitude) {
@@ -21,5 +21,5 @@ void Actor::update() {
 }
 
 void Actor::draw() {
-	m_renderModel.draw();
+	m_renderModel->draw();
 }

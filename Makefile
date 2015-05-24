@@ -12,7 +12,8 @@ FLAGS = -std=c++0x -Wall -c
 # Some of the linked libraries are obviously only for compiling
 # on windows. Remove 'em and things should be fine on other systems.
 all: $(OBJ)
-	c++ -o $(PROJECT_NAME) $(OBJ) -lmingw32 -lSDL2main -lSDL2 -mwindows -lglu32 -lopengl32 -lglew32
+	c++ -o $(PROJECT_NAME) $(OBJ) -lmingw32 -lSDL2main -lSDL2 -mwindows \
+	-lglu32 -lopengl32 -lglew32 -lassimp
 
 $(OBJDIR)/main.o: $(SRCDIR)/main.cpp
 	c++ $(FLAGS) -o $(OBJDIR)/main.o $(SRCDIR)/main.cpp
