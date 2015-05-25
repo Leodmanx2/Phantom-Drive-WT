@@ -8,12 +8,17 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	// TODO: Direct to appropriate directory, or use an interface to storage
 
 	// Reserve buffer IDs
+	m_vertexBuffers = new unsigned int[1];
+	m_indexBuffers = new unsigned int[1];
+	m_normalBuffers = new unsigned int[1];
+	m_textureCoordBuffers = new unsigned int[1];
 	glGenBuffers(1, m_vertexBuffers);
 	glGenBuffers(1, m_indexBuffers);
 	glGenBuffers(1, m_normalBuffers);
 	glGenBuffers(1, m_textureCoordBuffers);
 
 	// Prepare buffers
+	// TODO: Quad must be sized to fit sprite
 	float vertices[] = {
 		-0.5f,  0.5f, 0.0f, 
 		 0.5f,  0.5f, 0.0f, 
@@ -22,11 +27,12 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	};
 	
 	unsigned int indices[] = {
-		0, 1, 2, 
-		0, 2, 3
+		2, 1, 0,  
+		0, 3, 2
 	};
 	
 	// TODO: Read normal map into normal buffer
+	float* normals;
 	
 	float texCoords[] = {
 		0.0f, 1.0f, 
@@ -43,8 +49,8 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	// - Normal buffer
-	//glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[0]);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
 	// - Texture coordinate (UV) buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
@@ -57,7 +63,7 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 }
 
 RenderModel2D::~RenderModel2D() {
-
+	
 }
 
 void RenderModel2D::draw() {
@@ -68,6 +74,8 @@ void RenderModel2D::draw() {
 	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);
 	glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(positionAttribute);
 	
 	unsigned int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
@@ -82,7 +90,11 @@ void RenderModel2D::draw() {
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
 	
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	// TODO: We need to store or find a way to calculate the number of 
+	//       indices to pass to this function
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
-	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(positionAttribute);
+	glDisableVertexAttribArray(normalAttribute);
+	glDisableVertexAttribArray(texCoordAttribute);
 }
