@@ -1,9 +1,9 @@
 #include "RenderModel2D.h"
 
 RenderModel2D::RenderModel2D(const char* spriteFile, 
-		                       const char* vertexShaderFile, 
-		                       const char* pixelShaderFile, 
-		                       const char* geometryShaderFile)
+	                           const char* vertexShaderFile, 
+	                           const char* pixelShaderFile, 
+	                           const char* geometryShaderFile)
 {
 	// TODO: Direct to appropriate directory, or use an interface to storage
 
@@ -31,8 +31,12 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 		0, 3, 2
 	};
 	
-	// TODO: Read normal map into normal buffer
-	float* normals;
+	float normals[] = {
+		0.0f, 0.0f, 1.0f, 
+		0.0f, 0.0f, 1.0f, 
+		0.0f, 0.0f, 1.0f, 
+		0.0f, 0.0f, 1.0f
+	};
 	
 	float texCoords[] = {
 		0.0f, 1.0f, 
@@ -58,7 +62,6 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	// TODO: Everything related to textures, animations, and lights
 	
 	// Compile shader program
-	// The geometry shader may be NULL
 	loadShaders(vertexShaderFile, pixelShaderFile, geometryShaderFile);
 }
 
@@ -68,7 +71,7 @@ RenderModel2D::~RenderModel2D() {
 
 void RenderModel2D::draw() {
 	// NOTE: Consider the use of a vertex array object
-	// TODO: Add transformations (as OpenGL uniforms)
+	// TODO: Add transformations and *maps (as OpenGL uniforms)
 	glUseProgram(m_shaderProgram);
 	
 	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
@@ -91,7 +94,8 @@ void RenderModel2D::draw() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
 	
 	// TODO: We need to store or find a way to calculate the number of 
-	//       indices to pass to this function
+	//       indices to pass to this function (for 3D version. 2D should always 
+	//       be a square)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
 	glDisableVertexAttribArray(positionAttribute);
