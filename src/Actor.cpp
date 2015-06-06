@@ -20,6 +20,7 @@ void Actor::update() {
 	
 }
 
-void Actor::draw() {
-	m_renderModel->draw();
+void Actor::draw(float* viewMatrix, float* projectionMatrix) {
+	// TODO: Calculate up-to-date model matrix
+	m_renderModel->draw(modelMatrix, viewMatrix, projectionMatrix);
 }

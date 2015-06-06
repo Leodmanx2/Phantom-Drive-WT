@@ -18,11 +18,13 @@ class RenderModel {
 	public:
 		virtual ~RenderModel();
 		
-		virtual void draw() = 0;
+		virtual void draw(float* modelMatrix, 
+		                  float* viewMatrix, 
+		                  float* projectionMatrix) = 0;
 		
 		void loadShaders(const char* vertexShaderFile, 
-                     const char* pixelShaderFile, 
-                     const char* geometryShaderFile = NULL);
+		                 const char* pixelShaderFile, 
+		                 const char* geometryShaderFile = NULL);
 };
 
 #endif

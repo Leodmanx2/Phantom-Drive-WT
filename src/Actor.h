@@ -24,7 +24,7 @@ class Actor {
 		virtual void rotate(float roll, float pitch, float yaw);
 		
 		virtual void update();
-		virtual void draw();
+		virtual void draw(float* viewMatrix, float* projectionMatrix);
 };
 
 #endif

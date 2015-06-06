@@ -69,10 +69,20 @@ RenderModel2D::~RenderModel2D() {
 	
 }
 
-void RenderModel2D::draw() {
+void RenderModel2D::draw(float* modelMatrix, 
+                         float* viewMatrix, 
+                         float* projectionMatrix) {
 	// NOTE: Consider the use of a vertex array object
-	// TODO: Add transformations and *maps (as OpenGL uniforms)
 	glUseProgram(m_shaderProgram);
+	
+	unsigned int modelUniform = glGetUniformLocation(m_shaderProgram, "model");
+	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, modelMatrix);
+	
+	unsigned int viewUniform = glGetUniformLocation(m_shaderProgram, "view");
+	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, viewMatrix);
+	
+	unsigned int projectionUniform = glGetUniformLocation(m_shaderProgram, "projection");
+	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, projectionMatrix);
 	
 	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);

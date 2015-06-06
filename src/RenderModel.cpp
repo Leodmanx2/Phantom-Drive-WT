@@ -21,9 +21,9 @@ RenderModel::~RenderModel() {
 }
 
 void RenderModel::loadShaders(const char* vertexShaderFile, 
-                 const char* pixelShaderFile, 
-                 const char* geometryShaderFile) {
-	// TODO: Direct to appropriate directory, or use an interface to storage
+                              const char* pixelShaderFile, 
+                              const char* geometryShaderFile) {
+	// TODO: Use an interface to storage
 	// Compile vertex shader
 	std::ifstream vsFile(vertexShaderFile);
 	std::stringstream vertexShaderSource;

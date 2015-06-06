@@ -15,7 +15,7 @@ class RenderModel2D : public RenderModel {
 								
 		~RenderModel2D();
 		
-		void draw();
+		void draw(float* modelMatrix, float* viewMatrix, float* projectionMatrix);
 };
 
 #endif
