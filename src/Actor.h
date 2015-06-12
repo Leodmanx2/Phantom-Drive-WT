@@ -8,8 +8,8 @@
 
 class Actor {
 	protected:
+		glm::quat       m_orientation;
 		glm::vec3       m_position;
-		glm::vec3       m_orientation;
 		glm::vec3       m_forward;
 		glm::vec3       m_up;
 		glm::vec3       m_left;

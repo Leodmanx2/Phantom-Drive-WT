@@ -87,8 +87,6 @@ void RenderModel2D::draw(float* modelMatrix,
 	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);
 	glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(positionAttribute);
 	
 	unsigned int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
@@ -102,10 +100,7 @@ void RenderModel2D::draw(float* modelMatrix,
 	glEnableVertexAttribArray(texCoordAttribute);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
-	
-	// TODO: We need to store or find a way to calculate the number of 
-	//       indices to pass to this function (for 3D version. 2D should always 
-	//       be a square)
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
 	glDisableVertexAttribArray(positionAttribute);

@@ -122,6 +122,8 @@ void RenderModel3D::draw() {
 		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[i]);
 		
+		// TODO: We need to store or find a way to calculate the number of 
+		//       indices to pass to this function
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 	}
 	

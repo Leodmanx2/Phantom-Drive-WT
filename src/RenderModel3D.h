@@ -1,3 +1,5 @@
+// RenderModel3D is severely out-of-date
+
 #ifndef RENDERMODEL3D_H
 #define RENDERMODEL3D_H
 
