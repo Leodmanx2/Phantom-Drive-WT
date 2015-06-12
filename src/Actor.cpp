@@ -43,5 +43,7 @@ void Actor::draw(float* viewMatrix, float* projectionMatrix) {
 	
 	glm::mat4 modelMatrix = roationMatrix * translationMatrix;
 	
-	m_renderModel->draw(modelMatrix, viewMatrix, projectionMatrix);
+	m_renderModel->draw(glm::value_ptr(modelMatrix), 
+	                    viewMatrix, 
+											projectionMatrix);
 }
