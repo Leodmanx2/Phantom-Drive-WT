@@ -5,7 +5,7 @@ OBJDIR = $(CURDIR)/obj
 
 OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o $(OBJDIR)/RenderSystem.o \
       $(OBJDIR)/Window.o $(OBJDIR)/Actor.o $(OBJDIR)/RenderModel.o \
-			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o
+			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o $(OBJDIR)/Camera.o
 
 FLAGS = -std=c++0x -Wall -c
 
@@ -16,29 +16,32 @@ all: $(OBJ)
 	-lglu32 -lopengl32 -lglew32 -lassimp
 
 $(OBJDIR)/main.o: $(SRCDIR)/main.cpp
-	clang++ $(FLAGS) -o $(OBJDIR)/main.o $(SRCDIR)/main.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/main.o $(SRCDIR)/main.cpp
 
 $(OBJDIR)/Application.o: $(SRCDIR)/Application.cpp $(SRCDIR)/Application.h
-	clang++ $(FLAGS) -o $(OBJDIR)/Application.o $(SRCDIR)/Application.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/Application.o $(SRCDIR)/Application.cpp
 
 $(OBJDIR)/RenderSystem.o: $(SRCDIR)/RenderSystem.cpp $(SRCDIR)/RenderSystem.h
-	clang++ $(FLAGS) -o $(OBJDIR)/RenderSystem.o $(SRCDIR)/RenderSystem.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/RenderSystem.o $(SRCDIR)/RenderSystem.cpp
 	
 $(OBJDIR)/Window.o: $(SRCDIR)/Window.cpp $(SRCDIR)/Window.h
-	clang++ $(FLAGS) -o $(OBJDIR)/Window.o $(SRCDIR)/Window.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/Window.o $(SRCDIR)/Window.cpp
 	
 $(OBJDIR)/Actor.o: $(SRCDIR)/Actor.cpp $(SRCDIR)/Actor.h
-	clang++ $(FLAGS) -o $(OBJDIR)/Actor.o $(SRCDIR)/Actor.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/Actor.o $(SRCDIR)/Actor.cpp
 	
 $(OBJDIR)/RenderModel.o: $(SRCDIR)/RenderModel.cpp $(SRCDIR)/RenderModel.h
-	clang++ $(FLAGS) -o $(OBJDIR)/RenderModel.o $(SRCDIR)/RenderModel.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/RenderModel.o $(SRCDIR)/RenderModel.cpp
 	
 $(OBJDIR)/RenderModel2D.o: $(SRCDIR)/RenderModel2D.cpp $(SRCDIR)/RenderModel2D.h
-	clang++ $(FLAGS) -o $(OBJDIR)/RenderModel2D.o $(SRCDIR)/RenderModel2D.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/RenderModel2D.o $(SRCDIR)/RenderModel2D.cpp
 	
 $(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h
-	clang++ $(FLAGS) -o $(OBJDIR)/RenderModel3D.o $(SRCDIR)/RenderModel3D.cpp
+	c++ $(FLAGS) -o $(OBJDIR)/RenderModel3D.o $(SRCDIR)/RenderModel3D.cpp
 
+$(OBJDIR)/Camera.o: $(SRCDIR)/Camera.cpp $(SRCDIR)/Camera.h
+	c++ $(FLAGS) -o $(OBJDIR)/Camera.o $(SRCDIR)/Camera.cpp
+	
 clean:
 	rm -f $(OBJ) $(PROJECT_NAME)
 

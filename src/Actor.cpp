@@ -39,6 +39,8 @@ void Actor::update() {
 }
 
 void Actor::draw(float* viewMatrix, float* projectionMatrix) {
+	if(m_renderModel == nullptr) return;
+	
 	glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(), glm::vec3(m_position));
 	
