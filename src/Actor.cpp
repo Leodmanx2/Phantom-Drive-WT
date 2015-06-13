@@ -1,11 +1,11 @@
 #include "Actor.h"
 
 Actor::Actor() {
-	m_position = glm::vec3(0.0f, 0.0f, 0.0f);
+	m_position = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-	m_forward = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-	m_left = glm::vec3(-1.0f, 0.0f, 0.0f);
+	m_forward = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	m_left = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 Actor::~Actor() {
@@ -13,9 +13,9 @@ Actor::~Actor() {
 }
 
 void Actor::translate(float longitude, float latitude, float altitude) {
-	glm::vec3 longVec = m_forward * longitude;
-	glm::vec3 latVec = m_left * latitude;
-	glm::vec3 altVec = m_up * altitude;
+	glm::vec4 longVec = m_forward * longitude;
+	glm::vec4 latVec = m_left * latitude;
+	glm::vec4 altVec = m_up * altitude;
 	
 	m_position += longVec + latVec + altVec;
 }
@@ -24,9 +24,9 @@ void Actor::rotate(float roll, float pitch, float yaw) {
 	glm::quat rotationQuat(glm::vec3(pitch, yaw, roll));
 	m_orientation *= rotationQuat;
 	
-	canonicalForward = glm::vec3(0.0f, 0.0f, -1.0f);
-	canonicalUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	canonicalLeft = glm::vec3(-1.0f, 0.0f, 0.0f);
+	glm::vec4 canonicalForward(0.0f, 0.0f, -1.0f, 0.0f);
+	glm::vec4 canonicalUp(0.0f, 1.0f, 0.0f, 0.0f);
+	glm::vec4 canonicalLeft(-1.0f, 0.0f, 0.0f, 0.0f);
 
 	glm::mat4 orientationMatrix = glm::mat4_cast(m_orientation);
 	m_forward = orientationMatrix * canonicalForward;
@@ -40,9 +40,9 @@ void Actor::update() {
 
 void Actor::draw(float* viewMatrix, float* projectionMatrix) {
 	glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
-	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position);
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(), glm::vec3(m_position));
 	
-	glm::mat4 modelMatrix = translationMatrix * roationMatrix;
+	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;
 	
 	m_renderModel->draw(glm::value_ptr(modelMatrix), 
 	                    viewMatrix, 

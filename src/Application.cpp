@@ -18,7 +18,7 @@ Application::~Application() {
 }
 
 void Application::run() {
-	bool quit;
+	bool quit = false;
 	SDL_Event event;
 	
 	while(!quit) {
