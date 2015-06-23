@@ -5,7 +5,7 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	                           const char* pixelShaderFile, 
 	                           const char* geometryShaderFile)
 {
-	// TODO: Direct to appropriate directory, or use an interface to storage
+	// TODO: Use an interface to storage
 
 	// Reserve buffer IDs
 	m_vertexBuffers = new unsigned int[1];

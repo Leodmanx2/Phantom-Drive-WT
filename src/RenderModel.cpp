@@ -35,7 +35,7 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	// Compile pixel shader
 	std::ifstream psFile(pixelShaderFile);
 	std::stringstream pixelShaderSource;
-	vertexShaderSource << psFile.rdbuf();
+	pixelShaderSource << psFile.rdbuf();
 	unsigned int pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
 	const char* psSource = pixelShaderSource.str().c_str();
 	glShaderSource(pixelShader, 1, &psSource, NULL);

@@ -5,7 +5,8 @@ OBJDIR = $(CURDIR)/obj
 
 OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o $(OBJDIR)/RenderSystem.o \
       $(OBJDIR)/Window.o $(OBJDIR)/Actor.o $(OBJDIR)/RenderModel.o \
-			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o $(OBJDIR)/Camera.o
+			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o $(OBJDIR)/Camera.o \
+			$(OBJDIR)/Storage.o
 
 FLAGS = -std=c++0x -Wall -c
 
@@ -41,6 +42,9 @@ $(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h
 
 $(OBJDIR)/Camera.o: $(SRCDIR)/Camera.cpp $(SRCDIR)/Camera.h
 	c++ $(FLAGS) -o $(OBJDIR)/Camera.o $(SRCDIR)/Camera.cpp
+	
+$(OBJDIR)/Storage.o: $(SRCDIR)/Storage.cpp $(SRCDIR)/Storage.h
+	c++ $(FLAGS) -o $(OBJDIR)/Storage.o $(SRCDIR)/Storage.cpp
 	
 clean:
 	rm -f $(OBJ) $(PROJECT_NAME)
