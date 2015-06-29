@@ -24,8 +24,6 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
                               const char* pixelShaderFile, 
                               const char* geometryShaderFile) {
 	// TODO: Use an interface to storage
-	int isCompiled;
-	
 	// Compile vertex shader
 	std::ifstream vsFile(vertexShaderFile);
 	std::stringstream vertexShaderSource;
@@ -35,8 +33,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	glShaderSource(vertexShader, 1, &vsSource, NULL);
 	glCompileShader(vertexShader);
 	
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-	if(isCompiled == GL_FALSE) {
+	int isVSCompiled;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isVSCompiled);
+	if(isVSCompiled == GL_FALSE) {
 		int maxLength;
 		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<GLchar> infoLog(maxLength);
@@ -55,8 +54,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	glShaderSource(pixelShader, 1, &psSource, NULL);
 	glCompileShader(pixelShader);
 	
-	glGetShaderiv(pixelShader, GL_COMPILE_STATUS, &isCompiled);
-	if(isCompiled == GL_FALSE) {
+	int isPSCompiled;
+	glGetShaderiv(pixelShader, GL_COMPILE_STATUS, &isPSCompiled);
+	if(isPSCompiled == GL_FALSE) {
 		int maxLength;
 		glGetShaderiv(pixelShader, GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<GLchar> infoLog(maxLength);
@@ -77,8 +77,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 		glShaderSource(geometryShader, 1, &gsSource, NULL);
 		glCompileShader(geometryShader);
 		
-		glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &isCompiled);
-		if(isCompiled == GL_FALSE) {
+		int isGSCompiled;
+		glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &isGSCompiled);
+		if(isGSCompiled == GL_FALSE) {
 			int maxLength;
 			glGetShaderiv(geometryShader, GL_INFO_LOG_LENGTH, &maxLength);
 			std::vector<GLchar> infoLog(maxLength);
@@ -99,6 +100,23 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	}
 	
 	glLinkProgram(m_shaderProgram);
+	
+	int isLinked;
+	glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, (int *)&isLinked);
+	if(isLinked == GL_FALSE) {
+		int maxLength = 0;
+		glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
+		std::vector<GLchar> infoLog(maxLength);
+		glGetProgramInfoLog(m_shaderProgram, maxLength, &maxLength, &infoLog[0]);
+		// TODO: Log
+		glDeleteProgram(m_shaderProgram);
+		glDeleteShader(vertexShader);
+		glDeleteShader(pixelShader);
+		if(geometryShaderFile != NULL) {
+			glDeleteShader(geometryShader);
+		}
+		throw -1;
+	}
 	
 	glDetachShader(m_shaderProgram, vertexShader);
 	glDetachShader(m_shaderProgram, pixelShader);
