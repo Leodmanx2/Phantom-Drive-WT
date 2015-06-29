@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 class RenderModel {
 	protected:
