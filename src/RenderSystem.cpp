@@ -2,19 +2,20 @@
 
 RenderSystem::RenderSystem() {
 	try { m_window = new Window(640, 480); }
-	catch(int e) {
-		std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-		throw -1;
+	catch(const std::exception exception) {
+		throw std::runtime_error(std::string("Failed to create window: ") + exception.what());
 	}
 	
 	m_context = SDL_GL_CreateContext(m_window->SDL_Pointer());
-
 	if(m_context == nullptr) {
 		delete m_window;
-		throw -1;
+		throw std::runtime_error(SDL_GetError());
 	}
 	
-	glewInit();
+	GLenum err = glewInit();
+	if (err != GLEW_OK) {
+		 throw std::runtime_error((const char*)glewGetErrorString(err));
+	}
 }
 
 RenderSystem::~RenderSystem() {

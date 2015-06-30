@@ -2,13 +2,16 @@
 
 Application::Application() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+		// TODO: Log
+		std::cerr << "Could not initilize SDL: " << SDL_GetError() << std::endl;
 	}
 
 	try { m_renderSystem = new RenderSystem(); }
-	catch(int e) {
-		std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+	catch(const std::exception exception) {
 		SDL_Quit();
+		// TODO: Log
+		std::cerr << "RenderSystem: " << exception.what() << std::endl;
+		throw std::runtime_error(std::string("Failed to initialize application (") + exception.what() + ")");
 	}
 }
 

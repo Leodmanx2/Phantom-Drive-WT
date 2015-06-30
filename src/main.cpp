@@ -1,8 +1,14 @@
 #include "Application.h"
 
 int main(int argc, char *argv[]) {
-	Application app;
-	app.run();
+	try {
+		Application app;
+		app.run();
+	}
+	catch(const std::exception exception) {
+		// TODO: Log
+		return EXIT_FAILURE;
+	}
 	
 	return EXIT_SUCCESS;
 }

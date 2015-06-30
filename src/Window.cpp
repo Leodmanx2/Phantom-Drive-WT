@@ -10,7 +10,7 @@ Window::Window(unsigned int width, unsigned int height) {
 	                            SDL_WINDOW_SHOWN
 	                            );
 	if(m_window == nullptr) {
-		throw -1;
+		throw std::runtime_error("SDL Window could nto be initialized");
 	}
 }
 

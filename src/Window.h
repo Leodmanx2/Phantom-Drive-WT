@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include <stdexcept>
 
 class Window {
 	private:

@@ -62,7 +62,13 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	// TODO: Everything related to textures, animations, and lights
 	
 	// Compile shader program
-	loadShaders(vertexShaderFile, pixelShaderFile, geometryShaderFile);
+	try {
+		loadShaders(vertexShaderFile, pixelShaderFile, geometryShaderFile);
+	}
+	catch(const std::exception exception) {
+		// TODO: Log
+		throw std::runtime_error(std::string("Could not load shaders (") + exception.what() + ")");
+	}
 }
 
 RenderModel2D::~RenderModel2D() {
