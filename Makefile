@@ -2,13 +2,19 @@ PROJECT_NAME = Phantom-Drive
 
 SRCDIR = $(CURDIR)/src
 OBJDIR = $(CURDIR)/obj
+ASSDIR = $(CURDIR)/ass
+BINDIR = $(CURDIR)/bin
 
 OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o $(OBJDIR)/RenderSystem.o \
       $(OBJDIR)/Window.o $(OBJDIR)/Actor.o $(OBJDIR)/RenderModel.o \
 			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o $(OBJDIR)/Camera.o \
-			$(OBJDIR)/Storage.o
+			$(OBJDIR)/Storage.o $(OBJDIR)/DummyActor.o
 
 FLAGS = -std=c++0x -Wall -c
+
+################################################################################
+# Link targets
+################################################################################
 
 # Some of the linked libraries are obviously only for compiling
 # on windows. Remove 'em and things should be fine on other systems.
@@ -16,37 +22,66 @@ all: $(OBJ)
 	c++ -o $(PROJECT_NAME).exe $(OBJ) -lmingw32 -lSDL2main -lSDL2 -mwindows \
 	-lglu32 -lopengl32 -lglew32 -lassimp
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.cpp
+	
+################################################################################
+# Compile targets
+################################################################################
+
+$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/main.o $(SRCDIR)/main.cpp
 
-$(OBJDIR)/Application.o: $(SRCDIR)/Application.cpp $(SRCDIR)/Application.h
+$(OBJDIR)/Application.o: $(SRCDIR)/Application.cpp $(SRCDIR)/Application.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/Application.o $(SRCDIR)/Application.cpp
 
-$(OBJDIR)/RenderSystem.o: $(SRCDIR)/RenderSystem.cpp $(SRCDIR)/RenderSystem.h
+$(OBJDIR)/RenderSystem.o: $(SRCDIR)/RenderSystem.cpp $(SRCDIR)/RenderSystem.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/RenderSystem.o $(SRCDIR)/RenderSystem.cpp
 	
-$(OBJDIR)/Window.o: $(SRCDIR)/Window.cpp $(SRCDIR)/Window.h
+$(OBJDIR)/Window.o: $(SRCDIR)/Window.cpp $(SRCDIR)/Window.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/Window.o $(SRCDIR)/Window.cpp
 	
-$(OBJDIR)/Actor.o: $(SRCDIR)/Actor.cpp $(SRCDIR)/Actor.h
+$(OBJDIR)/Actor.o: $(SRCDIR)/Actor.cpp $(SRCDIR)/Actor.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/Actor.o $(SRCDIR)/Actor.cpp
 	
-$(OBJDIR)/RenderModel.o: $(SRCDIR)/RenderModel.cpp $(SRCDIR)/RenderModel.h
+$(OBJDIR)/RenderModel.o: $(SRCDIR)/RenderModel.cpp $(SRCDIR)/RenderModel.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/RenderModel.o $(SRCDIR)/RenderModel.cpp
 	
-$(OBJDIR)/RenderModel2D.o: $(SRCDIR)/RenderModel2D.cpp $(SRCDIR)/RenderModel2D.h
+$(OBJDIR)/RenderModel2D.o: $(SRCDIR)/RenderModel2D.cpp $(SRCDIR)/RenderModel2D.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/RenderModel2D.o $(SRCDIR)/RenderModel2D.cpp
 	
-$(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h
+$(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/RenderModel3D.o $(SRCDIR)/RenderModel3D.cpp
 
-$(OBJDIR)/Camera.o: $(SRCDIR)/Camera.cpp $(SRCDIR)/Camera.h
+$(OBJDIR)/Camera.o: $(SRCDIR)/Camera.cpp $(SRCDIR)/Camera.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/Camera.o $(SRCDIR)/Camera.cpp
 	
-$(OBJDIR)/Storage.o: $(SRCDIR)/Storage.cpp $(SRCDIR)/Storage.h
+$(OBJDIR)/Storage.o: $(SRCDIR)/Storage.cpp $(SRCDIR)/Storage.h $(OBJDIR)
 	c++ $(FLAGS) -o $(OBJDIR)/Storage.o $(SRCDIR)/Storage.cpp
+
 	
+################################################################################
+# Directories
+################################################################################
+
+$(OBJDIR):
+	mkdir $(OBJDIR)
+
+$(BINDIR):
+	mkdir $(BINDIR)
+
+	
+################################################################################
+# Special targets
+################################################################################
+
 clean:
 	rm -f $(OBJ) $(PROJECT_NAME)
+	rmdir $(OBJDIR)
 
+
+################################################################################
+# Debug only
+################################################################################
+
+$(OBJDIR)/DummyActor.o: $(SRCDIR)/DummyActor.cpp $(SRCDIR)/DummyActor.h $(OBJDIR)
+	c++ $(FLAGS) -o $(OBJDIR)/DummyActor.o $(SRCDIR)/DummyActor.cpp
 

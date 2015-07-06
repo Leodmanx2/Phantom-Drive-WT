@@ -1,7 +1,10 @@
 #include "RenderSystem.h"
 
 RenderSystem::RenderSystem() {
-	try { m_window = new Window(640, 480); }
+	int width = 640;
+	int height = 480;
+	
+	try { m_window = new Window(width, height); }
 	catch(const std::exception exception) {
 		throw std::runtime_error(std::string("Failed to create window: ") + exception.what());
 	}
@@ -16,16 +19,36 @@ RenderSystem::RenderSystem() {
 	if (err != GLEW_OK) {
 		 throw std::runtime_error((const char*)glewGetErrorString(err));
 	}
+	
+	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
+	
+	m_camera = new Camera();
+	
+	m_actor = new DummyActor();
 }
 
 RenderSystem::~RenderSystem() {
 	SDL_GL_DeleteContext(m_context);
 	delete m_window;
+	delete m_actor;
 }
 
 void RenderSystem::draw() {
 	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	const float* projectionDataOrig = glm::value_ptr(m_projectionMatrix);
+	float projectionData[16];
+	for(int i=0; i<16; ++i) {
+		projectionData[i] = projectionDataOrig[i];
+	}
+	
+	m_actor->draw(m_camera->getViewMatrix(), projectionData);
+	
 	SDL_GL_SwapWindow(m_window->SDL_Pointer());
+}
+
+void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
+	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
+	m_window->resize(width, height);
 }
