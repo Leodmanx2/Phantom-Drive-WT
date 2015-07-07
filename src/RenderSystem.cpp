@@ -5,26 +5,35 @@ RenderSystem::RenderSystem() {
 	int height = 480;
 	
 	try { m_window = new Window(width, height); }
-	catch(const std::exception exception) {
-		throw std::runtime_error(std::string("Failed to create window: ") + exception.what());
+	catch(const std::runtime_error& exception) {
+		g_logger->write(Logger::CRITICAL, exception.what());
+		throw std::runtime_error("Failed to create window");
 	}
 	
 	m_context = SDL_GL_CreateContext(m_window->SDL_Pointer());
 	if(m_context == nullptr) {
 		delete m_window;
-		throw std::runtime_error(SDL_GetError());
+		g_logger->write(Logger::CRITICAL, SDL_GetError());
+		throw std::runtime_error("Could not create OpenGL context");
 	}
 	
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		 throw std::runtime_error((const char*)glewGetErrorString(err));
+		g_logger->write(Logger::CRITICAL, (const char*)glewGetErrorString(err));
+		throw std::runtime_error("Failed to initialize GLEW");
 	}
 	
 	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
 	
 	m_camera = new Camera();
 	
-	m_actor = new DummyActor();
+	try {
+		m_actor = new DummyActor();
+	}
+	catch(const std::runtime_error& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::DEBUG, "Continuing program without initializing actor");
+	}
 }
 
 RenderSystem::~RenderSystem() {
@@ -43,7 +52,9 @@ void RenderSystem::draw() {
 		projectionData[i] = projectionDataOrig[i];
 	}
 	
-	m_actor->draw(m_camera->getViewMatrix(), projectionData);
+	if(m_actor) {
+		m_actor->draw(m_camera->getViewMatrix(), projectionData);
+	}
 	
 	SDL_GL_SwapWindow(m_window->SDL_Pointer());
 }

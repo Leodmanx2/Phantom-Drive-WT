@@ -8,7 +8,7 @@ BINDIR = $(CURDIR)/bin
 OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o $(OBJDIR)/RenderSystem.o \
       $(OBJDIR)/Window.o $(OBJDIR)/Actor.o $(OBJDIR)/RenderModel.o \
 			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o $(OBJDIR)/Camera.o \
-			$(OBJDIR)/Storage.o $(OBJDIR)/DummyActor.o
+			$(OBJDIR)/Storage.o $(OBJDIR)/DummyActor.o $(OBJDIR)/Logger.o
 
 FLAGS = -std=c++0x -Wall -c
 
@@ -27,39 +27,44 @@ all: $(OBJ)
 # Compile targets
 ################################################################################
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(OBJDIR)
+$(OBJDIR)/main.o: $(SRCDIR)/main.cpp
 	c++ $(FLAGS) -o $(OBJDIR)/main.o $(SRCDIR)/main.cpp
 
-$(OBJDIR)/Application.o: $(SRCDIR)/Application.cpp $(SRCDIR)/Application.h $(OBJDIR)
+$(OBJDIR)/Application.o: $(SRCDIR)/Application.cpp $(SRCDIR)/Application.h
 	c++ $(FLAGS) -o $(OBJDIR)/Application.o $(SRCDIR)/Application.cpp
 
-$(OBJDIR)/RenderSystem.o: $(SRCDIR)/RenderSystem.cpp $(SRCDIR)/RenderSystem.h $(OBJDIR)
+$(OBJDIR)/RenderSystem.o: $(SRCDIR)/RenderSystem.cpp $(SRCDIR)/RenderSystem.h
 	c++ $(FLAGS) -o $(OBJDIR)/RenderSystem.o $(SRCDIR)/RenderSystem.cpp
 	
-$(OBJDIR)/Window.o: $(SRCDIR)/Window.cpp $(SRCDIR)/Window.h $(OBJDIR)
+$(OBJDIR)/Window.o: $(SRCDIR)/Window.cpp $(SRCDIR)/Window.h
 	c++ $(FLAGS) -o $(OBJDIR)/Window.o $(SRCDIR)/Window.cpp
 	
-$(OBJDIR)/Actor.o: $(SRCDIR)/Actor.cpp $(SRCDIR)/Actor.h $(OBJDIR)
+$(OBJDIR)/Actor.o: $(SRCDIR)/Actor.cpp $(SRCDIR)/Actor.h
 	c++ $(FLAGS) -o $(OBJDIR)/Actor.o $(SRCDIR)/Actor.cpp
 	
-$(OBJDIR)/RenderModel.o: $(SRCDIR)/RenderModel.cpp $(SRCDIR)/RenderModel.h $(OBJDIR)
+$(OBJDIR)/RenderModel.o: $(SRCDIR)/RenderModel.cpp $(SRCDIR)/RenderModel.h
 	c++ $(FLAGS) -o $(OBJDIR)/RenderModel.o $(SRCDIR)/RenderModel.cpp
 	
-$(OBJDIR)/RenderModel2D.o: $(SRCDIR)/RenderModel2D.cpp $(SRCDIR)/RenderModel2D.h $(OBJDIR)
+$(OBJDIR)/RenderModel2D.o: $(SRCDIR)/RenderModel2D.cpp $(SRCDIR)/RenderModel2D.h
 	c++ $(FLAGS) -o $(OBJDIR)/RenderModel2D.o $(SRCDIR)/RenderModel2D.cpp
 	
-$(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h $(OBJDIR)
+$(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h
 	c++ $(FLAGS) -o $(OBJDIR)/RenderModel3D.o $(SRCDIR)/RenderModel3D.cpp
 
-$(OBJDIR)/Camera.o: $(SRCDIR)/Camera.cpp $(SRCDIR)/Camera.h $(OBJDIR)
+$(OBJDIR)/Camera.o: $(SRCDIR)/Camera.cpp $(SRCDIR)/Camera.h
 	c++ $(FLAGS) -o $(OBJDIR)/Camera.o $(SRCDIR)/Camera.cpp
 	
-$(OBJDIR)/Storage.o: $(SRCDIR)/Storage.cpp $(SRCDIR)/Storage.h $(OBJDIR)
+$(OBJDIR)/Storage.o: $(SRCDIR)/Storage.cpp $(SRCDIR)/Storage.h
 	c++ $(FLAGS) -o $(OBJDIR)/Storage.o $(SRCDIR)/Storage.cpp
+
+$(OBJDIR)/Logger.o: $(SRCDIR)/Logger.cpp $(SRCDIR)/Logger.h
+	c++ $(FLAGS) -o $(OBJDIR)/Logger.o $(SRCDIR)/Logger.cpp
 
 	
 ################################################################################
 # Directories
+#  Note: Not currently in use because doing it the way it is now
+#        forces make to recheck every target
 ################################################################################
 
 $(OBJDIR):

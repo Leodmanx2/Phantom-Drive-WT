@@ -40,7 +40,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<GLchar> infoLog(maxLength);
 		glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-		// TODO: Log
+		
+		g_logger->write(Logger::ERROR, infoLog.data());
+		
 		glDeleteShader(vertexShader);
 		throw std::runtime_error("Failed to compile vertex shader");
 	}
@@ -61,7 +63,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 		glGetShaderiv(pixelShader, GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<GLchar> infoLog(maxLength);
 		glGetShaderInfoLog(pixelShader, maxLength, &maxLength, &infoLog[0]);
-		// TODO: Log
+		
+		g_logger->write(Logger::ERROR, infoLog.data());
+		
 		glDeleteShader(pixelShader);
 		throw std::runtime_error("Failed to compile pixel shader");
 	}
@@ -84,7 +88,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 			glGetShaderiv(geometryShader, GL_INFO_LOG_LENGTH, &maxLength);
 			std::vector<GLchar> infoLog(maxLength);
 			glGetShaderInfoLog(geometryShader, maxLength, &maxLength, &infoLog[0]);
-			// TODO: Log
+			
+			g_logger->write(Logger::ERROR, infoLog.data());
+			
 			glDeleteShader(geometryShader);
 			throw std::runtime_error("Failed to compile geometry shader");
 		}
@@ -108,7 +114,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 		glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<GLchar> infoLog(maxLength);
 		glGetProgramInfoLog(m_shaderProgram, maxLength, &maxLength, &infoLog[0]);
-		// TODO: Log
+		
+		g_logger->write(Logger::ERROR, infoLog.data());
+		
 		glDeleteProgram(m_shaderProgram);
 		glDeleteShader(vertexShader);
 		glDeleteShader(pixelShader);

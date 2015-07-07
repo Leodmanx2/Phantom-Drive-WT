@@ -5,6 +5,8 @@
 #include <SDL2/SDL.h>
 #include <stdexcept>
 #include "RenderSystem.h"
+#include "Logger.h"
+#include <sstream>
 
 class Application {
 	private:

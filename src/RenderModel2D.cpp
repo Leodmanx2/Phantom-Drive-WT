@@ -65,9 +65,13 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	try {
 		loadShaders(vertexShaderFile, pixelShaderFile, geometryShaderFile);
 	}
-	catch(const std::exception exception) {
-		// TODO: Log
-		throw std::runtime_error(std::string("Could not load shaders (") + exception.what() + ")");
+	catch(const std::runtime_error& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		
+		std::stringstream message;
+		message << "RenderModel2D (" << this << "): Could not load shaders";
+		std::string messageString = message.str();
+		throw std::runtime_error(messageString);
 	}
 }
 
