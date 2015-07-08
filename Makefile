@@ -5,16 +5,12 @@ OBJDIR = $(CURDIR)/obj
 ASSDIR = $(CURDIR)/ass
 BINDIR = $(CURDIR)/bin
 
-OBJ = $(OBJDIR)/main.o $(OBJDIR)/Application.o $(OBJDIR)/RenderSystem.o \
-      $(OBJDIR)/Window.o $(OBJDIR)/Actor.o $(OBJDIR)/RenderModel.o \
-			$(OBJDIR)/RenderModel2D.o $(OBJDIR)/RenderModel3D.o $(OBJDIR)/Camera.o \
-			$(OBJDIR)/Storage.o $(OBJDIR)/DummyActor.o $(OBJDIR)/Logger.o
+OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o Window.o \
+                              Actor.o RenderModel.o RenderModel2D.o \
+                              RenderModel3D.o Camera.o Storage.o DummyActor.o \
+                              Logger.o)
 
 FLAGS = -std=c++0x -Wall -c
-
-################################################################################
-# Link targets
-################################################################################
 
 # Some of the linked libraries are obviously only for compiling
 # on windows. Remove 'em and things should be fine on other systems.
@@ -22,71 +18,15 @@ all: $(OBJ)
 	c++ -o $(PROJECT_NAME).exe $(OBJ) -lmingw32 -lSDL2main -lSDL2 -mwindows \
 	-lglu32 -lopengl32 -lglew32 -lassimp
 
-	
-################################################################################
-# Compile targets
-################################################################################
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	c++ $(FLAGS) -o $@ $<
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.cpp
-	c++ $(FLAGS) -o $(OBJDIR)/main.o $(SRCDIR)/main.cpp
-
-$(OBJDIR)/Application.o: $(SRCDIR)/Application.cpp $(SRCDIR)/Application.h
-	c++ $(FLAGS) -o $(OBJDIR)/Application.o $(SRCDIR)/Application.cpp
-
-$(OBJDIR)/RenderSystem.o: $(SRCDIR)/RenderSystem.cpp $(SRCDIR)/RenderSystem.h
-	c++ $(FLAGS) -o $(OBJDIR)/RenderSystem.o $(SRCDIR)/RenderSystem.cpp
-	
-$(OBJDIR)/Window.o: $(SRCDIR)/Window.cpp $(SRCDIR)/Window.h
-	c++ $(FLAGS) -o $(OBJDIR)/Window.o $(SRCDIR)/Window.cpp
-	
-$(OBJDIR)/Actor.o: $(SRCDIR)/Actor.cpp $(SRCDIR)/Actor.h
-	c++ $(FLAGS) -o $(OBJDIR)/Actor.o $(SRCDIR)/Actor.cpp
-	
-$(OBJDIR)/RenderModel.o: $(SRCDIR)/RenderModel.cpp $(SRCDIR)/RenderModel.h
-	c++ $(FLAGS) -o $(OBJDIR)/RenderModel.o $(SRCDIR)/RenderModel.cpp
-	
-$(OBJDIR)/RenderModel2D.o: $(SRCDIR)/RenderModel2D.cpp $(SRCDIR)/RenderModel2D.h
-	c++ $(FLAGS) -o $(OBJDIR)/RenderModel2D.o $(SRCDIR)/RenderModel2D.cpp
-	
-$(OBJDIR)/RenderModel3D.o: $(SRCDIR)/RenderModel3D.cpp $(SRCDIR)/RenderModel3D.h
-	c++ $(FLAGS) -o $(OBJDIR)/RenderModel3D.o $(SRCDIR)/RenderModel3D.cpp
-
-$(OBJDIR)/Camera.o: $(SRCDIR)/Camera.cpp $(SRCDIR)/Camera.h
-	c++ $(FLAGS) -o $(OBJDIR)/Camera.o $(SRCDIR)/Camera.cpp
-	
-$(OBJDIR)/Storage.o: $(SRCDIR)/Storage.cpp $(SRCDIR)/Storage.h
-	c++ $(FLAGS) -o $(OBJDIR)/Storage.o $(SRCDIR)/Storage.cpp
-
-$(OBJDIR)/Logger.o: $(SRCDIR)/Logger.cpp $(SRCDIR)/Logger.h
-	c++ $(FLAGS) -o $(OBJDIR)/Logger.o $(SRCDIR)/Logger.cpp
-
-	
-################################################################################
-# Directories
-#  Note: Not currently in use because doing it the way it is now
-#        forces make to recheck every target
-################################################################################
+$(OBJ): | $(OBJDIR)
 
 $(OBJDIR):
 	mkdir $(OBJDIR)
 
-$(BINDIR):
-	mkdir $(BINDIR)
-
-	
-################################################################################
-# Special targets
-################################################################################
-
+.PHONY: clean
 clean:
-	rm -f $(OBJ) $(PROJECT_NAME)
-	rmdir $(OBJDIR)
-
-
-################################################################################
-# Debug only
-################################################################################
-
-$(OBJDIR)/DummyActor.o: $(SRCDIR)/DummyActor.cpp $(SRCDIR)/DummyActor.h $(OBJDIR)
-	c++ $(FLAGS) -o $(OBJDIR)/DummyActor.o $(SRCDIR)/DummyActor.cpp
+	rm -rf $(OBJDIR) $(PROJECT_NAME)
 
