@@ -8,6 +8,7 @@
 #include "RenderModel.h"
 
 #include <GL/glew.h>
+#include "Logger.h"
 
 class Actor {
 	protected:

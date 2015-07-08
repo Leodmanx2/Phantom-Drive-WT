@@ -1,9 +1,15 @@
 #include "DummyActor.h"
 
 DummyActor::DummyActor() {
-	m_model = new RenderModel2D("", "ass/passthrough.vert.glsl", "ass/passthrough.frag.glsl");
+	try {
+		m_renderModel = new RenderModel2D("", "ass/passthrough.vert.glsl", "ass/passthrough.frag.glsl");
+	}
+	catch(const std::runtime_error& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::DEBUG, "Continuing program without initializing DummyActor's render model");
+	}
 }
 
 DummyActor::~DummyActor() {
-	delete m_model;
+	
 }

@@ -26,14 +26,8 @@ RenderSystem::RenderSystem() {
 	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
 	
 	m_camera = new Camera();
-	
-	try {
-		m_actor = new DummyActor();
-	}
-	catch(const std::runtime_error& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		g_logger->write(Logger::DEBUG, "Continuing program without initializing actor");
-	}
+
+	m_actor = new DummyActor();
 }
 
 RenderSystem::~RenderSystem() {
@@ -52,9 +46,7 @@ void RenderSystem::draw() {
 		projectionData[i] = projectionDataOrig[i];
 	}
 	
-	if(m_actor) {
-		m_actor->draw(m_camera->getViewMatrix(), projectionData);
-	}
+	m_actor->draw(m_camera->getViewMatrix(), projectionData);
 	
 	SDL_GL_SwapWindow(m_window->SDL_Pointer());
 }

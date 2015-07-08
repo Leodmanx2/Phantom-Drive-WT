@@ -5,10 +5,10 @@
 #include "RenderModel2D.h"
 #include <GL/glew.h>
 
+#include "Logger.h"
+#include <stdexcept>
+
 class DummyActor : public Actor {
-	private:
-		RenderModel2D* m_model;
-	
 	public:
 		DummyActor();
 		~DummyActor();
