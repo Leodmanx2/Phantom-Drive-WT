@@ -10,17 +10,24 @@ OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o Window.o \
                               RenderModel3D.o Camera.o Storage.o DummyActor.o \
                               Logger.o)
 
-CFLAGS = -std=c++0x -Wall -c -g
-LFLAGS = -g
+CXXFLAGS = -std=c++0x -Wall -c -g
+LDFLAGS = -g
 
-# Some of the linked libraries are obviously only for compiling
-# on windows. Remove 'em and things should be fine on other systems.
+# Certain library names and flags depend on the OS
+ifeq ($(OS), Windows_NT)
+	LDLIBS = -lmingw32 -lopengl32 -lglu32 -lglew32
+	LDFLAGS += -mwindows
+else
+	LDLIBS = -lGL -lGLU -lGLEW
+endif
+LDLIBS += -lSDL2main -lSDL2 -lassimp
+
+	
 all: $(OBJ)
-	c++ $(LFLAGS) -o $(PROJECT_NAME).exe $(OBJ) -lmingw32 -lSDL2main -lSDL2 -mwindows \
-	-lglu32 -lopengl32 -lglew32 -lassimp
+	$(CXX) $(LDFLAGS) -o $(PROJECT_NAME).exe $(OBJ) $(LDLIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	c++ $(CFLAGS) -o $@ $<
+	c++ $(CXXFLAGS) -o $@ $<
 
 $(OBJ): | $(OBJDIR)
 

@@ -30,7 +30,8 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	vertexShaderSource << vsFile.rdbuf();
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	const char* vsSource = vertexShaderSource.str().c_str();
-	glShaderSource(vertexShader, 1, &vsSource, NULL);
+	int vsSourceLength = vertexShaderSource.str().length();
+	glShaderSource(vertexShader, 1, &vsSource, &vsSourceLength);
 	glCompileShader(vertexShader);
 	
 	int isVSCompiled;
@@ -53,7 +54,8 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	pixelShaderSource << psFile.rdbuf();
 	unsigned int pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
 	const char* psSource = pixelShaderSource.str().c_str();
-	glShaderSource(pixelShader, 1, &psSource, NULL);
+	int psSourceLength = pixelShaderSource.str().length();
+	glShaderSource(pixelShader, 1, &psSource, &psSourceLength);
 	glCompileShader(pixelShader);
 	
 	int isPSCompiled;
@@ -78,7 +80,8 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 		geometryShaderSource << gsFile.rdbuf();
 		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 		const char* gsSource = geometryShaderSource.str().c_str();
-		glShaderSource(geometryShader, 1, &gsSource, NULL);
+		int gsSourceLength = geometryShaderSource.str().length();
+		glShaderSource(geometryShader, 1, &gsSource, &gsSourceLength);
 		glCompileShader(geometryShader);
 		
 		int isGSCompiled;
