@@ -1,7 +1,7 @@
 #include "Application.h"
 
 Application::Application() {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
 		g_logger->write(Logger::CRITICAL, SDL_GetError());
 		throw std::runtime_error("Failed to initialize SDL_video");
 	}

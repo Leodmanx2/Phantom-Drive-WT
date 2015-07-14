@@ -2,11 +2,12 @@
 #define APPLICATION_H
 
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <sstream>
 #include <stdexcept>
+#include <SDL2/SDL.h>
+#include <physfs.h>
 #include "RenderSystem.h"
 #include "Logger.h"
-#include <sstream>
 
 class Application {
 	private:
