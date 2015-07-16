@@ -14,16 +14,18 @@ LDFLAGS = -g
 
 # Certain library names and flags depend on the OS
 ifeq ($(OS), Windows_NT)
-	LDLIBS = -lmingw32 -lopengl32 -lglu32 -lglew32
+	LDLIBS = -lmingw32 -lopengl32 -lglu32 -lglew32 -llibphysfs
 	LDFLAGS += -mwindows
+	EXE_NAME = $(PROJECT_NAME).exe
 else
-	LDLIBS = -lGL -lGLU -lGLEW
+	LDLIBS = -lGL -lGLU -lGLEW -lphysfs
+	EXE_NAME = $(PROJECT_NAME)
 endif
-LDLIBS += -lSDL2main -lSDL2 -lassimp -llibphysfs
+LDLIBS += -lSDL2main -lSDL2 -lassimp
 
 	
 all: $(OBJ)
-	$(CXX) $(LDFLAGS) -o $(PROJECT_NAME).exe $(OBJ) $(LDLIBS)
+	$(CXX) $(LDFLAGS) -o $(EXE_NAME) $(OBJ) $(LDLIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	c++ $(CXXFLAGS) -o $@ $<
@@ -35,5 +37,5 @@ $(OBJDIR):
 
 .PHONY: clean
 clean:
-	rm -rf $(OBJDIR) $(PROJECT_NAME)
+	rm -rf $(OBJDIR) $(EXE_NAME)
 
