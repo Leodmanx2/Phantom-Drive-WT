@@ -14,6 +14,10 @@ Application::Application() {
 	}
 }
 
+Application::Application(Application& original) {
+	m_renderSystem = new RenderSystem(*original.m_renderSystem);
+}
+
 Application::~Application() {
 	delete m_renderSystem;
 	SDL_Quit();

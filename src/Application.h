@@ -15,6 +15,7 @@ class Application {
 	
 	public:
 		Application();
+		Application(Application& original);
 		~Application();
 		void run();
 };

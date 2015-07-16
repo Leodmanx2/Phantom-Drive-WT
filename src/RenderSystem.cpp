@@ -30,6 +30,12 @@ RenderSystem::RenderSystem() {
 	m_actor = new DummyActor();
 }
 
+RenderSystem::RenderSystem(RenderSystem& original) {
+		m_window = new Window(*original.m_window);
+		m_camera = new Camera(*original.m_camera);
+		m_actor = new Actor(*original.m_actor);
+}
+
 RenderSystem::~RenderSystem() {
 	SDL_GL_DeleteContext(m_context);
 	delete m_window;

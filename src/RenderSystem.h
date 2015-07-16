@@ -26,6 +26,7 @@ class RenderSystem {
 	
 	public:
 		RenderSystem();
+		RenderSystem(RenderSystem& original);
 		~RenderSystem();
 
 		void draw();
