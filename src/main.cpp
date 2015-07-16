@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 	
 	g_logger->write(Logger::INFO, "Initializing virtual file system");
 	if(PHYSFS_init(argv[0]) == 0) {
-		g_logger->write(Logger::CRITICAL, PHYSFS_getLastError);
+		g_logger->write(Logger::CRITICAL, PHYSFS_getLastError());
 		g_logger->write(Logger::INFO, "Exited program unsuccessfully");
 		return EXIT_FAILURE;
 	}
