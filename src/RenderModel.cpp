@@ -28,8 +28,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	std::ifstream vsFile(vertexShaderFile);
 	std::stringstream vertexShaderSource;
 	vertexShaderSource << vsFile.rdbuf();
+	std::string vsSourceStr = vertexShaderSource.str();
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	const char* vsSource = vertexShaderSource.str().c_str();
+	const char* vsSource = vsSourceStr.c_str();
 	int vsSourceLength = vertexShaderSource.str().length();
 	glShaderSource(vertexShader, 1, &vsSource, &vsSourceLength);
 	glCompileShader(vertexShader);
@@ -52,8 +53,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	std::ifstream psFile(pixelShaderFile);
 	std::stringstream pixelShaderSource;
 	pixelShaderSource << psFile.rdbuf();
+	std::string psSourceStr = pixelShaderSource.str();
 	unsigned int pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
-	const char* psSource = pixelShaderSource.str().c_str();
+	const char* psSource = psSourceStr.c_str();
 	int psSourceLength = pixelShaderSource.str().length();
 	glShaderSource(pixelShader, 1, &psSource, &psSourceLength);
 	glCompileShader(pixelShader);
@@ -78,8 +80,9 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 		std::ifstream gsFile(geometryShaderFile);
 		std::stringstream geometryShaderSource;
 		geometryShaderSource << gsFile.rdbuf();
+		std::string gsSourceStr = geometryShaderSource.str();
 		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-		const char* gsSource = geometryShaderSource.str().c_str();
+		const char* gsSource = gsSourceStr.c_str();
 		int gsSourceLength = geometryShaderSource.str().length();
 		glShaderSource(geometryShader, 1, &gsSource, &gsSourceLength);
 		glCompileShader(geometryShader);
