@@ -11,7 +11,7 @@ class RenderModel2D : public RenderModel {
 		RenderModel2D(const char* spriteFile, 
 		              const char* vertexShaderFile, 
 		              const char* pixelShaderFile, 
-		              const char* geometryShaderFile = NULL);
+		              const char* geometryShaderFile = nullptr);
 								
 		~RenderModel2D();
 		

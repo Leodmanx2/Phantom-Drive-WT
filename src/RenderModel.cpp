@@ -14,10 +14,10 @@ RenderModel::~RenderModel() {
 
 	glDeleteProgram(m_shaderProgram);
 	
-	delete m_vertexBuffers;
-	delete m_indexBuffers;
-	delete m_normalBuffers;
-	delete m_textureCoordBuffers;
+	delete[] m_vertexBuffers;
+	delete[] m_indexBuffers;
+	delete[] m_normalBuffers;
+	delete[] m_textureCoordBuffers;
 }
 
 void RenderModel::loadShaders(const char* vertexShaderFile, 

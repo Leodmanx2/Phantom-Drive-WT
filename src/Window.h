@@ -11,6 +11,7 @@ class Window {
 
 	public:
 		Window(unsigned int width, unsigned int height);
+		Window(Window& original);
 		~Window();
 
 		void resize(unsigned int width, unsigned int height);
