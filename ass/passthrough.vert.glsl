@@ -6,11 +6,11 @@ uniform mat4 model;
 
 in vec3 position;
 in vec3 normal;
-in vec3 texCoord;
+in vec2 texCoord;
 
 out vec3 out_normal;
-out vec3 out_texCoord;
+out vec2 out_texCoord;
 
 void main() {
-	gl_Position = projection * vec4(position.x, position.y, position.z, 1.0f);
+	gl_Position = projection * view * vec4(position.x, position.y, position.z, 1.0f);
 }

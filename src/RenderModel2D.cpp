@@ -94,26 +94,43 @@ void RenderModel2D::draw(float* modelMatrix,
 	unsigned int projectionUniform = glGetUniformLocation(m_shaderProgram, "projection");
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, projectionMatrix);
 	
+	// It is possible that the shader doesn't actually use these values, in 
+	// which case they will be optimized out by the compiler and their 
+	// location will be returned as -1 (or 0xFFFFFFFF if read as unsigned)
 	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);
-	glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(positionAttribute);
+	bool posAttribEnabled = positionAttribute==0xFFFFFFFF ? false : true;
+	if(posAttribEnabled) {
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);
+		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(positionAttribute);
+	}
 	
 	unsigned int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
-	glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[0]);
-	glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(normalAttribute);
+	bool normAttribEnabled = normalAttribute==0xFFFFFFFF ? false : true;
+	if(normAttribEnabled) {
+		glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[0]);
+		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(normalAttribute);
+	}
 	
 	unsigned int texCoordAttribute = glGetAttribLocation(m_shaderProgram, "texCoord");
-	glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[0]);
-	glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(texCoordAttribute);
+	bool texCoordAttribEnabled = texCoordAttribute==0xFFFFFFFF ? false : true;
+	if(texCoordAttribEnabled) {
+		glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[0]);
+		glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(texCoordAttribute);
+	}
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
-	glDisableVertexAttribArray(positionAttribute);
-	glDisableVertexAttribArray(normalAttribute);
-	glDisableVertexAttribArray(texCoordAttribute);
+	if(posAttribEnabled)
+		glDisableVertexAttribArray(positionAttribute);
+	
+	if(normAttribEnabled)
+		glDisableVertexAttribArray(normalAttribute);
+	
+	if(texCoordAttribEnabled)
+		glDisableVertexAttribArray(texCoordAttribute);
 }

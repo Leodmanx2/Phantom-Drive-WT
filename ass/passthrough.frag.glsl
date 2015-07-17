@@ -1,7 +1,7 @@
 #version 330
 
 in vec3 normal;
-in vec3 texCoord;
+in vec2 texCoord;
 
 out vec4 out_color;
 

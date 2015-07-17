@@ -134,7 +134,6 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	
 	glDetachShader(m_shaderProgram, vertexShader);
 	glDetachShader(m_shaderProgram, pixelShader);
-	glDetachShader(m_shaderProgram, vertexShader);
 	if(geometryShaderFile != NULL) {
 		glDetachShader(m_shaderProgram, geometryShader);
 	}
