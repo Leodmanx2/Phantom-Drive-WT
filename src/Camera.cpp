@@ -13,9 +13,9 @@ float* Camera::getPosition() {
 }
 
 float* Camera::getViewMatrix() {
-	glm::mat4 viewMatrix = glm::lookAt(glm::vec3(m_position), 
-	                                   glm::vec3(m_forward), 
-										                 glm::vec3(m_up));
+	m_viewMatrix = glm::lookAt(glm::vec3(m_position), 
+	                           glm::vec3(m_forward), 
+										         glm::vec3(m_up));
 
-	return glm::value_ptr(viewMatrix);
+	return glm::value_ptr(m_viewMatrix);
 }

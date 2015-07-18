@@ -32,9 +32,9 @@ void Application::run() {
 			if(event.type == SDL_QUIT) {
 				quit = true;
 			}
-			
-			m_renderSystem->draw();
 		}
+		
+		m_renderSystem->draw();
 	}
 }
 

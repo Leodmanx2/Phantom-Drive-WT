@@ -20,10 +20,10 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	// Prepare buffers
 	// TODO: Quad must be sized to fit sprite
 	float vertices[] = {
-		-0.5f,  0.5f, 0.0f, 
-		 0.5f,  0.5f, 0.0f, 
-		 0.5f, -0.5f, 0.0f, 
-		-0.5f, -0.5f, 0.0f
+		-20.5f,  20.5f, 0.0f, 
+		 20.5f,  20.5f, 0.0f, 
+		 20.5f, -20.5f, 0.0f, 
+		-20.5f, -20.5f, 0.0f
 	};
 	
 	unsigned int indices[] = {

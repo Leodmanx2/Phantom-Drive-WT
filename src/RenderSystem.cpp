@@ -26,8 +26,10 @@ RenderSystem::RenderSystem() {
 	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
 	
 	m_camera = new Camera();
+	m_camera->translate(-0.5f, 0.0f, 0.0f);
 
 	m_actor = new DummyActor();
+	m_actor->translate(0.0f, -50.0f, 50.0f);
 }
 
 RenderSystem::RenderSystem(RenderSystem& original) {
@@ -46,11 +48,7 @@ void RenderSystem::draw() {
 	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	const float* projectionDataOrig = glm::value_ptr(m_projectionMatrix);
-	float projectionData[16];
-	for(int i=0; i<16; ++i) {
-		projectionData[i] = projectionDataOrig[i];
-	}
+	float* projectionData = glm::value_ptr(m_projectionMatrix);
 	
 	m_actor->draw(m_camera->getViewMatrix(), projectionData);
 	

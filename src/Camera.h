@@ -4,6 +4,9 @@
 #include "Actor.h"
 
 class Camera : public Actor {
+	private:
+		glm::mat4 m_viewMatrix;
+	
 	public:
 		Camera();
 		~Camera();
