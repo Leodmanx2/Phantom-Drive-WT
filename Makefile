@@ -28,7 +28,7 @@ all: $(OBJ)
 	$(CXX) $(LDFLAGS) -o $(EXE_NAME) $(OBJ) $(LDLIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	c++ $(CXXFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 $(OBJ): | $(OBJDIR)
 

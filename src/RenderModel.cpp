@@ -114,7 +114,7 @@ void RenderModel::loadShaders(const char* vertexShaderFile,
 	glLinkProgram(m_shaderProgram);
 	
 	int isLinked;
-	glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, (int *)&isLinked);
+	glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &isLinked);
 	if(isLinked == GL_FALSE) {
 		int maxLength = 0;
 		glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
