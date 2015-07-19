@@ -8,10 +8,10 @@
 class RenderModel2D : public RenderModel {
 	public:
 		// Geometry shader is optional
-		RenderModel2D(const char* spriteFile, 
-		              const char* vertexShaderFile, 
-		              const char* pixelShaderFile, 
-		              const char* geometryShaderFile = nullptr);
+		RenderModel2D(const char* spriteFilename, 
+		              const char* vertexShaderFilename, 
+		              const char* pixelShaderFilename, 
+		              const char* geometryShaderFilename = nullptr);
 								
 		~RenderModel2D();
 		

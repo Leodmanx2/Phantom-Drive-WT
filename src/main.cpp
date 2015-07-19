@@ -1,7 +1,6 @@
 #include "Application.h"
 
 #include "Logger.h"
-#include <sstream>
 
 int main(int argc, char* argv[]) {
 	g_logger->write(Logger::INFO, "Starting program");

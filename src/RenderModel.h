@@ -7,6 +7,8 @@
 #include <vector>
 #include <stdexcept>
 #include "Logger.h"
+#include <physfs.h>
+#include <limits>
 
 class RenderModel {
 	protected:
@@ -25,9 +27,9 @@ class RenderModel {
 		                  float* viewMatrix, 
 		                  float* projectionMatrix) = 0;
 		
-		void loadShaders(const char* vertexShaderFile, 
-		                 const char* pixelShaderFile, 
-		                 const char* geometryShaderFile = NULL);
+		void loadShaders(const char* vertexShaderFilename, 
+		                 const char* pixelShaderFilename, 
+		                 const char* geometryShaderFilename = nullptr);
 };
 
 #endif

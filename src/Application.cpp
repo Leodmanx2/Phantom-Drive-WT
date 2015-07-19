@@ -1,6 +1,14 @@
 #include "Application.h"
 
 Application::Application() {
+	std::string assetDir = PHYSFS_getBaseDir() + std::string("ass");
+	std::string logMessage = "Mounting asset location: " + assetDir;
+	g_logger->write(Logger::INFO, logMessage.c_str());
+	if(PHYSFS_mount(assetDir.c_str(), "/", 1) == 0) {
+		g_logger->write(Logger::CRITICAL, PHYSFS_getLastError());
+		throw std::runtime_error("Could not mount asset files");
+	}
+	
 	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
 		g_logger->write(Logger::CRITICAL, SDL_GetError());
 		throw std::runtime_error("Failed to initialize SDL_video");

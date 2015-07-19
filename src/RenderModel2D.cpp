@@ -1,11 +1,15 @@
 #include "RenderModel2D.h"
 
-RenderModel2D::RenderModel2D(const char* spriteFile, 
-	                           const char* vertexShaderFile, 
-	                           const char* pixelShaderFile, 
-	                           const char* geometryShaderFile)
+RenderModel2D::RenderModel2D(const char* spriteFilename, 
+	                           const char* vertexShaderFilename, 
+	                           const char* pixelShaderFilename, 
+	                           const char* geometryShaderFilename)
 {
-	// TODO: Use an interface to storage
+	/*if(!PHYSFS_exists(spriteFilename)) {
+		throw std::runtime_error(std::string("Could not open sprite: ") + spriteFilename);
+	}
+	
+	PHYSFS_File* spriteFile = PHYSFS_openRead(spriteFilename);*/
 
 	// Reserve buffer IDs
 	m_vertexBuffers = new unsigned int[1];
@@ -63,7 +67,7 @@ RenderModel2D::RenderModel2D(const char* spriteFile,
 	
 	// Compile shader program
 	try {
-		loadShaders(vertexShaderFile, pixelShaderFile, geometryShaderFile);
+		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
 	}
 	catch(const std::runtime_error& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
