@@ -38,6 +38,9 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	
 	// Compile vertex shader
 	PHYSFS_File* vertexShaderFile = PHYSFS_openRead(vertexShaderFilename);
+	if(!vertexShaderFile) {
+		throw std::runtime_error(std::string("Could not open vertex shader: ") + vertexShaderFilename);
+	}
 	
 	PHYSFS_sint64 vsFileSizeLong = PHYSFS_fileLength(vertexShaderFile);
 	if(vsFileSizeLong == -1)
@@ -51,6 +54,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	int vsBytesRead = PHYSFS_read(vertexShaderFile, vsBuffer, 1, vsFileSize);
 	PHYSFS_close(vertexShaderFile);
 	if(vsBytesRead < vsFileSize || vsBytesRead == -1) {
+		delete vsBuffer;
 		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of vertex shader: ") + vertexShaderFilename);
 	}
@@ -78,6 +82,9 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	
 	// Compile pixel shader
 	PHYSFS_File* pixelShaderFile = PHYSFS_openRead(pixelShaderFilename);
+	if(!pixelShaderFile) {
+		throw std::runtime_error(std::string("Could not open pixel shader: ") + pixelShaderFilename);
+	}
 	
 	PHYSFS_sint64 psFileSizeLong = PHYSFS_fileLength(pixelShaderFile);
 	if(psFileSizeLong == -1)
@@ -91,6 +98,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	int psBytesRead = PHYSFS_read(pixelShaderFile, psBuffer, 1, psFileSize);
 	PHYSFS_close(pixelShaderFile);
 	if(psBytesRead < psFileSize || psBytesRead == -1) {
+		delete psBuffer;
 		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of pixel shader: ") + pixelShaderFilename);
 	}
@@ -120,6 +128,9 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	unsigned int geometryShader;
 	if(geometryShaderFilename != nullptr) {
 		PHYSFS_File* geometryShaderFile = PHYSFS_openRead(geometryShaderFilename);
+		if(!geometryShaderFile) {
+			throw std::runtime_error(std::string("Could not open geometry shader: ") + geometryShaderFilename);
+		}
 		
 		PHYSFS_sint64 gsFileSizeLong = PHYSFS_fileLength(geometryShaderFile);
 		if(gsFileSizeLong == -1)
@@ -133,6 +144,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 		int gsBytesRead = PHYSFS_read(geometryShaderFile, gsBuffer, 1, gsFileSize);
 		PHYSFS_close(geometryShaderFile);
 		if(gsBytesRead < gsFileSize || gsBytesRead == -1) {
+			delete gsBuffer;
 			g_logger->write(Logger::ERROR, PHYSFS_getLastError());
 			throw std::runtime_error(std::string("Could not read all of geometry shader: ") + geometryShaderFilename);
 		}
@@ -194,4 +206,85 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	if(geometryShaderFilename != nullptr) {
 		glDetachShader(m_shaderProgram, geometryShader);
 	}
+}
+
+unsigned int RenderModel::loadDDSTextureToGPU(const char* filename) {
+	if(std::string(filename).compare("") == 0 || !PHYSFS_exists(filename))
+		throw std::runtime_error(std::string("Could not find texture: ") + filename);
+	
+	PHYSFS_File* file = PHYSFS_openRead(filename);
+	if(!file)
+		throw std::runtime_error(std::string("Could not open texture: ") + filename);
+	
+	PHYSFS_sint64 fileSize = PHYSFS_fileLength(file);
+	if(fileSize == -1)
+		throw std::runtime_error(std::string("Could not determine size of texture: ") + filename);
+	
+	char* buffer = new char[fileSize];
+	int bytesRead = PHYSFS_read(file, buffer, 1, fileSize);
+	PHYSFS_close(file);
+	if(bytesRead < fileSize || bytesRead == -1) {
+		delete buffer;
+		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
+		throw std::runtime_error(std::string("Could not read all of texture: ") + filename);
+	}
+	
+	// TODO: We need to check whether this is a valid DDS image
+	gli::texture2D texture(gli::load_dds(buffer, fileSize));
+	delete buffer;
+	
+	gli::gl gl;
+	const gli::gl::format format = gl.translate(texture.format());
+	
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, texture.levels()-1);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_R, format.Swizzle[0]);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_G, format.Swizzle[1]);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_B, format.Swizzle[2]);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_A, format.Swizzle[3]);
+	
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 
+	               texture.levels(), 
+	               format.Internal, 
+	               texture.dimensions().x,
+	               texture.dimensions().y,
+	               1);
+	
+	if(gli::is_compressed(texture.format())) {
+		for(std::size_t level=0; level<texture.levels(); ++level) {
+			glCompressedTexSubImage3D(GL_TEXTURE_2D_ARRAY, 
+			                          level, 
+			                          0, 
+			                          0, 
+			                          0, 
+			                          texture[level].dimensions().x, 
+			                          texture[level].dimensions().y, 
+			                          1, 
+			                          format.External, 
+			                          texture[level].size(),
+			                          texture[level].data());
+		}
+	}
+	else {
+		for(std::size_t level=0; level<texture.levels(); ++level) {
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 
+			level, 
+			0, 
+			0, 
+			0,
+			texture[level].dimensions().x, 
+			texture[level].dimensions().y, 
+			1, 
+			format.External, 
+			format.Type, 
+			texture[level].data());
+		}
+	}
+	
+	return textureID;
 }

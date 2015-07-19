@@ -9,6 +9,7 @@
 #include "Logger.h"
 #include <physfs.h>
 #include <limits>
+#include <gli/gli.hpp>
 
 class RenderModel {
 	protected:
@@ -17,8 +18,11 @@ class RenderModel {
 		unsigned int*   m_indexBuffers;
 		unsigned int*   m_normalBuffers;
 		unsigned int*   m_textureCoordBuffers;
+		unsigned int*   m_textures;
 		
 		unsigned int    m_shaderProgram;
+		
+		unsigned int    loadDDSTextureToGPU(const char* filename);
 
 	public:
 		virtual ~RenderModel();

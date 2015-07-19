@@ -5,17 +5,12 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	                           const char* pixelShaderFilename, 
 	                           const char* geometryShaderFilename)
 {
-	/*if(!PHYSFS_exists(spriteFilename)) {
-		throw std::runtime_error(std::string("Could not open sprite: ") + spriteFilename);
-	}
-	
-	PHYSFS_File* spriteFile = PHYSFS_openRead(spriteFilename);*/
-
 	// Reserve buffer IDs
 	m_vertexBuffers = new unsigned int[1];
 	m_indexBuffers = new unsigned int[1];
 	m_normalBuffers = new unsigned int[1];
 	m_textureCoordBuffers = new unsigned int[1];
+	m_textures = new unsigned int[1];
 	glGenBuffers(1, m_vertexBuffers);
 	glGenBuffers(1, m_indexBuffers);
 	glGenBuffers(1, m_normalBuffers);
@@ -31,7 +26,7 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	};
 	
 	unsigned int indices[] = {
-		2, 1, 0,  
+		2, 1, 0, 
 		0, 3, 2
 	};
 	
@@ -49,6 +44,13 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 		0.0f, 1.0f
 	};
 	
+	// Load sprite
+	try {m_textures[0] = loadDDSTextureToGPU(spriteFilename);}
+	catch(const std::runtime_error& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not load RenderModel2D sprite");
+	}
+	
 	// Fill buffers on the GPU using the prepared arrays
 	// - Vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);
@@ -63,7 +65,7 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
 	
-	// TODO: Everything related to textures, animations, and lights
+	// TODO: Everything related to animations and lights
 	
 	// Compile shader program
 	try {
