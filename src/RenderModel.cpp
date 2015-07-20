@@ -57,7 +57,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	int vsBytesRead = PHYSFS_read(vertexShaderFile, vsBuffer, 1, vsFileSize);
 	PHYSFS_close(vertexShaderFile);
 	if(vsBytesRead < vsFileSize || vsBytesRead == -1) {
-		delete vsBuffer;
+		delete[] vsBuffer;
 		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of vertex shader: ") + vertexShaderFilename);
 	}
@@ -101,7 +101,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	int psBytesRead = PHYSFS_read(pixelShaderFile, psBuffer, 1, psFileSize);
 	PHYSFS_close(pixelShaderFile);
 	if(psBytesRead < psFileSize || psBytesRead == -1) {
-		delete psBuffer;
+		delete[] psBuffer;
 		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of pixel shader: ") + pixelShaderFilename);
 	}
@@ -147,7 +147,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 		int gsBytesRead = PHYSFS_read(geometryShaderFile, gsBuffer, 1, gsFileSize);
 		PHYSFS_close(geometryShaderFile);
 		if(gsBytesRead < gsFileSize || gsBytesRead == -1) {
-			delete gsBuffer;
+			delete[] gsBuffer;
 			g_logger->write(Logger::ERROR, PHYSFS_getLastError());
 			throw std::runtime_error(std::string("Could not read all of geometry shader: ") + geometryShaderFilename);
 		}
@@ -227,7 +227,7 @@ unsigned int RenderModel::loadDDSTextureToGPU(const char* filename, int* baseWid
 	int bytesRead = PHYSFS_read(file, buffer, 1, fileSize);
 	PHYSFS_close(file);
 	if(bytesRead < fileSize || bytesRead == -1) {
-		delete buffer;
+		delete[] buffer;
 		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of texture: ") + filename);
 	}
