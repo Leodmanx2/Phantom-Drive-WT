@@ -211,7 +211,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	}
 }
 
-unsigned int RenderModel::loadDDSTextureToGPU(const char* filename) {
+unsigned int RenderModel::loadDDSTextureToGPU(const char* filename, int* baseWidth, int* baseHeight) {
 	if(std::string(filename).compare("") == 0 || !PHYSFS_exists(filename))
 		throw std::runtime_error(std::string("Could not find texture: ") + filename);
 	
@@ -235,6 +235,9 @@ unsigned int RenderModel::loadDDSTextureToGPU(const char* filename) {
 	// TODO: We need to check whether this is a valid DDS image
 	gli::texture2D texture(gli::load_dds(buffer, fileSize));
 	delete buffer;
+	
+	*baseWidth = texture[0].dimensions().x;
+	*baseHeight = texture[0].dimensions().y;
 	
 	gli::gl gl;
 	const gli::gl::format format = gl.translate(texture.format());

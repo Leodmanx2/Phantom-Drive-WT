@@ -5,24 +5,32 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	                           const char* pixelShaderFilename, 
 	                           const char* geometryShaderFilename)
 {
+	// Load sprite
+	// TODO: We'll want to refactor a good deal of our file/texture laoding
+	m_textures = new unsigned int[1];
+	int baseWidth, baseHeight;
+	try {m_textures[0] = loadDDSTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
+	catch(const std::runtime_error& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not load RenderModel2D sprite");
+	}
+	
 	// Reserve buffer IDs
 	m_vertexBuffers = new unsigned int[1];
 	m_indexBuffers = new unsigned int[1];
 	m_normalBuffers = new unsigned int[1];
 	m_textureCoordBuffers = new unsigned int[1];
-	m_textures = new unsigned int[1];
 	glGenBuffers(1, m_vertexBuffers);
 	glGenBuffers(1, m_indexBuffers);
 	glGenBuffers(1, m_normalBuffers);
 	glGenBuffers(1, m_textureCoordBuffers);
 
 	// Prepare buffers
-	// TODO: Quad must be sized to fit sprite
 	float vertices[] = {
-		-128.0f,  128.0f, 0.0f, 
-		 128.0f,  128.0f, 0.0f, 
-		 128.0f, -128.0f, 0.0f, 
-		-128.0f, -128.0f, 0.0f
+		-(float)baseWidth/2,  (float)baseHeight/2, 0.0f, 
+		 (float)baseWidth/2,  (float)baseHeight/2, 0.0f, 
+		 (float)baseWidth/2, -(float)baseHeight/2, 0.0f, 
+		-(float)baseWidth/2, -(float)baseHeight/2, 0.0f
 	};
 	
 	unsigned int indices[] = {
@@ -43,13 +51,6 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 		1.0f, 0.0f, 
 		0.0f, 0.0f
 	};
-	
-	// Load sprite
-	try {m_textures[0] = loadDDSTextureToGPU(spriteFilename);}
-	catch(const std::runtime_error& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Could not load RenderModel2D sprite");
-	}
 	
 	// Fill buffers on the GPU using the prepared arrays
 	// - Vertex buffer
