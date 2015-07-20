@@ -5,12 +5,14 @@ RenderModel::~RenderModel() {
 	unsigned int indexCount = sizeof(m_indexBuffers)/sizeof(m_indexBuffers[0]);
 	unsigned int normalCount = sizeof(m_normalBuffers)/sizeof(m_normalBuffers[0]);
 	unsigned int texCoordCount = sizeof(m_textureCoordBuffers)/sizeof(m_textureCoordBuffers[0]);
+	unsigned int samplerCount = sizeof(m_samplers)/sizeof(m_samplers[0]);
 	
 	// Release GPU resources
 	glDeleteBuffers(vertexCount, m_vertexBuffers);
 	glDeleteBuffers(indexCount, m_indexBuffers);
 	glDeleteBuffers(normalCount, m_normalBuffers);
 	glDeleteBuffers(texCoordCount, m_textureCoordBuffers);
+	glDeleteSamplers(samplerCount, m_samplers);
 
 	glDeleteProgram(m_shaderProgram);
 	
@@ -18,6 +20,7 @@ RenderModel::~RenderModel() {
 	delete[] m_indexBuffers;
 	delete[] m_normalBuffers;
 	delete[] m_textureCoordBuffers;
+	delete[] m_samplers;
 }
 
 void RenderModel::loadShaders(const char* vertexShaderFilename, 
@@ -239,7 +242,7 @@ unsigned int RenderModel::loadDDSTextureToGPU(const char* filename) {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
 	
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BASE_LEVEL, 0);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, texture.levels()-1);

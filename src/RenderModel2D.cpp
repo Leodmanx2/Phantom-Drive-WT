@@ -19,10 +19,10 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	// Prepare buffers
 	// TODO: Quad must be sized to fit sprite
 	float vertices[] = {
-		-20.5f,  20.5f, 0.0f, 
-		 20.5f,  20.5f, 0.0f, 
-		 20.5f, -20.5f, 0.0f, 
-		-20.5f, -20.5f, 0.0f
+		-128.0f,  128.0f, 0.0f, 
+		 128.0f,  128.0f, 0.0f, 
+		 128.0f, -128.0f, 0.0f, 
+		-128.0f, -128.0f, 0.0f
 	};
 	
 	unsigned int indices[] = {
@@ -40,8 +40,8 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	float texCoords[] = {
 		0.0f, 1.0f, 
 		1.0f, 1.0f, 
-		0.0f, 0.0f, 
-		0.0f, 1.0f
+		1.0f, 0.0f, 
+		0.0f, 0.0f
 	};
 	
 	// Load sprite
@@ -100,6 +100,11 @@ void RenderModel2D::draw(float* modelMatrix,
 	unsigned int projectionUniform = glGetUniformLocation(m_shaderProgram, "projection");
 	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, projectionMatrix);
 	
+	unsigned int textureUniform = glGetUniformLocation(m_shaderProgram, "textureSampler");
+	glUniform1i(textureUniform, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, m_textures[0]);
+	
 	// It is possible that the shader doesn't actually use these values, in 
 	// which case they will be optimized out by the compiler and their 
 	// location will be returned as -1 (or 0xFFFFFFFF if read as unsigned)
@@ -128,7 +133,7 @@ void RenderModel2D::draw(float* modelMatrix,
 	}
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
-
+	
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
 	if(posAttribEnabled)

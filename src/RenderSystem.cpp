@@ -29,7 +29,7 @@ RenderSystem::RenderSystem() {
 	m_camera->translate(-0.5f, 0.0f, 0.0f);
 
 	m_actor = new DummyActor();
-	m_actor->translate(0.0f, -50.0f, 50.0f);
+	m_actor->translate(0.0f, -256.0f, 256.0f);
 }
 
 RenderSystem::RenderSystem(RenderSystem& original) {

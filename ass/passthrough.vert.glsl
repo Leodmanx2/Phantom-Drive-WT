@@ -8,9 +8,11 @@ in vec3 position;
 in vec3 normal;
 in vec2 texCoord;
 
-out vec3 out_normal;
-out vec2 out_texCoord;
+out vec3 frag_normal;
+out vec2 frag_texCoord;
 
 void main() {
+	frag_normal = normal;
+	frag_texCoord = texCoord;
 	gl_Position = projection * view * model * vec4(position, 1.0f);
 }

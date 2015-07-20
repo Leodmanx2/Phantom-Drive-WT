@@ -18,7 +18,9 @@ class RenderModel {
 		unsigned int*   m_indexBuffers;
 		unsigned int*   m_normalBuffers;
 		unsigned int*   m_textureCoordBuffers;
+		
 		unsigned int*   m_textures;
+		unsigned int*   m_samplers;
 		
 		unsigned int    m_shaderProgram;
 		
