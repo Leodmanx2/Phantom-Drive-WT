@@ -32,7 +32,7 @@ RenderSystem::RenderSystem() {
 	m_actor->translate(0.0f, -256.0f, 256.0f);
 }
 
-RenderSystem::RenderSystem(RenderSystem& original) {
+RenderSystem::RenderSystem(const RenderSystem& original) {
 		m_window = new Window(*original.m_window);
 		m_camera = new Camera(*original.m_camera);
 		m_actor = new Actor(*original.m_actor);

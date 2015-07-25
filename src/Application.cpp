@@ -22,7 +22,7 @@ Application::Application() {
 	}
 }
 
-Application::Application(Application& original) {
+Application::Application(const Application& original) {
 	m_renderSystem = new RenderSystem(*original.m_renderSystem);
 }
 

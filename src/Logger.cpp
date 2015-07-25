@@ -9,7 +9,7 @@ Logger::~Logger() {
 }
 
 std::string Logger::timestamp() {
-	time_t timeNow = time(NULL);
+	time_t timeNow = time(nullptr);
 	struct tm localTimeNow = *localtime(&timeNow);
 	char buffer[80];
 	std::strftime(buffer, sizeof(buffer), "log/%Y-%m-%W_%H-%M-%S.log", &localTimeNow);

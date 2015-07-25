@@ -15,7 +15,7 @@ class Application {
 	
 	public:
 		Application();
-		Application(Application& original);
+		Application(const Application& original);
 		~Application();
 		void run();
 };

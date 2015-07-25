@@ -14,7 +14,7 @@ Window::Window(unsigned int width, unsigned int height) {
 	}
 }
 
-Window::Window(Window& original) {
+Window::Window(const Window& original) {
 	int width, height;
 	SDL_GetWindowSize(original.m_window, &width, &height);
 	
