@@ -24,33 +24,24 @@ RenderSystem::RenderSystem() {
 	}
 	
 	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
-	
-	m_camera = new Camera();
-	m_camera->translate(-0.5f, 0.0f, 0.0f);
-
-	m_actor = new DummyActor();
-	m_actor->translate(0.0f, -256.0f, 256.0f);
 }
 
 RenderSystem::RenderSystem(const RenderSystem& original) {
 		m_window = new Window(*original.m_window);
-		m_camera = new Camera(*original.m_camera);
-		m_actor = new Actor(*original.m_actor);
 }
 
 RenderSystem::~RenderSystem() {
 	SDL_GL_DeleteContext(m_context);
 	delete m_window;
-	delete m_actor;
 }
 
-void RenderSystem::draw() {
+void RenderSystem::draw(Scene* scene) {
 	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	float* projectionData = glm::value_ptr(m_projectionMatrix);
 	
-	m_actor->draw(m_camera->getViewMatrix(), projectionData);
+	scene->draw(projectionData);
 	
 	SDL_GL_SwapWindow(m_window->SDL_Pointer());
 }

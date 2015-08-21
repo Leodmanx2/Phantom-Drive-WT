@@ -10,8 +10,7 @@
 #include "Window.h"
 
 #include <iostream>
-#include "Camera.h"
-#include "DummyActor.h"
+#include "Scene.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 class RenderSystem {
@@ -20,16 +19,13 @@ class RenderSystem {
 		Window* m_window;
 		
 		glm::mat4 m_projectionMatrix;
-		
-		Camera* m_camera;
-		Actor* m_actor;
 	
 	public:
 		RenderSystem();
 		RenderSystem(const RenderSystem& original);
 		~RenderSystem();
 
-		void draw();
+		void draw(Scene* scene);
 		void resizeWindow(unsigned int width, unsigned int height); //TODO: Window resizing
 };
 

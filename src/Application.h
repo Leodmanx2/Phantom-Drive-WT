@@ -8,10 +8,13 @@
 #include <physfs.h>
 #include "RenderSystem.h"
 #include "Logger.h"
+#include "Scene.h"
 
 class Application {
 	private:
 		RenderSystem* m_renderSystem;
+		
+		Scene* m_scene;
 	
 	public:
 		Application();

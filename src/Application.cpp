@@ -20,6 +20,8 @@ Application::Application() {
 		g_logger->write(Logger::CRITICAL, exception.what());
 		throw std::runtime_error("Could not initialize rendering system");
 	}
+	
+	m_scene = new Scene("");
 }
 
 Application::Application(const Application& original) {
@@ -28,6 +30,7 @@ Application::Application(const Application& original) {
 
 Application::~Application() {
 	delete m_renderSystem;
+	delete m_scene;
 	SDL_Quit();
 }
 
@@ -42,7 +45,7 @@ void Application::run() {
 			}
 		}
 		
-		m_renderSystem->draw();
+		m_renderSystem->draw(m_scene);
 	}
 }
 

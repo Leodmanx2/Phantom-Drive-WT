@@ -7,7 +7,8 @@ BINDIR = $(CURDIR)/bin
 
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o Window.o \
                               Actor.o RenderModel.o RenderModel2D.o \
-                              RenderModel3D.o Camera.o DummyActor.o Logger.o)
+                              RenderModel3D.o Camera.o DummyActor.o Logger.o \
+															Scene.o Octree.o)
 
 CXXFLAGS = -std=c++0x -Wall -c -g
 LDFLAGS = -g
