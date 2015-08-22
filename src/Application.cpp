@@ -21,11 +21,12 @@ Application::Application() {
 		throw std::runtime_error("Could not initialize rendering system");
 	}
 	
-	m_scene = new Scene("");
+	m_scene = new Scene();
 }
 
 Application::Application(const Application& original) {
 	m_renderSystem = new RenderSystem(*original.m_renderSystem);
+	m_scene = new Scene(*original.m_scene);
 }
 
 Application::~Application() {

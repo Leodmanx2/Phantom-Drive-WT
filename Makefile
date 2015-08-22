@@ -8,7 +8,7 @@ BINDIR = $(CURDIR)/bin
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o Window.o \
                               Actor.o RenderModel.o RenderModel2D.o \
                               RenderModel3D.o Camera.o DummyActor.o Logger.o \
-															Scene.o Octree.o)
+															Scene.o PhysicsModel.o PhysicsSystem.o)
 
 CXXFLAGS = -std=c++0x -Wall -c -g
 LDFLAGS = -g
@@ -22,7 +22,7 @@ else
 	LDLIBS = -lGL -lGLU -lGLEW -lphysfs
 	EXE_NAME = $(PROJECT_NAME)
 endif
-LDLIBS += -lSDL2main -lSDL2 -lassimp
+LDLIBS += -lSDL2main -lSDL2 -lassimp -lBulletDynamics -lBulletCollision -lLinearMath
 
 	
 all: $(OBJ)

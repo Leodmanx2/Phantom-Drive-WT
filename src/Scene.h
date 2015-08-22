@@ -7,11 +7,12 @@
 
 class Scene {
 	private:
-		Actor* m_actor;
+		Actor* m_player;
 		Camera* m_activeCamera;
 	
 	public:
-		Scene(const char* sceneFile);
+		Scene();
+		Scene(const Scene& original);
 		~Scene();
 		
 		void update();

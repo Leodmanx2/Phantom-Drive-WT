@@ -14,7 +14,7 @@ class Application {
 	private:
 		RenderSystem* m_renderSystem;
 		
-		Scene* m_scene;
+		Scene* m_scene; // Temporary variable for dev. purposes
 	
 	public:
 		Application();
