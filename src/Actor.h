@@ -18,7 +18,8 @@ class Actor {
 		glm::vec4       m_up;
 		glm::vec4       m_left;
 		
-		RenderModel*     m_renderModel;
+		RenderModel*    m_renderModel;
+		PhysicsModel*   m_physicsModel;
 	
 	public:
 		Actor();

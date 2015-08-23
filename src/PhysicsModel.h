@@ -1,16 +1,19 @@
 #ifndef PHYSICSMODEL_H
 #define PHYSICSMODEL_H
 
+#include <btBulletDynamicsCommon.h>
+
 class PhysicsModel {
-	public: enum CollisionShape{SPHERE, BOX, CYLINDER, CAPSULE, CONE, MESH};
-	
 	private:
-		float m_mass;
-		CollisionShape m_collisionShape;
+		btCollisionShape* m_collisionShape;
+		btMotionState* m_motionState;
+		btRigidBody* m_body;
 	
 	public:
-		PhysicsModel();
+		PhysicsModel::PhysicsModel(btScalar mass, btCollisionShape* collisionShape)
 		~PhysicsModel();
-};
+		
+		const btRigidBody* getBody() const;
+}
 
 #endif
