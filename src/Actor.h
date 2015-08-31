@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "RenderModel.h"
+#include "PhysicsModel.h"
 
 #include <GL/glew.h>
 #include "Logger.h"
