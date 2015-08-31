@@ -9,7 +9,16 @@ Download
 *Not available yet.*
 
 
-Minimum Requirements
+Dependencies
+============
+* [GLEW](http://glew.sourceforge.net/)
+* [PHYSFS](https://icculus.org/physfs/)
+* [SDL 2.x](https://www.libsdl.org/)
+* [Bullet](http://bulletphysics.org/)
+* [GLM 0.6.0.0+](http://glm.g-truc.net/)
+
+
+Hardware Requirements
 ====================
 *Not available yet.*
 

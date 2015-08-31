@@ -22,7 +22,7 @@ else
 	LDLIBS = -lGL -lGLU -lGLEW -lphysfs
 	EXE_NAME = $(PROJECT_NAME)
 endif
-LDLIBS += -lSDL2main -lSDL2 -lassimp -lBulletDynamics -lBulletCollision -lLinearMath
+LDLIBS += -lSDL2main -lSDL2 -lBulletDynamics -lBulletCollision -lLinearMath
 
 	
 all: $(OBJ)
