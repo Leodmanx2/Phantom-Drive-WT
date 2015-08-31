@@ -15,7 +15,8 @@ Dependencies
 * [PHYSFS](https://icculus.org/physfs/)
 * [SDL 2.x](https://www.libsdl.org/)
 * [Bullet](http://bulletphysics.org/)
-* [GLM 0.6.0.0+](http://glm.g-truc.net/)
+* [GLM](http://glm.g-truc.net/)
+* [GLI 0.6.0.0+](http://gli.g-truc.net/)
 
 
 Hardware Requirements
