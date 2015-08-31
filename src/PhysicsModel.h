@@ -10,10 +10,10 @@ class PhysicsModel {
 		btRigidBody* m_body;
 	
 	public:
-		PhysicsModel::PhysicsModel(btScalar mass, btCollisionShape* collisionShape)
+		PhysicsModel(btScalar mass, btCollisionShape* collisionShape);
 		~PhysicsModel();
 		
 		const btRigidBody* getBody() const;
-}
+};
 
 #endif

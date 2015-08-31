@@ -17,7 +17,7 @@ m_collisionShape(collisionShape) {
 	                                                          m_collisionShape, 
 	                                                          inertia);
 	
-  physicsModel->m_body = new btRigidBody(constructionInfo);
+  m_body = new btRigidBody(constructionInfo);
 }
 
 PhysicsModel::~PhysicsModel() {
@@ -26,6 +26,6 @@ PhysicsModel::~PhysicsModel() {
 	delete m_body;
 }
 
-const btRigidBody* getBody() const {
+const btRigidBody* PhysicsModel::getBody() const {
 	return m_body;
 }
