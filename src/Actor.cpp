@@ -12,6 +12,7 @@ Actor::Actor() {
 
 Actor::~Actor() {
 	delete m_renderModel;
+	delete m_physicsModel;
 }
 
 void Actor::translate(float longitude, float latitude, float altitude) {
