@@ -6,6 +6,7 @@ RenderModel::~RenderModel() {
 	unsigned int normalCount = sizeof(m_normalBuffers)/sizeof(m_normalBuffers[0]);
 	unsigned int texCoordCount = sizeof(m_textureCoordBuffers)/sizeof(m_textureCoordBuffers[0]);
 	unsigned int samplerCount = sizeof(m_samplers)/sizeof(m_samplers[0]);
+	unsigned int textureCount = sizeof(m_textures)/sizeof(m_textures[0]);
 	
 	// Release GPU resources
 	glDeleteBuffers(vertexCount, m_vertexBuffers);
@@ -13,6 +14,7 @@ RenderModel::~RenderModel() {
 	glDeleteBuffers(normalCount, m_normalBuffers);
 	glDeleteBuffers(texCoordCount, m_textureCoordBuffers);
 	glDeleteSamplers(samplerCount, m_samplers);
+	glDeleteBuffers(textureCount, m_textures);
 
 	glDeleteProgram(m_shaderProgram);
 	
@@ -21,6 +23,7 @@ RenderModel::~RenderModel() {
 	delete[] m_normalBuffers;
 	delete[] m_textureCoordBuffers;
 	delete[] m_samplers;
+	delete[] m_textures;
 }
 
 void RenderModel::loadShaders(const char* vertexShaderFilename, 
@@ -65,7 +68,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	
 	glShaderSource(vertexShader, 1, &vsBuffer, &vsFileSize);
-	delete vsBuffer;
+	delete[] vsBuffer;
 	glCompileShader(vertexShader);
 	
 	int isVSCompiled;
@@ -109,7 +112,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	unsigned int pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	glShaderSource(pixelShader, 1, &psBuffer, &psFileSize);
-	delete psBuffer;
+	delete[] psBuffer;
 	glCompileShader(pixelShader);
 	
 	int isPSCompiled;
@@ -155,7 +158,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 		
 		glShaderSource(vertexShader, 1, &gsBuffer, &gsFileSize);
-		delete gsBuffer;
+		delete[] gsBuffer;
 		glCompileShader(geometryShader);
 		
 		int isGSCompiled;
@@ -234,7 +237,7 @@ unsigned int RenderModel::loadDDSTextureToGPU(const char* filename, int* baseWid
 	
 	// TODO: We need to check whether this is a valid DDS image
 	gli::texture2D texture(gli::load_dds(buffer, fileSize));
-	delete buffer;
+	delete[] buffer;
 	
 	*baseWidth = texture[0].dimensions().x;
 	*baseHeight = texture[0].dimensions().y;
