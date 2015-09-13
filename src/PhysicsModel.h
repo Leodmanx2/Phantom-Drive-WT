@@ -5,7 +5,6 @@
 
 class PhysicsModel {
 	private:
-		btCollisionShape* m_collisionShape;
 		btMotionState* m_motionState;
 		btRigidBody* m_body;
 	
