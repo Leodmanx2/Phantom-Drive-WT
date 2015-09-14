@@ -16,7 +16,7 @@ Dependencies
 * [SDL 2.x](https://www.libsdl.org/)
 * [Bullet](http://bulletphysics.org/)
 * [GLM](http://glm.g-truc.net/)
-* [GLI 0.6.0.0+](http://gli.g-truc.net/)
+* [GLI 0.7.0.0+](http://gli.g-truc.net/)
 
 
 Hardware Requirements

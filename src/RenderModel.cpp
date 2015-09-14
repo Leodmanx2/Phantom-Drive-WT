@@ -214,7 +214,8 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	}
 }
 
-unsigned int RenderModel::loadDDSTextureToGPU(const char* filename, int* baseWidth, int* baseHeight) {
+unsigned int RenderModel::loadTextureToGPU(const char* filename, int* baseWidth, int* baseHeight) {
+	// Use PhysFS to read exture file into memory
 	if(std::string(filename).compare("") == 0 || !PHYSFS_exists(filename))
 		throw std::runtime_error(std::string("Could not find texture: ") + filename);
 	
@@ -235,65 +236,73 @@ unsigned int RenderModel::loadDDSTextureToGPU(const char* filename, int* baseWid
 		throw std::runtime_error(std::string("Could not read all of texture: ") + filename);
 	}
 	
-	// TODO: We need to check whether this is a valid DDS image
-	gli::texture2D texture(gli::load_dds(buffer, fileSize));
+	// Create a GLI texture from the data read in by PhysFS
+	gli::texture texture = gli::load(buffer, fileSize);
 	delete[] buffer;
-	
-	*baseWidth = texture[0].dimensions().x;
-	*baseHeight = texture[0].dimensions().y;
-	
 	gli::gl gl;
 	const gli::gl::format format = gl.translate(texture.format());
+	GLenum target = gl.translate(texture.target());
+	if(target != GL_TEXTURE_2D) {
+		throw std::runtime_error("Texture target is not GL_TEXTURE_2D/gli::TARGET_2D");
+	}
+	if(texture.empty()) {
+		throw std::runtime_error(filename + std::string(" is not a valid texture"));
+	}
+
+	// We currently need to write these out in order to size
+	// 2d render models. This should be written out in the
+	// near future.
+	*baseWidth = texture.dimensions().x;
+	*baseHeight = texture.dimensions().y;
 	
+	// Reserve memory on the GPU for texture and describe its layout
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	
-	glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
+	glBindTexture(target, textureID);
 	
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BASE_LEVEL, 0);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, texture.levels()-1);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_R, format.Swizzle[0]);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_G, format.Swizzle[1]);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_B, format.Swizzle[2]);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_A, format.Swizzle[3]);
+	glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, texture.levels()-1);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_R, format.Swizzle[0]);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_G, format.Swizzle[1]);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_B, format.Swizzle[2]);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_A, format.Swizzle[3]);
 	
-	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 
+	glTexStorage2D(target, 
 	               texture.levels(), 
-	               format.Internal, 
-	               texture.dimensions().x,
-	               texture.dimensions().y,
-	               1);
-	
-	if(gli::is_compressed(texture.format())) {
-		for(std::size_t level=0; level<texture.levels(); ++level) {
-			glCompressedTexSubImage3D(GL_TEXTURE_2D_ARRAY, 
-			                          level, 
-			                          0, 
-			                          0, 
-			                          0, 
-			                          texture[level].dimensions().x, 
-			                          texture[level].dimensions().y, 
-			                          1, 
-			                          format.External, 
-			                          texture[level].size(),
-			                          texture[level].data());
+	               format.Internal,
+	               texture.dimensions().x, 
+	               texture.dimensions().y);
+
+	// Write image data to GPU memory
+	for(unsigned int layer=0; layer<texture.layers(); ++layer) {
+		for(unsigned int face=0; face<texture.faces(); ++face) {
+			for(unsigned int level=0; level<texture.levels(); ++level) {
+				if(gli::is_compressed(texture.format())) {
+					glCompressedTexSubImage2D(target, 
+					                          level, 
+					                          0, 
+					                          0, 
+					                          texture.dimensions().x, 
+					                          texture.dimensions().y, 
+					                          format.Internal, 
+					                          texture.size(level), 
+					                          texture.data(layer, face, level));
+				}
+				else {
+					glTexSubImage2D(target, 
+					                level, 
+					                0, 
+					                0, 
+					                texture.dimensions().x, 
+					                texture.dimensions().y, 
+					                format.External, 
+					                format.Type, 
+					                texture.data(layer, face, level));
+				}
+			}
 		}
 	}
-	else {
-		for(std::size_t level=0; level<texture.levels(); ++level) {
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 
-			level, 
-			0, 
-			0, 
-			0,
-			texture[level].dimensions().x, 
-			texture[level].dimensions().y, 
-			1, 
-			format.External, 
-			format.Type, 
-			texture[level].data());
-		}
-	}
-	
+
 	return textureID;
 }

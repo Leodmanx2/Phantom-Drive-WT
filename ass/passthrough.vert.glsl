@@ -1,15 +1,15 @@
-#version 330
+#version 110
 
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
-in vec3 position;
-in vec3 normal;
-in vec2 texCoord;
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 texCoord;
 
-out vec3 frag_normal;
-out vec2 frag_texCoord;
+varying vec3 frag_normal;
+varying vec2 frag_texCoord;
 
 void main() {
 	frag_normal = normal;

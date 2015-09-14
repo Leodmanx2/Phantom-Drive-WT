@@ -1,14 +1,11 @@
-#version 330
+#version 110
 
-uniform sampler2DArray textureSampler;
+uniform sampler2D textureSampler;
 
-in vec3 frag_normal;
-in vec2 frag_texCoord;
-
-out vec4 out_color;
+varying vec3 frag_normal;
+varying vec2 frag_texCoord;
 
 void main() {
-	vec3 texCoord3D = vec3(frag_texCoord, 0);
-	vec3 sample = texture(textureSampler, texCoord3D).rgb;
-	out_color = vec4(sample, 1.0f);
+	vec3 sample = texture2D(textureSampler, frag_texCoord).rgb;
+	gl_FragColor = vec4(sample, 1.0f);
 }

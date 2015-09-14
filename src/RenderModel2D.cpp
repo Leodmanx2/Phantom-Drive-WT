@@ -9,7 +9,7 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	// TODO: We'll want to refactor a good deal of our file/texture laoding
 	m_textures = new unsigned int[1];
 	int baseWidth, baseHeight;
-	try {m_textures[0] = loadDDSTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
+	try {m_textures[0] = loadTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
 	catch(const std::runtime_error& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel2D sprite");

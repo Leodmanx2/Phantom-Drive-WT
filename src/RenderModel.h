@@ -24,9 +24,9 @@ class RenderModel {
 		
 		unsigned int    m_shaderProgram;
 		
-		unsigned int    loadDDSTextureToGPU(const char* filename, 
-		                                    int* baseWidth, 
-		                                    int* baseHeight);
+		unsigned int    loadTextureToGPU(const char* filename, 
+		                                 int* baseWidth, 
+		                                 int* baseHeight);
 
 	public:
 		virtual ~RenderModel();

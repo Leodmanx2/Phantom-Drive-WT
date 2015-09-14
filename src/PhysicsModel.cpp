@@ -4,7 +4,6 @@
 //       Public elements should not be bound to the implementation.
 
 PhysicsModel::PhysicsModel(btScalar mass, btCollisionShape* collisionShape) {
-	// TODO: Collision shapes should be shared among identically shaped Actors
 	btVector3 inertia(0, 0, 0);
 	
 	collisionShape->calculateLocalInertia(mass, inertia);
