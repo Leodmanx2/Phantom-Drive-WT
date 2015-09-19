@@ -7,7 +7,6 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <stdexcept>
-#include "Window.h"
 
 #include <iostream>
 #include "Scene.h"
@@ -16,7 +15,7 @@
 class RenderSystem {
 	private:
 		SDL_GLContext m_context;
-		Window* m_window;
+		SDL_Window* m_window;
 		
 		glm::mat4 m_projectionMatrix;
 	
