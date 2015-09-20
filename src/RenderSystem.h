@@ -25,7 +25,7 @@ class RenderSystem {
 		~RenderSystem();
 
 		void draw(Scene* scene);
-		void resizeWindow(unsigned int width, unsigned int height); //TODO: Window resizing
+		void resizeWindow(unsigned int width, unsigned int height);
 };
 
 #endif
