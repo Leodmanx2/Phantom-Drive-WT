@@ -10,17 +10,24 @@
 #include <physfs.h>
 #include <limits>
 #include <gli/gli.hpp>
+#include <glm/glm.hpp>
 
 class RenderModel {
 	protected:
+		struct Vertex {
+			glm::vec3 position;
+			glm::vec3 normal;
+			glm::vec2 texCoord;
+		};
+	
 		// GPU Resources
-		unsigned int*   m_vertexBuffers;
-		unsigned int*   m_indexBuffers;
-		unsigned int*   m_normalBuffers;
-		unsigned int*   m_textureCoordBuffers;
+		unsigned int   m_vertexArray;
 		
-		unsigned int*   m_textures;
-		unsigned int*   m_samplers;
+		unsigned int   m_vertexBuffer;
+		unsigned int   m_indexBuffer;
+		
+		unsigned int   m_texture;
+		unsigned int   m_sampler;
 		
 		unsigned int    m_shaderProgram;
 		

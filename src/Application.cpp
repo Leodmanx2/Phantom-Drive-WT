@@ -45,7 +45,7 @@ void Application::run() {
 				quit = true;
 			}
 		}
-		
+		m_scene->update();
 		m_renderSystem->draw(m_scene);
 	}
 }

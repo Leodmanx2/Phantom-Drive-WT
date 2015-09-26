@@ -5,69 +5,6 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	                           const char* pixelShaderFilename, 
 	                           const char* geometryShaderFilename)
 {
-	// Load sprite
-	// TODO: We'll want to refactor a good deal of our file/texture laoding
-	m_textures = new unsigned int[1];
-	int baseWidth, baseHeight;
-	try {m_textures[0] = loadTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
-	catch(const std::runtime_error& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Could not load RenderModel2D sprite");
-	}
-	
-	// Reserve buffer IDs
-	m_vertexBuffers = new unsigned int[1];
-	m_indexBuffers = new unsigned int[1];
-	m_normalBuffers = new unsigned int[1];
-	m_textureCoordBuffers = new unsigned int[1];
-	glGenBuffers(1, m_vertexBuffers);
-	glGenBuffers(1, m_indexBuffers);
-	glGenBuffers(1, m_normalBuffers);
-	glGenBuffers(1, m_textureCoordBuffers);
-
-	// Prepare buffers
-	float vertices[] = {
-		-(float)baseWidth/2,  (float)baseHeight/2, 0.0f, 
-		 (float)baseWidth/2,  (float)baseHeight/2, 0.0f, 
-		 (float)baseWidth/2, -(float)baseHeight/2, 0.0f, 
-		-(float)baseWidth/2, -(float)baseHeight/2, 0.0f
-	};
-	
-	unsigned int indices[] = {
-		2, 1, 0, 
-		0, 3, 2
-	};
-	
-	float normals[] = {
-		0.0f, 0.0f, 1.0f, 
-		0.0f, 0.0f, 1.0f, 
-		0.0f, 0.0f, 1.0f, 
-		0.0f, 0.0f, 1.0f
-	};
-	
-	float texCoords[] = {
-		0.0f, 1.0f, 
-		1.0f, 1.0f, 
-		1.0f, 0.0f, 
-		0.0f, 0.0f
-	};
-	
-	// Fill buffers on the GPU using the prepared arrays
-	// - Vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// - Index buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	// - Normal buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
-	// - Texture coordinate (UV) buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
-	
-	// TODO: Everything related to animations and lights
-	
 	// Compile shader program
 	try {
 		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
@@ -80,6 +17,86 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 		std::string messageString = message.str();
 		throw std::runtime_error(messageString);
 	}
+	
+	// Load sprite
+	// TODO: We'll want to refactor a good deal of our file/texture laoding
+	int baseWidth, baseHeight;
+	try {m_texture = loadTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
+	catch(const std::runtime_error& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not load RenderModel2D sprite");
+	}
+	
+	// Reserve buffer IDs
+	glGenVertexArrays(1, &m_vertexArray);
+	glGenBuffers(1, &m_vertexBuffer);
+	glGenBuffers(1, &m_indexBuffer);
+	
+	// Prepare buffer
+	Vertex* vertices = new Vertex[4];
+	
+	vertices[0].position = glm::vec3(-static_cast<float>(baseWidth)/2,  static_cast<float>(baseHeight)/2, 0.0f);
+	vertices[0].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertices[0].texCoord = glm::vec2(0.0f, 1.0f);
+	
+	vertices[1].position = glm::vec3(static_cast<float>(baseWidth)/2, static_cast<float>(baseHeight)/2, 0.0f);
+	vertices[1].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertices[1].texCoord = glm::vec2(1.0f, 1.0f);
+	
+	vertices[2].position = glm::vec3(static_cast<float>(baseWidth)/2, -static_cast<float>(baseHeight)/2, 0.0f);
+	vertices[2].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertices[2].texCoord = glm::vec2(1.0f, 0.0f);
+	
+	vertices[3].position = glm::vec3(-static_cast<float>(baseWidth)/2, -static_cast<float>(baseHeight)/2, 0.0f);
+	vertices[3].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertices[3].texCoord = glm::vec2(0.0f, 0.0f);
+	
+	unsigned int indices[] = {
+		2, 1, 0, 
+		0, 3, 2
+	};
+	
+	// Fill buffers on the GPU using the prepared arrays
+	glBindVertexArray(m_vertexArray);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*4, vertices, GL_STATIC_DRAW);
+	
+	// NOTE: It is possible that the shader doesn't actually use these values, in 
+	//       which case they will be optimized out by the compiler and their 
+	//       location will be returned as -1 (or 0xFFFFFFFF if read as unsigned)
+	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
+	bool posAttribEnabled = positionAttribute==0xFFFFFFFF ? false : true;
+	if(posAttribEnabled) {
+		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+		                      reinterpret_cast<void*>(offsetof(Vertex, position)));
+		glEnableVertexAttribArray(positionAttribute);
+	}
+
+	unsigned int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
+	bool normAttribEnabled = normalAttribute==0xFFFFFFFF ? false : true;
+	if(normAttribEnabled) {
+		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+		                      reinterpret_cast<void*>(offsetof(Vertex, normal)));
+		glEnableVertexAttribArray(normalAttribute);
+	}
+
+	unsigned int texCoordAttribute = glGetAttribLocation(m_shaderProgram, "texCoord");
+	bool texCoordAttribEnabled = texCoordAttribute==0xFFFFFFFF ? false : true;
+	if(texCoordAttribEnabled) {
+		glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+		                      reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
+		glEnableVertexAttribArray(texCoordAttribute);
+	}
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	
+	// TODO: Everything related to animations and lights
+	
+	// Clean up
+	glBindVertexArray(0);
+	delete[] vertices;
 }
 
 RenderModel2D::~RenderModel2D() {
@@ -89,9 +106,10 @@ RenderModel2D::~RenderModel2D() {
 void RenderModel2D::draw(float* modelMatrix, 
                          float* viewMatrix, 
                          float* projectionMatrix) {
-	// NOTE: Consider the use of a vertex array object
 	glUseProgram(m_shaderProgram);
 	
+	// TODO: Store uniform locations during initialization.
+	//       Getting it each frame is expensive.
 	unsigned int modelUniform = glGetUniformLocation(m_shaderProgram, "model");
 	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, modelMatrix);
 	
@@ -104,45 +122,11 @@ void RenderModel2D::draw(float* modelMatrix,
 	unsigned int textureUniform = glGetUniformLocation(m_shaderProgram, "textureSampler");
 	glUniform1i(textureUniform, 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, m_textures[0]);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, m_texture);
 	
-	// It is possible that the shader doesn't actually use these values, in 
-	// which case they will be optimized out by the compiler and their 
-	// location will be returned as -1 (or 0xFFFFFFFF if read as unsigned)
-	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
-	bool posAttribEnabled = positionAttribute==0xFFFFFFFF ? false : true;
-	if(posAttribEnabled) {
-		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffers[0]);
-		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(positionAttribute);
-	}
-	
-	unsigned int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
-	bool normAttribEnabled = normalAttribute==0xFFFFFFFF ? false : true;
-	if(normAttribEnabled) {
-		glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffers[0]);
-		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(normalAttribute);
-	}
-	
-	unsigned int texCoordAttribute = glGetAttribLocation(m_shaderProgram, "texCoord");
-	bool texCoordAttribEnabled = texCoordAttribute==0xFFFFFFFF ? false : true;
-	if(texCoordAttribEnabled) {
-		glBindBuffer(GL_ARRAY_BUFFER, m_textureCoordBuffers[0]);
-		glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(texCoordAttribute);
-	}
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffers[0]);
+	glBindVertexArray(m_vertexArray);
 	
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
-	if(posAttribEnabled)
-		glDisableVertexAttribArray(positionAttribute);
-	
-	if(normAttribEnabled)
-		glDisableVertexAttribArray(normalAttribute);
-	
-	if(texCoordAttribEnabled)
-		glDisableVertexAttribArray(texCoordAttribute);
+	glBindVertexArray(0);
 }

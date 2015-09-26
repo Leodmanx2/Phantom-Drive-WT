@@ -1,29 +1,13 @@
 #include "RenderModel.h"
 
 RenderModel::~RenderModel() {
-	unsigned int vertexCount = sizeof(m_vertexBuffers)/sizeof(m_vertexBuffers[0]);
-	unsigned int indexCount = sizeof(m_indexBuffers)/sizeof(m_indexBuffers[0]);
-	unsigned int normalCount = sizeof(m_normalBuffers)/sizeof(m_normalBuffers[0]);
-	unsigned int texCoordCount = sizeof(m_textureCoordBuffers)/sizeof(m_textureCoordBuffers[0]);
-	unsigned int samplerCount = sizeof(m_samplers)/sizeof(m_samplers[0]);
-	unsigned int textureCount = sizeof(m_textures)/sizeof(m_textures[0]);
-	
 	// Release GPU resources
-	glDeleteBuffers(vertexCount, m_vertexBuffers);
-	glDeleteBuffers(indexCount, m_indexBuffers);
-	glDeleteBuffers(normalCount, m_normalBuffers);
-	glDeleteBuffers(texCoordCount, m_textureCoordBuffers);
-	glDeleteSamplers(samplerCount, m_samplers);
-	glDeleteBuffers(textureCount, m_textures);
-
+	glDeleteVertexArrays(1, &m_vertexArray);
 	glDeleteProgram(m_shaderProgram);
-	
-	delete[] m_vertexBuffers;
-	delete[] m_indexBuffers;
-	delete[] m_normalBuffers;
-	delete[] m_textureCoordBuffers;
-	delete[] m_samplers;
-	delete[] m_textures;
+	glDeleteSamplers(1, &m_sampler);
+	glDeleteBuffers(1, &m_texture);
+	glDeleteBuffers(1, &m_vertexBuffer);
+	glDeleteBuffers(1, &m_indexBuffer);
 }
 
 void RenderModel::loadShaders(const char* vertexShaderFilename, 

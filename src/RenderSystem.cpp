@@ -30,7 +30,7 @@ RenderSystem::RenderSystem() {
 		throw std::runtime_error("Failed to initialize GLEW");
 	}
 	
-	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
+	m_projectionMatrix = glm::perspective(45.0f, (float)width/(float)height, 0.1f, 10000.0f);
 }
 
 RenderSystem::RenderSystem(const RenderSystem& original) {
@@ -70,6 +70,6 @@ void RenderSystem::draw(Scene* scene) {
 }
 
 void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
-	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100.0f);
+	m_projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.1f, 100000.0f);
 	SDL_SetWindowSize(m_window, width, height);
 }
