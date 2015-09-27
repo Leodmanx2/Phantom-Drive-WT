@@ -29,9 +29,14 @@ class RenderModel {
 		unsigned int   m_texture;
 		unsigned int   m_sampler;
 		
-		unsigned int    m_shaderProgram;
+		unsigned int   m_shaderProgram;
 		
-		unsigned int    loadTextureToGPU(const char* filename, 
+		unsigned int   m_modelUniform;
+		unsigned int   m_viewUniform;
+		unsigned int   m_projectionUniform;
+		unsigned int   m_textureUniform;
+		
+		unsigned int   loadTextureToGPU(const char* filename, 
 		                                 int* baseWidth, 
 		                                 int* baseHeight);
 

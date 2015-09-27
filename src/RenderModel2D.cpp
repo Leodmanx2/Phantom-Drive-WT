@@ -18,6 +18,11 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 		throw std::runtime_error(messageString);
 	}
 	
+	m_modelUniform = glGetUniformLocation(m_shaderProgram, "model");
+	m_viewUniform = glGetUniformLocation(m_shaderProgram, "view");
+	m_projectionUniform = glGetUniformLocation(m_shaderProgram, "projection");
+	m_textureUniform = glGetUniformLocation(m_shaderProgram, "textureSampler");
+	
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture laoding
 	int baseWidth, baseHeight;
@@ -108,19 +113,11 @@ void RenderModel2D::draw(float* modelMatrix,
                          float* projectionMatrix) {
 	glUseProgram(m_shaderProgram);
 	
-	// TODO: Store uniform locations during initialization.
-	//       Getting it each frame is expensive.
-	unsigned int modelUniform = glGetUniformLocation(m_shaderProgram, "model");
-	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, modelMatrix);
+	glUniformMatrix4fv(m_modelUniform, 1, GL_FALSE, modelMatrix);
+	glUniformMatrix4fv(m_viewUniform, 1, GL_FALSE, viewMatrix);
+	glUniformMatrix4fv(m_projectionUniform, 1, GL_FALSE, projectionMatrix);
 	
-	unsigned int viewUniform = glGetUniformLocation(m_shaderProgram, "view");
-	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, viewMatrix);
-	
-	unsigned int projectionUniform = glGetUniformLocation(m_shaderProgram, "projection");
-	glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, projectionMatrix);
-	
-	unsigned int textureUniform = glGetUniformLocation(m_shaderProgram, "textureSampler");
-	glUniform1i(textureUniform, 0);
+	glUniform1i(m_textureUniform, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, m_texture);
 	
