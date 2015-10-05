@@ -7,12 +7,14 @@
 #include <SDL2/SDL.h>
 #include <physfs.h>
 #include "RenderSystem.h"
+#include "PhysicsSystem.h"
 #include "Logger.h"
 #include "Scene.h"
 
 class Application {
 	private:
 		RenderSystem* m_renderSystem;
+		PhysicsSystem* m_physicsSystem;
 		
 		Scene* m_scene; // Temporary variable for dev. purposes
 	

@@ -1,7 +1,6 @@
 #include "PhysicsModel.h"
 
-// TODO: Class is tied to Bullet. Change that.
-//       Public elements should not be bound to the implementation.
+// TODO: Public interface is tied to Bullet. Change that. Look to remove Bullet code from RenderModel* as well.
 
 PhysicsModel::PhysicsModel(btScalar mass, btCollisionShape* collisionShape) {
 	btVector3 inertia(0, 0, 0);
