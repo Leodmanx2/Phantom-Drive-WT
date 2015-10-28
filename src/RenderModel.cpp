@@ -38,7 +38,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	if(vsFileSizeLong > std::numeric_limits<int>::max())
 		throw std::runtime_error(std::string("Vertex shader too large: ") + vertexShaderFilename);
 	
-	int vsFileSize = (int)vsFileSizeLong;
+	int vsFileSize = static_cast<int>(vsFileSizeLong);
 	
 	char* vsBuffer = new char[vsFileSize];
 	int vsBytesRead = PHYSFS_read(vertexShaderFile, vsBuffer, 1, vsFileSize);
@@ -82,7 +82,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	if(psFileSizeLong > std::numeric_limits<int>::max())
 		throw std::runtime_error(std::string("Pixel shader too large: ") + pixelShaderFilename);
 	
-	int psFileSize = (int)psFileSizeLong;
+	int psFileSize = static_cast<int>(psFileSizeLong);
 	
 	char* psBuffer = new char[psFileSize];
 	int psBytesRead = PHYSFS_read(pixelShaderFile, psBuffer, 1, psFileSize);
@@ -128,7 +128,7 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 		if(gsFileSizeLong > std::numeric_limits<int>::max())
 			throw std::runtime_error(std::string("Geometry shader too large: ") + geometryShaderFilename);
 		
-		int gsFileSize = (int)gsFileSizeLong;
+		int gsFileSize = static_cast<int>(gsFileSizeLong);
 		
 		char* gsBuffer = new char[gsFileSize];
 		int gsBytesRead = PHYSFS_read(geometryShaderFile, gsBuffer, 1, gsFileSize);
