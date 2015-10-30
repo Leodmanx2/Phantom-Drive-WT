@@ -2,6 +2,7 @@
 
 Actor::Actor() {
 	m_renderModel = nullptr;
+	m_body = nullptr;
 	
 	m_position = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
@@ -12,7 +13,7 @@ Actor::Actor() {
 
 Actor::~Actor() {
 	delete m_renderModel;
-	delete m_physicsModel;
+	delete m_body;
 }
 
 void Actor::translate(float longitude, float latitude, float altitude) {
@@ -21,6 +22,12 @@ void Actor::translate(float longitude, float latitude, float altitude) {
 	glm::vec4 altVec = m_up * altitude;
 	
 	m_position += longVec + latVec + altVec;
+	
+	// TODO: Combine traditional motion with physics
+	if(m_body != nullptr) {
+		m_body->applyCentralImpulse(btVector3(longitude, latitude, altitude));
+	}
+	
 }
 
 void Actor::rotate(float roll, float pitch, float yaw) {
@@ -37,8 +44,16 @@ void Actor::rotate(float roll, float pitch, float yaw) {
 	m_left = orientationMatrix * canonicalLeft;
 }
 
+void Actor::setOrientation(float deg, float x, float y, float z) {
+	m_orientation = glm::quat(deg, x, y, z);
+}
+
+void Actor::setPosition(float x, float y, float z) {
+	m_position = glm::vec4(x, y, z, 0);
+}
+
 void Actor::update() {
-	
+
 }
 
 void Actor::draw(float* viewMatrix, float* projectionMatrix) {

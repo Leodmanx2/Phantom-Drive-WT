@@ -7,13 +7,16 @@
 #include <memory>
 #include "Logger.h"
 #include <stdexcept>
+#include "PhysicsSimulator.h"
+#include "ActorMotionState.h"
 
 class DummyActor : public Actor {
 	private:
 		static std::unique_ptr<btCollisionShape> s_collisionShape;
+		PhysicsSimulator* m_simulator;
 	
 	public:
-		DummyActor();
+		DummyActor(PhysicsSimulator* simulator);
 		~DummyActor();
 };
 

@@ -7,7 +7,10 @@
 
 class Scene {
 	private:
+		PhysicsSimulator* m_physicsSimulator;
+	
 		Actor* m_player;
+		Actor* m_player2;
 		Camera* m_activeCamera;
 	
 	public:
@@ -16,6 +19,7 @@ class Scene {
 		~Scene();
 		
 		void update();
+		void simulate();
 		void draw(float* projectionMatrix);
 };
 

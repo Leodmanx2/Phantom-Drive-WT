@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "RenderModel.h"
-#include "PhysicsModel.h"
+#include <btBulletDynamicsCommon.h>
 
 #include <GL/glew.h>
 #include "Logger.h"
@@ -20,7 +20,7 @@ class Actor {
 		glm::vec4       m_left;
 		
 		RenderModel*    m_renderModel;
-		PhysicsModel*   m_physicsModel;
+		btRigidBody*    m_body;
 	
 	public:
 		Actor();
@@ -28,6 +28,9 @@ class Actor {
 		
 		virtual void translate(float longitude, float latitude, float altitude);
 		virtual void rotate(float roll, float pitch, float yaw);
+		
+		virtual void setOrientation(float deg, float x, float y, float z);
+		virtual void setPosition(float x, float y, float z);
 		
 		virtual void update();
 		virtual void draw(float* viewMatrix, float* projectionMatrix);

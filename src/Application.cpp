@@ -21,8 +21,6 @@ Application::Application() {
 		throw std::runtime_error("Could not initialize rendering system");
 	}
 	
-	m_physicsSystem = new PhysicsSystem();
-	
 	m_scene = new Scene();
 }
 
@@ -47,7 +45,7 @@ void Application::run() {
 				quit = true;
 			}
 		}
-		m_physicsSystem->simulate(m_scene);
+		m_scene->simulate();
 		m_scene->update();
 		m_renderSystem->draw(m_scene);
 	}
