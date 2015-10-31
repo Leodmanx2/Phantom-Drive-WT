@@ -13,8 +13,6 @@ class ActorMotionState : public btMotionState {
 		ActorMotionState(const btTransform& initialPosition, Actor* actor);
 		virtual ~ActorMotionState();
 		
-		void setActor(Actor* actor);
-		
 		// Renderer -> Bullet
 		virtual void getWorldTransform(btTransform& worldTrans) const;
 		

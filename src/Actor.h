@@ -20,7 +20,6 @@ class Actor {
 		glm::vec4       m_left;
 		
 		RenderModel*    m_renderModel;
-		btRigidBody*    m_body;
 	
 	public:
 		Actor();

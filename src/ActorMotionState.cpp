@@ -1,16 +1,13 @@
 #include "ActorMotionState.h"
 
-ActorMotionState::ActorMotionState(const btTransform& initialPosition, Actor* actor) {
-	m_actor = actor;
-	m_position = initialPosition;
+ActorMotionState::ActorMotionState(const btTransform& initialPosition, Actor* actor) : 
+m_actor(actor),
+m_position(initialPosition) {
+
 }
 
 ActorMotionState::~ActorMotionState() {
 	
-}
-
-void ActorMotionState::setActor(Actor* actor) {
-	m_actor = actor;
 }
 
 void ActorMotionState::getWorldTransform(btTransform& worldTrans) const {

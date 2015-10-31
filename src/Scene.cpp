@@ -4,12 +4,12 @@ Scene::Scene() {
 	m_physicsSimulator = new PhysicsSimulator();
 	
 	m_activeCamera = new Camera();
-	m_activeCamera->translate(-1000.0f, 256.0f, -256.0f);
+	m_activeCamera->translate(-1000.0f, 0.0f, 0.0f);
 	
 	m_player = new DummyActor(m_physicsSimulator);
 	m_player2 = new DummyActor(m_physicsSimulator);
-	//m_player->translate(1000.0f, -256.0f, 256.0f);
-	//m_player->rotate(0.0f, 0.0f, 0.5f);
+	
+	m_player2->translate(0.0f, 400.0f, 0.0f);
 }
 
 Scene::Scene(const Scene& original) {
@@ -25,11 +25,11 @@ Scene::~Scene() {
 }
 
 void Scene::update() {
-	//m_player->rotate(0.0f, 0.0001f, 0.0f);
 	m_player->update();
 	m_player2->update();
 	
-	m_player2->translate(0.0f, 0.98f, 0.4f);
+	m_player->rotate(0.001f, 0.0f, 0.0f);
+	m_player2->translate(0.0f, 0.2f, 0.0f);
 }
 
 void Scene::simulate() {
