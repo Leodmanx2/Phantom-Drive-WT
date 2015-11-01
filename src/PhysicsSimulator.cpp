@@ -1,26 +1,24 @@
 #include "PhysicsSimulator.h"
 
+std::unique_ptr<btBroadphaseInterface> PhysicsSimulator::s_broadphase(new btDbvtBroadphase());
+std::unique_ptr<btDefaultCollisionConfiguration> PhysicsSimulator::s_collisionConfiguration(new btDefaultCollisionConfiguration());
+std::unique_ptr<btCollisionDispatcher> PhysicsSimulator::s_dispatcher(new btCollisionDispatcher(s_collisionConfiguration.get()));
+std::unique_ptr<btSequentialImpulseConstraintSolver> PhysicsSimulator::s_solver(new btSequentialImpulseConstraintSolver());
+
 PhysicsSimulator::PhysicsSimulator() {
-	m_broadphase = new btDbvtBroadphase();
-	
-	m_collisionConfiguration = new btDefaultCollisionConfiguration();
-	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
-	
-	m_solver = new btSequentialImpulseConstraintSolver();
-	
-	m_world = new btDiscreteDynamicsWorld(m_dispatcher, 
-	                                      m_broadphase, 
-	                                      m_solver, 
-	                                      m_collisionConfiguration);
+	m_world = new btDiscreteDynamicsWorld(s_dispatcher.get(), 
+	                                      s_broadphase.get(), 
+	                                      s_solver.get(), 
+	                                      s_collisionConfiguration.get());
 	
 	m_world->setGravity(btVector3(0.0f, -0.98f, 0.0f));
 }
 
+PhysicsSimulator::PhysicsSimulator(PhysicsSimulator& original) {
+	m_world = new btDiscreteDynamicsWorld(*original.m_world);
+}
+
 PhysicsSimulator::~PhysicsSimulator() {
-	delete m_broadphase;
-	delete m_collisionConfiguration;
-	delete m_dispatcher;
-	delete m_solver;
 	delete m_world;
 }
 

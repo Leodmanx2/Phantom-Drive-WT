@@ -17,7 +17,7 @@ class DummyActor : public SimulatedPhysicsActor {
 		static std::unique_ptr<btCollisionShape> s_collisionShape;
 	
 	public:
-		DummyActor(PhysicsSimulator* simulator);
+		explicit DummyActor(PhysicsSimulator* simulator);
 		~DummyActor();
 };
 

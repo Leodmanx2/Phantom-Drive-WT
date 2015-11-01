@@ -16,12 +16,14 @@ Scene::Scene(const Scene& original) {
 	m_player = new Actor(*original.m_player);
 	m_player2 = new Actor(*original.m_player);
 	m_activeCamera = new Camera(*original.m_activeCamera);
+	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
 }
 
 Scene::~Scene() {
 	delete m_player;
 	delete m_player2;
 	delete m_activeCamera;
+	delete m_physicsSimulator;
 }
 
 void Scene::update() {
