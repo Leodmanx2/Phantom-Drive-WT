@@ -13,6 +13,8 @@
 
 class Actor {
 	protected:
+		Actor();
+	
 		glm::quat       m_orientation;
 		glm::vec4       m_position;
 		glm::vec4       m_forward;
@@ -22,7 +24,6 @@ class Actor {
 		RenderModel*    m_renderModel;
 	
 	public:
-		Actor();
 		virtual ~Actor();
 		
 		virtual void translate(float longitude, float latitude, float altitude);

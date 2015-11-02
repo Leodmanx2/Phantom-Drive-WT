@@ -12,6 +12,8 @@
 
 class SimulatedPhysicsActor : public Actor {
 	protected:
+		SimulatedPhysicsActor(PhysicsSimulator* simulator, btScalar mass);
+	
 		// Each child that inherets from this class must make its own, 
 		// preferrably static collision shape and override the default 
 		// by calling setCollisionShape() on m_body. Otherwise, the simulation 
@@ -22,7 +24,6 @@ class SimulatedPhysicsActor : public Actor {
 		btRigidBody*                             m_body;
 	
 	public:
-		SimulatedPhysicsActor(PhysicsSimulator* simulator, btScalar mass);
 		~SimulatedPhysicsActor();
 		
 		virtual void translate(float longitude, float latitude, float altitude);

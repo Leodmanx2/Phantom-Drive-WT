@@ -1,8 +1,6 @@
 #include "Actor.h"
 
 Actor::Actor() {
-	m_renderModel = nullptr;
-	
 	m_position = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	m_forward = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
