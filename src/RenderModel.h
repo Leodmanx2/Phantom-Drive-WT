@@ -37,8 +37,8 @@ class RenderModel {
 		unsigned int   m_textureUniform;
 		
 		unsigned int   loadTextureToGPU(const char* filename, 
-		                                 int* baseWidth, 
-		                                 int* baseHeight);
+		                                int* baseWidth, 
+		                                int* baseHeight);
 
 	public:
 		virtual ~RenderModel();

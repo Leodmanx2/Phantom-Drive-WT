@@ -26,8 +26,8 @@ class SimulatedPhysicsActor : public Actor {
 	public:
 		~SimulatedPhysicsActor();
 		
-		virtual void translate(float longitude, float latitude, float altitude);
-		virtual void rotate(float roll, float pitch, float yaw);
+		virtual void translate(float longitude, float latitude, float altitude) override;
+		virtual void rotate(float roll, float pitch, float yaw) override;
 };
 
 #endif
