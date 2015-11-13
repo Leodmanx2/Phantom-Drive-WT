@@ -1,13 +1,26 @@
 #include "RenderModel.h"
 
+int RenderModel::m_instanceCount = 0;
+
+RenderModel::RenderModel() {
+	++m_instanceCount;
+}
+
+RenderModel::RenderModel(RenderModel& original) {
+	++m_instanceCount;
+}
+
 RenderModel::~RenderModel() {
-	// Release GPU resources
-	glDeleteVertexArrays(1, &m_vertexArray);
-	glDeleteProgram(m_shaderProgram);
-	glDeleteSamplers(1, &m_sampler);
-	glDeleteBuffers(1, &m_texture);
-	glDeleteBuffers(1, &m_vertexBuffer);
-	glDeleteBuffers(1, &m_indexBuffer);
+	--m_instanceCount;
+	if(m_instanceCount == 0) {
+		// Release GPU resources
+		glDeleteVertexArrays(1, &m_vertexArray);
+		glDeleteProgram(m_shaderProgram);
+		glDeleteSamplers(1, &m_sampler);
+		glDeleteBuffers(1, &m_texture);
+		glDeleteBuffers(1, &m_vertexBuffer);
+		glDeleteBuffers(1, &m_indexBuffer);
+	}
 }
 
 void RenderModel::loadShaders(const char* vertexShaderFilename, 

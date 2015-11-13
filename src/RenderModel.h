@@ -13,9 +13,13 @@
 #include <glm/glm.hpp>
 
 class RenderModel {
-	// TODO: Class is not copy-safe. Review all classes for safety.
+	private:
+		static int     m_instanceCount;
 	
 	protected:
+		RenderModel();
+		RenderModel(RenderModel& original);
+	
 		struct Vertex {
 			glm::vec3 position;
 			glm::vec3 normal;
