@@ -6,7 +6,7 @@ DummyActor::DummyActor(PhysicsSimulator* simulator) : SimulatedPhysicsActor(simu
 	try {
 		m_renderModel = new RenderModel2D("test.dds", "passthrough.vert.glsl", "passthrough.frag.glsl");
 	}
-	catch(const std::runtime_error& exception) {
+	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		g_logger->write(Logger::DEBUG, "Continuing program without initializing DummyActor's render model");
 	}

@@ -9,7 +9,7 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	try {
 		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
 	}
-	catch(const std::runtime_error& exception) {
+	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		
 		std::stringstream message;
@@ -27,7 +27,7 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	// TODO: We'll want to refactor a good deal of our file/texture laoding
 	int baseWidth, baseHeight;
 	try {m_texture = loadTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
-	catch(const std::runtime_error& exception) {
+	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel2D sprite");
 	}

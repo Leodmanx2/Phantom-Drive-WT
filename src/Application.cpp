@@ -15,7 +15,7 @@ Application::Application() {
 	}
 
 	try { m_renderSystem = new RenderSystem(); }
-	catch(const std::runtime_error& exception) {
+	catch(const std::exception& exception) {
 		SDL_Quit();
 		g_logger->write(Logger::CRITICAL, exception.what());
 		throw std::runtime_error("Could not initialize rendering system");

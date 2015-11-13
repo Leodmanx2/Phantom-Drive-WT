@@ -13,189 +13,154 @@ RenderModel::~RenderModel() {
 void RenderModel::loadShaders(const char* vertexShaderFilename, 
                               const char* pixelShaderFilename, 
                               const char* geometryShaderFilename) {
-	if(!PHYSFS_exists(vertexShaderFilename)) {
-		throw std::runtime_error(std::string("Could not find vertex shader: ") + vertexShaderFilename);
-	}
-	if(!PHYSFS_exists(pixelShaderFilename)) {
-		throw std::runtime_error(std::string("Could not find pixel shader: ") + pixelShaderFilename);
-	}
-	if(geometryShaderFilename != nullptr && !PHYSFS_exists(geometryShaderFilename)) {
-		throw std::runtime_error(std::string("Could not find geometry shader: ") + geometryShaderFilename);
-	}
-	
-	// NOTE: It may be possible to find the size by seeking if 
-	//       PHYSFS_fileLength fails
-	
-	// Compile vertex shader
-	PHYSFS_File* vertexShaderFile = PHYSFS_openRead(vertexShaderFilename);
-	if(!vertexShaderFile) {
-		throw std::runtime_error(std::string("Could not open vertex shader: ") + vertexShaderFilename);
-	}
-	
-	PHYSFS_sint64 vsFileSizeLong = PHYSFS_fileLength(vertexShaderFile);
-	if(vsFileSizeLong == -1)
-		throw std::runtime_error(std::string("Could not determine size of vertex shader: ") + vertexShaderFilename);
-	if(vsFileSizeLong > std::numeric_limits<int>::max())
-		throw std::runtime_error(std::string("Vertex shader too large: ") + vertexShaderFilename);
-	
-	int vsFileSize = static_cast<int>(vsFileSizeLong);
-	
-	char* vsBuffer = new char[vsFileSize];
-	int vsBytesRead = PHYSFS_read(vertexShaderFile, vsBuffer, 1, vsFileSize);
-	PHYSFS_close(vertexShaderFile);
-	if(vsBytesRead < vsFileSize || vsBytesRead == -1) {
-		delete[] vsBuffer;
-		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
-		throw std::runtime_error(std::string("Could not read all of vertex shader: ") + vertexShaderFilename);
-	}
-	
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	
-	glShaderSource(vertexShader, 1, &vsBuffer, &vsFileSize);
-	delete[] vsBuffer;
-	glCompileShader(vertexShader);
-	
-	int isVSCompiled;
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isVSCompiled);
-	if(isVSCompiled == GL_FALSE) {
-		int maxLength;
-		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-		std::vector<GLchar> infoLog(maxLength);
-		glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-		
-		g_logger->write(Logger::ERROR, infoLog.data());
-		
-		glDeleteShader(vertexShader);
-		throw std::runtime_error("Failed to compile vertex shader");
-	}
-	
-	
-	// Compile pixel shader
-	PHYSFS_File* pixelShaderFile = PHYSFS_openRead(pixelShaderFilename);
-	if(!pixelShaderFile) {
-		throw std::runtime_error(std::string("Could not open pixel shader: ") + pixelShaderFilename);
-	}
-	
-	PHYSFS_sint64 psFileSizeLong = PHYSFS_fileLength(pixelShaderFile);
-	if(psFileSizeLong == -1)
-		throw std::runtime_error(std::string("Could not determine size of pixel shader: ") + pixelShaderFilename);
-	if(psFileSizeLong > std::numeric_limits<int>::max())
-		throw std::runtime_error(std::string("Pixel shader too large: ") + pixelShaderFilename);
-	
-	int psFileSize = static_cast<int>(psFileSizeLong);
-	
-	char* psBuffer = new char[psFileSize];
-	int psBytesRead = PHYSFS_read(pixelShaderFile, psBuffer, 1, psFileSize);
-	PHYSFS_close(pixelShaderFile);
-	if(psBytesRead < psFileSize || psBytesRead == -1) {
-		delete[] psBuffer;
-		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
-		throw std::runtime_error(std::string("Could not read all of pixel shader: ") + pixelShaderFilename);
-	}
-	
-	unsigned int pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	glShaderSource(pixelShader, 1, &psBuffer, &psFileSize);
-	delete[] psBuffer;
-	glCompileShader(pixelShader);
-	
-	int isPSCompiled;
-	glGetShaderiv(pixelShader, GL_COMPILE_STATUS, &isPSCompiled);
-	if(isPSCompiled == GL_FALSE) {
-		int maxLength;
-		glGetShaderiv(pixelShader, GL_INFO_LOG_LENGTH, &maxLength);
-		std::vector<GLchar> infoLog(maxLength);
-		glGetShaderInfoLog(pixelShader, maxLength, &maxLength, &infoLog[0]);
-		
-		g_logger->write(Logger::ERROR, infoLog.data());
-		
-		glDeleteShader(pixelShader);
-		throw std::runtime_error("Failed to compile pixel shader");
-	}
-	
-	
-	// Compile geometry shader
+	unsigned int vertexShader;
+	unsigned int pixelShader;
 	unsigned int geometryShader;
+	
+	try {vertexShader = compileShader(vertexShaderFilename, GL_VERTEX_SHADER);}
+	catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not load vertex shader");
+	}
+	
+	try {pixelShader = compileShader(pixelShaderFilename, GL_FRAGMENT_SHADER);}
+	catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not load pixel shader");
+	}
+	
 	if(geometryShaderFilename != nullptr) {
-		PHYSFS_File* geometryShaderFile = PHYSFS_openRead(geometryShaderFilename);
-		if(!geometryShaderFile) {
-			throw std::runtime_error(std::string("Could not open geometry shader: ") + geometryShaderFilename);
-		}
-		
-		PHYSFS_sint64 gsFileSizeLong = PHYSFS_fileLength(geometryShaderFile);
-		if(gsFileSizeLong == -1)
-			throw std::runtime_error(std::string("Could not determine size of geometry shader: ") + geometryShaderFilename);
-		if(gsFileSizeLong > std::numeric_limits<int>::max())
-			throw std::runtime_error(std::string("Geometry shader too large: ") + geometryShaderFilename);
-		
-		int gsFileSize = static_cast<int>(gsFileSizeLong);
-		
-		char* gsBuffer = new char[gsFileSize];
-		int gsBytesRead = PHYSFS_read(geometryShaderFile, gsBuffer, 1, gsFileSize);
-		PHYSFS_close(geometryShaderFile);
-		if(gsBytesRead < gsFileSize || gsBytesRead == -1) {
-			delete[] gsBuffer;
-			g_logger->write(Logger::ERROR, PHYSFS_getLastError());
-			throw std::runtime_error(std::string("Could not read all of geometry shader: ") + geometryShaderFilename);
-		}
-		
-		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-		
-		glShaderSource(vertexShader, 1, &gsBuffer, &gsFileSize);
-		delete[] gsBuffer;
-		glCompileShader(geometryShader);
-		
-		int isGSCompiled;
-		glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &isGSCompiled);
-		if(isGSCompiled == GL_FALSE) {
-			int maxLength;
-			glGetShaderiv(geometryShader, GL_INFO_LOG_LENGTH, &maxLength);
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(geometryShader, maxLength, &maxLength, &infoLog[0]);
-			
-			g_logger->write(Logger::ERROR, infoLog.data());
-			
-			glDeleteShader(geometryShader);
-			throw std::runtime_error("Failed to compile geometry shader");
+		try {geometryShader = compileShader(geometryShaderFilename, GL_GEOMETRY_SHADER);}
+		catch(const std::exception& exception) {
+			g_logger->write(Logger::ERROR, exception.what());
+			throw std::runtime_error("Could not load geometry shader");
 		}
 	}
 	
-	
-	// Link shaders
-	m_shaderProgram = glCreateProgram();
-	
-	glAttachShader(m_shaderProgram, vertexShader);
-	glAttachShader(m_shaderProgram, pixelShader);
-	if(geometryShaderFilename != nullptr) {
-		glAttachShader(m_shaderProgram, geometryShader);
+	try {
+		if(geometryShaderFilename != nullptr)
+			m_shaderProgram = linkShaders(vertexShader, pixelShader, geometryShader);
+		else
+			m_shaderProgram = linkShaders(vertexShader, pixelShader);
+	}
+	catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not link shader program");
 	}
 	
-	glLinkProgram(m_shaderProgram);
+	glDeleteShader(vertexShader);
+	glDeleteShader(pixelShader);
+	if(geometryShaderFilename != nullptr) glDeleteShader(geometryShader);
+}
+
+unsigned int RenderModel::compileShader(const char* filename, GLenum type) {
+	if(!PHYSFS_exists(filename)) {
+		throw std::runtime_error(std::string("Could not find shader: ") + filename);
+	}
+	
+	PHYSFS_File* shaderFile = PHYSFS_openRead(filename);
+	if(!shaderFile) {
+		throw std::runtime_error(std::string("Could not open shader: ") + filename);
+	}
+	
+	PHYSFS_sint64 fileSizeLong = PHYSFS_fileLength(shaderFile);
+	if(fileSizeLong == -1)
+		throw std::runtime_error(std::string("Could not determine size of shader: ") + filename);
+	if(fileSizeLong > std::numeric_limits<int>::max())
+		throw std::runtime_error(std::string("Shader too large: ") + filename);
+	
+	int fileSize = static_cast<int>(fileSizeLong);
+	
+	// TODO: Avoid manual memory management mid-function
+	char* buffer = new char[fileSize];
+	int bytesRead = PHYSFS_read(shaderFile, buffer, 1, fileSize);
+	PHYSFS_close(shaderFile);
+	if(bytesRead < fileSize || bytesRead == -1) {
+		delete[] buffer;
+		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
+		throw std::runtime_error(std::string("Could not read all of shader: ") + filename);
+	}
+	
+	unsigned int id = glCreateShader(type);
+	
+	glShaderSource(id, 1, &buffer, &fileSize);
+	delete[] buffer;
+	glCompileShader(id);
+	
+	int isCompiled;
+	glGetShaderiv(id, GL_COMPILE_STATUS, &isCompiled);
+	if(isCompiled == GL_FALSE) {
+		int maxLength;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+		std::vector<char> infoLog(maxLength);
+		glGetShaderInfoLog(id, maxLength, &maxLength, &infoLog[0]);
+		
+		g_logger->write(Logger::ERROR, infoLog.data());
+		
+		glDeleteShader(id);
+		throw std::runtime_error(std::string("Failed to compile shader: ") + filename);
+	}
+	
+	return id;
+}
+
+unsigned int RenderModel::linkShaders(unsigned int vertexShader, 
+                                      unsigned int pixelShader, 
+                                      unsigned int geometryShader) {
+	unsigned int id = glCreateProgram();
+	
+	glAttachShader(id, vertexShader);
+	glAttachShader(id, pixelShader);
+	glAttachShader(id, geometryShader);
+	
+	glLinkProgram(id);
 	
 	int isLinked;
-	glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &isLinked);
+	glGetProgramiv(id, GL_LINK_STATUS, &isLinked);
 	if(isLinked == GL_FALSE) {
 		int maxLength = 0;
-		glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
+		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(m_shaderProgram, maxLength, &maxLength, &infoLog[0]);
+		glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
 		
 		g_logger->write(Logger::ERROR, infoLog.data());
 		
-		glDeleteProgram(m_shaderProgram);
-		glDeleteShader(vertexShader);
-		glDeleteShader(pixelShader);
-		if(geometryShaderFilename != nullptr) {
-			glDeleteShader(geometryShader);
-		}
 		throw std::runtime_error("Failed to link shader program");
 	}
 	
-	glDetachShader(m_shaderProgram, vertexShader);
-	glDetachShader(m_shaderProgram, pixelShader);
-	if(geometryShaderFilename != nullptr) {
-		glDetachShader(m_shaderProgram, geometryShader);
+	glDetachShader(id, vertexShader);
+	glDetachShader(id, pixelShader);
+	glDetachShader(id, geometryShader);
+	
+	return id;
+}
+
+unsigned int RenderModel::linkShaders(unsigned int vertexShader, 
+                                      unsigned int pixelShader) {
+	unsigned int id = glCreateProgram();
+	
+	glAttachShader(id, vertexShader);
+	glAttachShader(id, pixelShader);
+	
+	glLinkProgram(id);
+	
+	int isLinked;
+	glGetProgramiv(id, GL_LINK_STATUS, &isLinked);
+	if(isLinked == GL_FALSE) {
+		int maxLength = 0;
+		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+		std::vector<GLchar> infoLog(maxLength);
+		glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
+		
+		g_logger->write(Logger::ERROR, infoLog.data());
+		
+		throw std::runtime_error("Failed to link shader program");
 	}
+	
+	glDetachShader(id, vertexShader);
+	glDetachShader(id, pixelShader);
+	
+	return id;
 }
 
 unsigned int RenderModel::loadTextureToGPU(const char* filename, int* baseWidth, int* baseHeight) {

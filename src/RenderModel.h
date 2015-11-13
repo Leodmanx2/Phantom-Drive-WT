@@ -13,6 +13,8 @@
 #include <glm/glm.hpp>
 
 class RenderModel {
+	// TODO: Class is not copy-safe. Review all classes for safety.
+	
 	protected:
 		struct Vertex {
 			glm::vec3 position;
@@ -36,6 +38,19 @@ class RenderModel {
 		unsigned int   m_projectionUniform;
 		unsigned int   m_textureUniform;
 		
+		void           loadShaders(const char* vertexShaderFilename, 
+		                           const char* pixelShaderFilename, 
+		                           const char* geometryShaderFilename);
+		
+		unsigned int   compileShader(const char* filename, GLenum type);
+		
+		unsigned int   linkShaders(unsigned int vertexShader, 
+		                           unsigned int pixelShader, 
+		                           unsigned int geometryShader);
+		
+		unsigned int   linkShaders(unsigned int vertexShader, 
+		                           unsigned int pixelShader);
+		
 		unsigned int   loadTextureToGPU(const char* filename, 
 		                                int* baseWidth, 
 		                                int* baseHeight);
@@ -46,10 +61,6 @@ class RenderModel {
 		virtual void draw(float* modelMatrix, 
 		                  float* viewMatrix, 
 		                  float* projectionMatrix) = 0;
-		
-		void loadShaders(const char* vertexShaderFilename, 
-		                 const char* pixelShaderFilename, 
-		                 const char* geometryShaderFilename = nullptr);
 };
 
 #endif

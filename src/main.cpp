@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
 		Application app;
 		app.run();
 	}
-	catch(const std::runtime_error& exception) {
+	catch(const std::exception& exception) {
 		g_logger->write(Logger::CRITICAL, exception.what());
 		g_logger->write(Logger::INFO, "Exited program unsuccessfully");
 		return EXIT_FAILURE;
