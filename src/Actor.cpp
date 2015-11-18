@@ -60,8 +60,8 @@ void Actor::update() {
 
 /* Draws the actor's render model to the active frame buffer
  *
- * @param [in] viewMatrix        The matrix used to translate the model respective to a camera's viewpoint as a one-dimensional array of values
- * @param [in] projectionMatrix  The matrix used to project the model from 3D/4D world space to 2D screen space as a one-dimensional array of values
+ * @param [in] viewMatrix        The matrix used to transform the model respective to a camera's viewpoint
+ * @param [in] projectionMatrix  The matrix used to project the model from 3D/4D world space to 2D screen space
  */
 void Actor::draw(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	if(m_renderModel == nullptr) return;
