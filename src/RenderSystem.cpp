@@ -73,9 +73,7 @@ void RenderSystem::draw(Scene* scene) {
 	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	float* projectionData = glm::value_ptr(m_projectionMatrix);
-	
-	scene->draw(projectionData);
+	scene->draw(m_projectionMatrix);
 	
 	SDL_GL_SwapWindow(m_window);
 }

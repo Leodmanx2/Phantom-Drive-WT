@@ -62,9 +62,9 @@ class RenderModel {
 	public:
 		virtual ~RenderModel();
 		
-		virtual void draw(float* modelMatrix, 
-		                  float* viewMatrix, 
-		                  float* projectionMatrix) = 0;
+		virtual void draw(glm::mat4 modelMatrix, 
+		                  glm::mat4 viewMatrix, 
+		                  glm::mat4 projectionMatrix) = 0;
 };
 
 #endif

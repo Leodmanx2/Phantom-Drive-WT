@@ -63,7 +63,7 @@ void Actor::update() {
  * @param [in] viewMatrix        The matrix used to translate the model respective to a camera's viewpoint as a one-dimensional array of values
  * @param [in] projectionMatrix  The matrix used to project the model from 3D/4D world space to 2D screen space as a one-dimensional array of values
  */
-void Actor::draw(float* viewMatrix, float* projectionMatrix) {
+void Actor::draw(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	if(m_renderModel == nullptr) return;
 	
 	glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
@@ -71,7 +71,7 @@ void Actor::draw(float* viewMatrix, float* projectionMatrix) {
 	
 	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;
 	
-	m_renderModel->draw(glm::value_ptr(modelMatrix), 
+	m_renderModel->draw(modelMatrix, 
 	                    viewMatrix, 
 											projectionMatrix);
 }

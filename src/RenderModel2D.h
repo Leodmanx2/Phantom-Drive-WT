@@ -4,6 +4,7 @@
 #define RENDERMODEL2D_H
 
 #include "RenderModel.h"
+#include <glm/gtc/type_ptr.hpp>
 
 class RenderModel2D : public RenderModel {
 	public:
@@ -15,7 +16,7 @@ class RenderModel2D : public RenderModel {
 								
 		~RenderModel2D();
 		
-		void draw(float* modelMatrix, float* viewMatrix, float* projectionMatrix) override;
+		void draw(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix) override;
 };
 
 #endif

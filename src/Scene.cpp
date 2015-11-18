@@ -53,7 +53,7 @@ void Scene::simulate() {
  *
  * @param [in] projectionMatrix  Pointer to a 16-element array representing the 3D->2D, world->screen transformation
  */
-void Scene::draw(float* projectionMatrix) {
+void Scene::draw(glm::mat4 projectionMatrix) {
 	m_player->draw(m_activeCamera->getViewMatrix(), projectionMatrix);
 	m_player2->draw(m_activeCamera->getViewMatrix(), projectionMatrix);
 }

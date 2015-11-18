@@ -11,8 +11,8 @@ class Camera : public Actor {
 		Camera();
 		~Camera();
 	
-		float* getPosition();
-		float* getViewMatrix();
+		glm::vec4 getPosition();
+		glm::mat4 getViewMatrix();
 };
 
 #endif

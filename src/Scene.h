@@ -20,7 +20,7 @@ class Scene {
 		
 		void update();
 		void simulate();
-		void draw(float* projectionMatrix);
+		void draw(glm::mat4 projectionMatrix);
 };
 
 #endif

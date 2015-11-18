@@ -115,14 +115,14 @@ RenderModel2D::~RenderModel2D() {
  * @param [in] viewMatrix        Pointer to a 16-element array representing a camera's view transformation
  * @param [in] projectionMatrix  Pointer to a 16-element array representing the world-to-screen transformation
  */
-void RenderModel2D::draw(float* modelMatrix, 
-                         float* viewMatrix, 
-                         float* projectionMatrix) {
+void RenderModel2D::draw(glm::mat4 modelMatrix, 
+                         glm::mat4 viewMatrix, 
+                         glm::mat4 projectionMatrix) {
 	glUseProgram(m_shaderProgram);
 	
-	glUniformMatrix4fv(m_modelUniform, 1, GL_FALSE, modelMatrix);
-	glUniformMatrix4fv(m_viewUniform, 1, GL_FALSE, viewMatrix);
-	glUniformMatrix4fv(m_projectionUniform, 1, GL_FALSE, projectionMatrix);
+	glUniformMatrix4fv(m_modelUniform, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	glUniformMatrix4fv(m_viewUniform, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	glUniformMatrix4fv(m_projectionUniform, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	
 	glUniform1i(m_textureUniform, 0);
 	glActiveTexture(GL_TEXTURE0);

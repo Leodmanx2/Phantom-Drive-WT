@@ -33,7 +33,7 @@ class Actor {
 		virtual void setPosition(float x, float y, float z);
 		
 		virtual void update();
-		virtual void draw(float* viewMatrix, float* projectionMatrix);
+		virtual void draw(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 };
 
 #endif
