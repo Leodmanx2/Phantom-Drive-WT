@@ -35,6 +35,9 @@ Application::~Application() {
 	SDL_Quit();
 }
 
+/**
+ * Needs to be called once in order for the application to begin processing
+ */
 void Application::run() {
 	bool quit = false;
 	SDL_Event event;

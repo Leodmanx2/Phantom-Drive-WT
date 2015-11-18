@@ -18,6 +18,8 @@ class RenderSystem {
 		SDL_Window* m_window;
 		
 		glm::mat4 m_projectionMatrix;
+		
+		void glInit();
 	
 	public:
 		RenderSystem();

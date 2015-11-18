@@ -34,6 +34,8 @@ RenderSystem::RenderSystem() {
 	                                      static_cast<float>(width)/static_cast<float>(height), 
 	                                      0.1f, 
 	                                      10000.0f);
+	
+	glInit();
 }
 
 RenderSystem::RenderSystem(const RenderSystem& original) {
@@ -53,7 +55,9 @@ RenderSystem::RenderSystem(const RenderSystem& original) {
 	                            );
 	if(m_window == nullptr) {
 		throw std::runtime_error("SDL Window could not be initialized");
-	} 
+	}
+	
+	glInit();
 }
 
 RenderSystem::~RenderSystem() {
@@ -61,6 +65,10 @@ RenderSystem::~RenderSystem() {
 	SDL_DestroyWindow(m_window);
 }
 
+/** Requests that a scene draw itself onto the system's active rendering buffer
+ *
+ * @param [in] scene  The scene to be drawn
+ */
 void RenderSystem::draw(Scene* scene) {
 	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -72,6 +80,12 @@ void RenderSystem::draw(Scene* scene) {
 	SDL_GL_SwapWindow(m_window);
 }
 
+/**
+ * Resizes the window so that the viewport matches the input parameters
+ *
+ * @param [in] width   The width of the viewport to size the window to
+ * @param [in] height  The height of the viewport to size the widnow to
+ */
 void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
 	m_projectionMatrix = glm::ortho(0.0f, 
 	                                static_cast<float>(width), 
@@ -81,4 +95,10 @@ void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
 	                                100000.0f);
 																	
 	SDL_SetWindowSize(m_window, width, height);
+}
+
+void RenderSystem::glInit() {
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LINE_SMOOTH);
 }

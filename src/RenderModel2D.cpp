@@ -108,6 +108,13 @@ RenderModel2D::~RenderModel2D() {
 	
 }
 
+/*
+ * Draws the model to the active buffer
+ *
+ * @param [in] modelMatrix       Pointer to a 16-element array representing the world transformation
+ * @param [in] viewMatrix        Pointer to a 16-element array representing a camera's view transformation
+ * @param [in] projectionMatrix  Pointer to a 16-element array representing the world-to-screen transformation
+ */
 void RenderModel2D::draw(float* modelMatrix, 
                          float* viewMatrix, 
                          float* projectionMatrix) {

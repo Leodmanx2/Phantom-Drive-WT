@@ -23,6 +23,13 @@ RenderModel::~RenderModel() {
 	}
 }
 
+/**
+ * Compiles and links GLSL shader source files and registers the resulting program to be used for drawing this model
+ *
+ * @param [in] vertexShaderFilename    Relative path to the vertex shader source file in the mounted asset location
+ * @param [in] pixelShaderFilename     Relative path to the pixel/fragment source file in the mounted asset location
+ * @param [in] geometryShaderFilename  Optional. Relative path to the geometry shader source file in the mounted asset location
+ */
 void RenderModel::loadShaders(const char* vertexShaderFilename, 
                               const char* pixelShaderFilename, 
                               const char* geometryShaderFilename) {
@@ -66,6 +73,14 @@ void RenderModel::loadShaders(const char* vertexShaderFilename,
 	if(geometryShaderFilename != nullptr) glDeleteShader(geometryShader);
 }
 
+/**
+ * Compiles a shader source file into an in-memory object handled by OpenGL
+ *
+ * @param [in] filename  Relative path to the shader in the mounted asset location
+ * @param [in] type      One of GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, or GL_GEOMETRY_SHADER
+ *
+ * @return OpenGL id referencing the compiled shader object
+ */
 unsigned int RenderModel::compileShader(const char* filename, GLenum type) {
 	if(!PHYSFS_exists(filename)) {
 		throw std::runtime_error(std::string("Could not find shader: ") + filename);
@@ -117,6 +132,16 @@ unsigned int RenderModel::compileShader(const char* filename, GLenum type) {
 	return id;
 }
 
+/**
+ * Links a compiled vertex shader, pixel shader, and geometry shader into a shader program.
+ * Does not attempt to destroy the compiled shader objects.
+ *
+ * @param [in] vertexShader    OpenGL id referencing a compiled vertex shader object
+ * @param [in] pixelShader     OpenGL id referencing a compiled pixel shader object
+ * @param [in] geometryShader  OpenGL id referencing a compile geometry shader object
+ *
+ * @return OpenGL id referencing the linked shader program
+ */
 unsigned int RenderModel::linkShaders(unsigned int vertexShader, 
                                       unsigned int pixelShader, 
                                       unsigned int geometryShader) {
@@ -148,6 +173,15 @@ unsigned int RenderModel::linkShaders(unsigned int vertexShader,
 	return id;
 }
 
+/**
+ * Links a compiled vertex shader and pixel shader into a shader program.
+ * Does not attempt to destroy the compiled shader objects.
+ *
+ * @param [in] vertexShader    OpenGL id referencing a compiled vertex shader object
+ * @param [in] pixelShader     OpenGL id referencing a compiled pixel shader object
+ *
+ * @return OpenGL id referencing the linked shader program
+ */
 unsigned int RenderModel::linkShaders(unsigned int vertexShader, 
                                       unsigned int pixelShader) {
 	unsigned int id = glCreateProgram();
@@ -176,8 +210,17 @@ unsigned int RenderModel::linkShaders(unsigned int vertexShader,
 	return id;
 }
 
+/**
+ * Parses a texture file into an OpenGL texture object.
+ *
+ * @param [in] filename     Relative path to the texture file in the mounted asset directory
+ * @param [out] baseWidth   The width of the standard-detail image. Used as a hack to size render models.
+ * @param [out] baseHeight  The height of the standard-detail image. Used as a hack to size render models.
+ *
+ * @return OpenGL id referencing the texture object in GPU memory
+ */
 unsigned int RenderModel::loadTextureToGPU(const char* filename, int* baseWidth, int* baseHeight) {
-	// Use PhysFS to read exture file into memory
+	// Use PhysFS to read texture file into memory
 	if(std::string(filename).compare("") == 0 || !PHYSFS_exists(filename))
 		throw std::runtime_error(std::string("Could not find texture: ") + filename);
 	

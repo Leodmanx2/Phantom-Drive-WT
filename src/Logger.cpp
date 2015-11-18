@@ -16,6 +16,12 @@ std::string Logger::timestamp() {
 	return std::string(buffer);
 }
 
+/*
+ * Writes a message to both standard output and a process-specific log file named with a timestamp from the beginning of the process.
+ *
+ * @param [in] level  The type of message. Determines how printing may be done. One of: INFO, DEBUG, WARNING, ERROR, CRITICAL.
+ * @param [in] msg    The message to write
+ */
 void Logger::write(LogLevel level, const char* msg) {
 	switch(level) {
 		case INFO:

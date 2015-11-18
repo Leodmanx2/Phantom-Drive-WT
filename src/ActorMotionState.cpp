@@ -10,10 +10,20 @@ ActorMotionState::~ActorMotionState() {
 	
 }
 
+/**
+ * Used by Bullet to get the initial position, and subsequent positions for static bodies
+ *
+ * @param [out] worldTrans  Bullet transformation type to write the current world transformation to
+ */
 void ActorMotionState::getWorldTransform(btTransform& worldTrans) const {
 	worldTrans = m_position;
 }
 
+/**
+ * Used by Bullet to update the actor's world transformation information based on the results of its simulation
+ *
+ * @param [in] worldTrans  Bullet transformation type to be parsed and used to update the actor
+ */
 void ActorMotionState::setWorldTransform(const btTransform& worldTrans) {
 	if(m_actor == nullptr) return;
 	

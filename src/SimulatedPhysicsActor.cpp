@@ -30,6 +30,7 @@ SimulatedPhysicsActor::~SimulatedPhysicsActor() {
 	delete m_body;
 }
 
+// TODO: document functions
 void SimulatedPhysicsActor::translate(float longitude, float latitude, float altitude) {
 	btVector3 originalPosition(m_position.x, m_position.y, m_position.z);
 	

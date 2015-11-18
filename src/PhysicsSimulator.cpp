@@ -22,14 +22,27 @@ PhysicsSimulator::~PhysicsSimulator() {
 	delete m_world;
 }
 
+/**
+ * Adds a Bullet rigid body to be simulated
+ *
+ * @param [in] body  The body to be simulated
+ */
 void PhysicsSimulator::addRigidBody(btRigidBody* body) {
 	m_world->addRigidBody(body);
 }
 
+/**
+ * Removes a body from the simulation
+ *
+ * @param [in] body  The body to be removed
+ */
 void PhysicsSimulator::removeRigidBody(btRigidBody* body) {
 	m_world->removeRigidBody(body);
 }
 
+/**
+ * Called once per cycle in order to advance the simulation
+ */
 void PhysicsSimulator::stepSimulation() {
 	// TODO: All systems need to update based on real time
 	m_world->stepSimulation(1/60.0f, 10);
