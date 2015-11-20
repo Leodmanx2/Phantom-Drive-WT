@@ -23,6 +23,62 @@ RenderModel::~RenderModel() {
 	}
 }
 
+void RenderModel::glSetup(unsigned int shaderProgram, 
+                          std::vector<Vertex>& vertices, 
+                          std::vector<unsigned int>& indices) {
+	// Save uniform locations
+	m_modelUniform = glGetUniformLocation(shaderProgram, "model");
+	m_viewUniform = glGetUniformLocation(shaderProgram, "view");
+	m_projectionUniform = glGetUniformLocation(shaderProgram, "projection");
+	m_textureUniform = glGetUniformLocation(shaderProgram, "textureSampler");
+	
+	// Reserve buffer IDs
+	glGenVertexArrays(1, &m_vertexArray);
+	glGenBuffers(1, &m_vertexBuffer);
+	glGenBuffers(1, &m_indexBuffer);
+	
+	// Fill buffers on the GPU using the prepared arrays we were passed
+	glBindVertexArray(m_vertexArray);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), indices.data(), GL_STATIC_DRAW);
+	
+	// NOTE: It is possible that the shader doesn't actually use these values, in 
+	//       which case they will be optimized out by the compiler and their 
+	//       location will be returned as -1
+	int positionAttribute = glGetAttribLocation(shaderProgram, "position");
+	bool posAttribEnabled = positionAttribute == -1 ? false : true;
+	if(posAttribEnabled) {
+		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+		                      reinterpret_cast<void*>(offsetof(Vertex, position)));
+		glEnableVertexAttribArray(positionAttribute);
+	}
+
+	int normalAttribute = glGetAttribLocation(shaderProgram, "normal");
+	bool normAttribEnabled = normalAttribute == -1 ? false : true;
+	if(normAttribEnabled) {
+		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+		                      reinterpret_cast<void*>(offsetof(Vertex, normal)));
+		glEnableVertexAttribArray(normalAttribute);
+	}
+
+	int texCoordAttribute = glGetAttribLocation(shaderProgram, "texCoord");
+	bool texCoordAttribEnabled = texCoordAttribute == -1 ? false : true;
+	if(texCoordAttribEnabled) {
+		glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+		                      reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
+		glEnableVertexAttribArray(texCoordAttribute);
+	}
+	
+	// TODO: Everything related to animations and lights
+	
+	// Clean up
+	glBindVertexArray(0);
+}
+
 /**
  * Compiles and links GLSL shader source files and registers the resulting program to be used for drawing this model
  *

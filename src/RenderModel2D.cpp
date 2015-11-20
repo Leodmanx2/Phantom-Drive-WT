@@ -5,24 +5,6 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	                           const char* pixelShaderFilename, 
 	                           const char* geometryShaderFilename)
 {
-	// Compile shader program
-	try {
-		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
-	}
-	catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		
-		std::stringstream message;
-		message << "RenderModel2D (" << this << "): Could not load shaders";
-		std::string messageString = message.str();
-		throw std::runtime_error(messageString);
-	}
-	
-	m_modelUniform = glGetUniformLocation(m_shaderProgram, "model");
-	m_viewUniform = glGetUniformLocation(m_shaderProgram, "view");
-	m_projectionUniform = glGetUniformLocation(m_shaderProgram, "projection");
-	m_textureUniform = glGetUniformLocation(m_shaderProgram, "textureSampler");
-	
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture laoding
 	int baseWidth, baseHeight;
@@ -32,13 +14,8 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 		throw std::runtime_error("Could not load RenderModel2D sprite");
 	}
 	
-	// Reserve buffer IDs
-	glGenVertexArrays(1, &m_vertexArray);
-	glGenBuffers(1, &m_vertexBuffer);
-	glGenBuffers(1, &m_indexBuffer);
-	
-	// Prepare buffer
-	Vertex vertices[4];
+	// Prepare buffer data
+	std::vector<Vertex> vertices(4);
 	
 	vertices[0].position = glm::vec3(-static_cast<float>(baseWidth)/2,  static_cast<float>(baseHeight)/2, 0.0f);
 	vertices[0].normal = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -56,51 +33,38 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	vertices[3].normal = glm::vec3(0.0f, 0.0f, 1.0f);
 	vertices[3].texCoord = glm::vec2(0.0f, 0.0f);
 	
-	unsigned int indices[] = {
+	unsigned int indicesPlain[] = {
 		2, 1, 0, 
 		0, 3, 2
 	};
 	
-	// Fill buffers on the GPU using the prepared arrays
-	glBindVertexArray(m_vertexArray);
+	std::vector<unsigned int> indices(indicesPlain, indicesPlain + sizeof(indicesPlain)/sizeof(unsigned int));
 	
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*4, vertices, GL_STATIC_DRAW);
 	
-	// NOTE: It is possible that the shader doesn't actually use these values, in 
-	//       which case they will be optimized out by the compiler and their 
-	//       location will be returned as -1
-	int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
-	bool posAttribEnabled = positionAttribute == -1 ? false : true;
-	if(posAttribEnabled) {
-		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-		                      reinterpret_cast<void*>(offsetof(Vertex, position)));
-		glEnableVertexAttribArray(positionAttribute);
+	// Compile shader program
+	try {
+		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
 	}
-
-	int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
-	bool normAttribEnabled = normalAttribute == -1 ? false : true;
-	if(normAttribEnabled) {
-		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-		                      reinterpret_cast<void*>(offsetof(Vertex, normal)));
-		glEnableVertexAttribArray(normalAttribute);
-	}
-
-	int texCoordAttribute = glGetAttribLocation(m_shaderProgram, "texCoord");
-	bool texCoordAttribEnabled = texCoordAttribute == -1 ? false : true;
-	if(texCoordAttribEnabled) {
-		glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-		                      reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
-		glEnableVertexAttribArray(texCoordAttribute);
+	catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		
+		std::stringstream message;
+		message << "RenderModel2D (" << this << "): Could not load shaders";
+		std::string messageString = message.str();
+		throw std::runtime_error(messageString);
 	}
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	
-	// TODO: Everything related to animations and lights
-	
-	// Clean up
-	glBindVertexArray(0);
+	// Send OpenGL our data and describe how to use it
+	try {
+		glSetup(m_shaderProgram, vertices, indices);
+	}
+	catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		std::stringstream message;
+		message << "RenderModel2D (" << this << "): Could not commit data to OpenGL";
+		std::string messageString = message.str();
+		throw std::runtime_error(messageString);
+	}
 }
 
 RenderModel2D::~RenderModel2D() {

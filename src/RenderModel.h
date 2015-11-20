@@ -42,6 +42,11 @@ class RenderModel {
 		unsigned int   m_projectionUniform;
 		unsigned int   m_textureUniform;
 		
+		// Setup functions
+		void           glSetup(unsigned int shaderProgram, 
+		                       std::vector<Vertex>& vertices, 
+		                       std::vector<unsigned int>& indices);
+		
 		void           loadShaders(const char* vertexShaderFilename, 
 		                           const char* pixelShaderFilename, 
 		                           const char* geometryShaderFilename);
