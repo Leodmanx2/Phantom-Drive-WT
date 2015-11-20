@@ -38,7 +38,7 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	glGenBuffers(1, &m_indexBuffer);
 	
 	// Prepare buffer
-	Vertex* vertices = new Vertex[4];
+	Vertex vertices[4];
 	
 	vertices[0].position = glm::vec3(-static_cast<float>(baseWidth)/2,  static_cast<float>(baseHeight)/2, 0.0f);
 	vertices[0].normal = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -69,25 +69,25 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	
 	// NOTE: It is possible that the shader doesn't actually use these values, in 
 	//       which case they will be optimized out by the compiler and their 
-	//       location will be returned as -1 (or 0xFFFFFFFF if read as unsigned)
-	unsigned int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
-	bool posAttribEnabled = positionAttribute==0xFFFFFFFF ? false : true;
+	//       location will be returned as -1
+	int positionAttribute = glGetAttribLocation(m_shaderProgram, "position");
+	bool posAttribEnabled = positionAttribute == -1 ? false : true;
 	if(posAttribEnabled) {
 		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
 		                      reinterpret_cast<void*>(offsetof(Vertex, position)));
 		glEnableVertexAttribArray(positionAttribute);
 	}
 
-	unsigned int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
-	bool normAttribEnabled = normalAttribute==0xFFFFFFFF ? false : true;
+	int normalAttribute = glGetAttribLocation(m_shaderProgram, "normal");
+	bool normAttribEnabled = normalAttribute == -1 ? false : true;
 	if(normAttribEnabled) {
 		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
 		                      reinterpret_cast<void*>(offsetof(Vertex, normal)));
 		glEnableVertexAttribArray(normalAttribute);
 	}
 
-	unsigned int texCoordAttribute = glGetAttribLocation(m_shaderProgram, "texCoord");
-	bool texCoordAttribEnabled = texCoordAttribute==0xFFFFFFFF ? false : true;
+	int texCoordAttribute = glGetAttribLocation(m_shaderProgram, "texCoord");
+	bool texCoordAttribEnabled = texCoordAttribute == -1 ? false : true;
 	if(texCoordAttribEnabled) {
 		glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
 		                      reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
@@ -101,7 +101,6 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	
 	// Clean up
 	glBindVertexArray(0);
-	delete[] vertices;
 }
 
 RenderModel2D::~RenderModel2D() {
