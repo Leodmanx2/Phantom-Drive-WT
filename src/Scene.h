@@ -14,6 +14,10 @@ class Scene {
 		Actor* m_player2;
 		Actor* m_player3;
 		Camera* m_activeCamera;
+		
+		// OpenGL resources
+		unsigned int m_eyePosUniform;
+		unsigned int m_lightPos0;
 	
 	public:
 		Scene();

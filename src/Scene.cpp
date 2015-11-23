@@ -14,6 +14,8 @@ Scene::Scene() {
 	
 	m_player2->translate(0.0f, 400.0f, 0.0f);
 	m_player3->translate(-990.0f, 0.0f, 0.0f);
+	
+	
 }
 
 Scene::Scene(const Scene& original) {
@@ -62,6 +64,14 @@ void Scene::simulate() {
  * @param [in] projectionMatrix  Pointer to a 16-element array representing the 3D->2D, world->screen transformation
  */
 void Scene::draw(glm::mat4 projectionMatrix) {
+	// Send camera position to the GPU.
+	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at 
+	//       location 0 in the shader, and lights from 1-8 (while we use forward 
+	//       rendering)
+	glm::vec4 camPos4 = m_activeCamera->getPosition();
+	glm::vec3 camPos3 = glm::vec3(camPos4.x, camPos4.y, camPos4.z);
+	glUniform3fv(0, 1, glm::value_ptr(camPos3));
+	
 	m_player->draw(m_activeCamera->getViewMatrix(), projectionMatrix);
 	m_player2->draw(m_activeCamera->getViewMatrix(), projectionMatrix);
 	m_player3->draw(m_activeCamera->getViewMatrix(), projectionMatrix);
