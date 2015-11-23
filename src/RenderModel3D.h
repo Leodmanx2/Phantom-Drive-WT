@@ -13,6 +13,8 @@
 
 class RenderModel3D : public RenderModel {
 	private:
+		size_t m_elementCount;
+	
 		// TODO: Replace with other model-loading code when required
 		void loadOBJ(const char* filename, 
 		             VertexList& vertices, 

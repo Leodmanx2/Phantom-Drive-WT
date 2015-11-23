@@ -59,7 +59,7 @@ void RenderModel3D::draw(glm::mat4 modelMatrix,
 	
 	glBindVertexArray(m_vertexArray);
 	
-	glDrawElements(GL_TRIANGLES, 492, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);
 	
 	glBindVertexArray(0);
 }
@@ -115,6 +115,8 @@ void RenderModel3D::loadOBJ(const char* filename,
 	g_logger->write(Logger::DEBUG, debugVertexCount.str());
 	g_logger->write(Logger::DEBUG, debugIndexCount.str());
 	g_logger->write(Logger::DEBUG, debugNormalCount.str());
+	
+	m_elementCount = indexCount;
 
 	g_logger->write(Logger::DEBUG, "Validating model");
 	assert(indexCount % 3 == 0);
