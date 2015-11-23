@@ -25,6 +25,8 @@ class RenderModel {
 			glm::vec3 normal;
 			glm::vec2 texCoord;
 		};
+		using VertexList = std::vector<Vertex>;
+		using IndexList = std::vector<unsigned int>;
 	
 		// GPU Resources
 		unsigned int   m_vertexArray;
@@ -44,8 +46,8 @@ class RenderModel {
 		
 		// Setup functions
 		void           glSetup(unsigned int shaderProgram, 
-		                       std::vector<Vertex>& vertices, 
-		                       std::vector<unsigned int>& indices);
+		                       VertexList& vertices, 
+		                       IndexList& indices);
 		
 		void           loadShaders(const char* vertexShaderFilename, 
 		                           const char* pixelShaderFilename, 

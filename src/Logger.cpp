@@ -48,4 +48,8 @@ void Logger::write(LogLevel level, const char* msg) {
 	logFile << msg << std::endl;
 }
 
+void Logger::write(LogLevel level, std::string&& msg) {
+	write(level, msg.c_str());
+}
+
 Logger* g_logger = new Logger();

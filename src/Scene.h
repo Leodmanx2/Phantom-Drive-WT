@@ -4,6 +4,7 @@
 #include "Camera.h"
 
 #include "DummyActor.h"
+#include "DummyActor2.h"
 
 class Scene {
 	private:
@@ -11,6 +12,7 @@ class Scene {
 	
 		Actor* m_player;
 		Actor* m_player2;
+		Actor* m_player3;
 		Camera* m_activeCamera;
 	
 	public:

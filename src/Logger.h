@@ -18,6 +18,7 @@ class Logger {
 		~Logger();
 		
 		void write(LogLevel level, const char* msg);
+		void write(LogLevel level, std::string&& msg);
 };
 
 extern Logger* g_logger;

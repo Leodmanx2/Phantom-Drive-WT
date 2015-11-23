@@ -7,9 +7,10 @@ BINDIR = $(CURDIR)/bin
 
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
                               Actor.o RenderModel.o RenderModel2D.o \
-                              Camera.o DummyActor.o Logger.o \
+                              Camera.o DummyActor.o DummyActor2.o Logger.o \
 															Scene.o PhysicsSimulator.o ActorMotionState.o \
-															SimulatedPhysicsActor.o)
+															SimulatedPhysicsActor.o RenderModel3D.o \
+															tiny_obj_loader.o)
 
 CXXFLAGS = -std=c++0x -Wall -c -g
 LDFLAGS = -g
@@ -30,6 +31,9 @@ all: $(OBJ)
 	$(CXX) $(LDFLAGS) -o $(EXE_NAME) $(OBJ) $(LDLIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $<
+	
+$(OBJDIR)/%.o: $(SRCDIR)/%.cc
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
 $(OBJ): | $(OBJDIR)
