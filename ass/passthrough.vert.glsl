@@ -3,6 +3,7 @@
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+uniform mat4 normalMatrix;
 
 in vec3 position;
 in vec3 normal;
@@ -14,14 +15,14 @@ out vec2 frag_texCoord;
 
 void main() {
 	vec4 pos = vec4(position, 1.0f);
-	vec4 norm = vec4(normal, 1.0f);
+	vec4 norm = vec4(normal, 0.0f);
 
-	pos = model * pos;
-	norm = model * norm;
+	pos = view * model * pos;
+	norm = normalMatrix * norm;
 
 	frag_position = pos.xyz;
-	frag_normal = normal.xyz;
+	frag_normal = norm.xyz;
 	frag_texCoord = texCoord;
 
-	gl_Position = projection * view * pos;
+	gl_Position = projection * pos;
 }

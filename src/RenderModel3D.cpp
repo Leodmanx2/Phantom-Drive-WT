@@ -57,6 +57,9 @@ void RenderModel3D::draw(glm::mat4 modelMatrix,
 	glUniformMatrix4fv(m_viewUniform, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	glUniformMatrix4fv(m_projectionUniform, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	
+	glm::mat4 normalMatrix = glm::inverseTranspose(modelMatrix * viewMatrix);
+	glUniformMatrix4fv(m_normalUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+	
 	glBindVertexArray(m_vertexArray);
 	
 	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);

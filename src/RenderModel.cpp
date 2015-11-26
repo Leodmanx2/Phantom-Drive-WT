@@ -30,6 +30,7 @@ void RenderModel::glSetup(unsigned int shaderProgram,
 	m_modelUniform = glGetUniformLocation(shaderProgram, "model");
 	m_viewUniform = glGetUniformLocation(shaderProgram, "view");
 	m_projectionUniform = glGetUniformLocation(shaderProgram, "projection");
+	m_normalUniform = glGetUniformLocation(shaderProgram, "normalMatrix");
 	m_textureUniform = glGetUniformLocation(shaderProgram, "textureSampler");
 	
 	// Reserve buffer IDs

@@ -11,6 +11,7 @@
 #include <limits>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 
 class RenderModel {
 	private:
@@ -42,6 +43,7 @@ class RenderModel {
 		unsigned int   m_modelUniform;
 		unsigned int   m_viewUniform;
 		unsigned int   m_projectionUniform;
+		unsigned int   m_normalUniform;
 		unsigned int   m_textureUniform;
 		
 		// Setup functions
