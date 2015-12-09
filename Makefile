@@ -10,7 +10,7 @@ OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
                               Camera.o DummyActor.o DummyActor2.o Logger.o \
 															Scene.o PhysicsSimulator.o ActorMotionState.o \
 															SimulatedPhysicsActor.o RenderModel3D.o \
-															tiny_obj_loader.o)
+															tiny_obj_loader.o Shader.o)
 
 CXXFLAGS = -std=c++0x -Wall -c -g
 LDFLAGS = -g

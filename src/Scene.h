@@ -9,15 +9,14 @@
 class Scene {
 	private:
 		PhysicsSimulator* m_physicsSimulator;
+		
+		Shader* m_activeShader;
+		
+		Camera* m_activeCamera;
 	
 		Actor* m_player;
 		Actor* m_player2;
 		Actor* m_player3;
-		Camera* m_activeCamera;
-		
-		// OpenGL resources
-		unsigned int m_eyePosUniform;
-		unsigned int m_lightPos0;
 	
 	public:
 		Scene();

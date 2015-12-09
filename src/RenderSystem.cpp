@@ -1,5 +1,8 @@
 #include "RenderSystem.h"
 
+#define LOG_GL
+#include "glerr.h"
+
 RenderSystem::RenderSystem() {
 	int width = 640;
 	int height = 480;
@@ -72,10 +75,13 @@ RenderSystem::~RenderSystem() {
 void RenderSystem::draw(Scene* scene) {
 	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLogErr("Clearing buffers");
 	
 	scene->draw(m_projectionMatrix);
+	glLogErr("Drawing scene");
 	
 	SDL_GL_SwapWindow(m_window);
+	glLogErr("Swapping buffers");
 }
 
 /**

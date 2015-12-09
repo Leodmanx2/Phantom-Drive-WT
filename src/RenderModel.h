@@ -12,6 +12,7 @@
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include "Shader.h"
 
 class RenderModel {
 	private:
@@ -30,39 +31,19 @@ class RenderModel {
 		using IndexList = std::vector<unsigned int>;
 	
 		// GPU Resources
+		unsigned int   m_texture;
+		unsigned int   m_normalMap;
+		unsigned int   m_deltaMap;
+		
 		unsigned int   m_vertexArray;
 		
 		unsigned int   m_vertexBuffer;
 		unsigned int   m_indexBuffer;
 		
-		unsigned int   m_texture;
-		unsigned int   m_sampler;
-		
-		unsigned int   m_shaderProgram;
-		
-		unsigned int   m_modelUniform;
-		unsigned int   m_viewUniform;
-		unsigned int   m_projectionUniform;
-		unsigned int   m_normalUniform;
-		unsigned int   m_textureUniform;
-		
 		// Setup functions
-		void           glSetup(unsigned int shaderProgram, 
-		                       VertexList& vertices, 
-		                       IndexList& indices);
+		void           fillBuffers(VertexList& vertices, IndexList& indices);
 		
-		void           loadShaders(const char* vertexShaderFilename, 
-		                           const char* pixelShaderFilename, 
-		                           const char* geometryShaderFilename);
-		
-		unsigned int   compileShader(const char* filename, GLenum type);
-		
-		unsigned int   linkShaders(unsigned int vertexShader, 
-		                           unsigned int pixelShader, 
-		                           unsigned int geometryShader);
-		
-		unsigned int   linkShaders(unsigned int vertexShader, 
-		                           unsigned int pixelShader);
+		void           vaoSetup();
 		
 		unsigned int   loadTextureToGPU(const char* filename, 
 		                                int* baseWidth, 
@@ -71,9 +52,7 @@ class RenderModel {
 	public:
 		virtual ~RenderModel();
 		
-		virtual void draw(glm::mat4 modelMatrix, 
-		                  glm::mat4 viewMatrix, 
-		                  glm::mat4 projectionMatrix) = 0;
+		virtual void draw(Shader& shader) = 0;
 };
 
 #endif

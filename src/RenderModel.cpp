@@ -15,256 +15,52 @@ RenderModel::~RenderModel() {
 	if(m_instanceCount == 0) {
 		// Release GPU resources
 		glDeleteVertexArrays(1, &m_vertexArray);
-		glDeleteProgram(m_shaderProgram);
-		glDeleteSamplers(1, &m_sampler);
-		glDeleteBuffers(1, &m_texture);
 		glDeleteBuffers(1, &m_vertexBuffer);
 		glDeleteBuffers(1, &m_indexBuffer);
+		glDeleteTextures(1, &m_texture);
+		glDeleteTextures(1, &m_normalMap);
+		glDeleteTextures(1, &m_deltaMap);
 	}
 }
 
-void RenderModel::glSetup(unsigned int shaderProgram, 
-                          std::vector<Vertex>& vertices, 
-                          std::vector<unsigned int>& indices) {
-	// Save uniform locations
-	m_modelUniform = glGetUniformLocation(shaderProgram, "model");
-	m_viewUniform = glGetUniformLocation(shaderProgram, "view");
-	m_projectionUniform = glGetUniformLocation(shaderProgram, "projection");
-	m_normalUniform = glGetUniformLocation(shaderProgram, "normalMatrix");
-	m_textureUniform = glGetUniformLocation(shaderProgram, "textureSampler");
-	
-	// Reserve buffer IDs
-	glGenVertexArrays(1, &m_vertexArray);
+void RenderModel::fillBuffers(VertexList& vertices, IndexList& indices) {
+	// Vertex buffer
 	glGenBuffers(1, &m_vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	//Index buffer
 	glGenBuffers(1, &m_indexBuffer);
-	
-	// Fill buffers on the GPU using the prepared arrays we were passed
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), indices.data(), GL_STATIC_DRAW);
+}
+
+void RenderModel::vaoSetup() {
+	glGenVertexArrays(1, &m_vertexArray);
 	glBindVertexArray(m_vertexArray);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*vertices.size(), vertices.data(), GL_STATIC_DRAW);
-	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), indices.data(), GL_STATIC_DRAW);
 	
-	// NOTE: It is possible that the shader doesn't actually use these values, in 
-	//       which case they will be optimized out by the compiler and their 
-	//       location will be returned as -1
-	int positionAttribute = glGetAttribLocation(shaderProgram, "position");
-	bool posAttribEnabled = positionAttribute == -1 ? false : true;
-	if(posAttribEnabled) {
-		glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-		                      reinterpret_cast<void*>(offsetof(Vertex, position)));
-		glEnableVertexAttribArray(positionAttribute);
-	}
+	// Save buffer layout descriptions to the VAO
+	const int positionAttribPosition = 0;
+	glVertexAttribPointer(positionAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+												reinterpret_cast<void*>(offsetof(Vertex, position)));
+	glEnableVertexAttribArray(positionAttribPosition);
 
-	int normalAttribute = glGetAttribLocation(shaderProgram, "normal");
-	bool normAttribEnabled = normalAttribute == -1 ? false : true;
-	if(normAttribEnabled) {
-		glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-		                      reinterpret_cast<void*>(offsetof(Vertex, normal)));
-		glEnableVertexAttribArray(normalAttribute);
-	}
+	const int normalAttribPosition = 1;
+	glVertexAttribPointer(normalAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+												reinterpret_cast<void*>(offsetof(Vertex, normal)));
+	glEnableVertexAttribArray(normalAttribPosition);
 
-	int texCoordAttribute = glGetAttribLocation(shaderProgram, "texCoord");
-	bool texCoordAttribEnabled = texCoordAttribute == -1 ? false : true;
-	if(texCoordAttribEnabled) {
-		glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-		                      reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
-		glEnableVertexAttribArray(texCoordAttribute);
-	}
+	const int texCoordAttribPosition = 2;
+	glVertexAttribPointer(texCoordAttribPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
+												reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
+	glEnableVertexAttribArray(texCoordAttribPosition);
 	
 	// TODO: Everything related to animations and lights
 	
 	// Clean up
 	glBindVertexArray(0);
-}
-
-/**
- * Compiles and links GLSL shader source files and registers the resulting program to be used for drawing this model
- *
- * @param [in] vertexShaderFilename    Relative path to the vertex shader source file in the mounted asset location
- * @param [in] pixelShaderFilename     Relative path to the pixel/fragment source file in the mounted asset location
- * @param [in] geometryShaderFilename  Optional. Relative path to the geometry shader source file in the mounted asset location
- */
-void RenderModel::loadShaders(const char* vertexShaderFilename, 
-                              const char* pixelShaderFilename, 
-                              const char* geometryShaderFilename) {
-	unsigned int vertexShader;
-	unsigned int pixelShader;
-	unsigned int geometryShader;
-	
-	try {vertexShader = compileShader(vertexShaderFilename, GL_VERTEX_SHADER);}
-	catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Could not load vertex shader");
-	}
-	
-	try {pixelShader = compileShader(pixelShaderFilename, GL_FRAGMENT_SHADER);}
-	catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Could not load pixel shader");
-	}
-	
-	if(geometryShaderFilename != nullptr) {
-		try {geometryShader = compileShader(geometryShaderFilename, GL_GEOMETRY_SHADER);}
-		catch(const std::exception& exception) {
-			g_logger->write(Logger::ERROR, exception.what());
-			throw std::runtime_error("Could not load geometry shader");
-		}
-	}
-	
-	try {
-		if(geometryShaderFilename != nullptr)
-			m_shaderProgram = linkShaders(vertexShader, pixelShader, geometryShader);
-		else
-			m_shaderProgram = linkShaders(vertexShader, pixelShader);
-	}
-	catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Could not link shader program");
-	}
-	
-	glDeleteShader(vertexShader);
-	glDeleteShader(pixelShader);
-	if(geometryShaderFilename != nullptr) glDeleteShader(geometryShader);
-}
-
-/**
- * Compiles a shader source file into an in-memory object handled by OpenGL
- *
- * @param [in] filename  Relative path to the shader in the mounted asset location
- * @param [in] type      One of GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, or GL_GEOMETRY_SHADER
- *
- * @return OpenGL id referencing the compiled shader object
- */
-unsigned int RenderModel::compileShader(const char* filename, GLenum type) {
-	if(!PHYSFS_exists(filename)) {
-		throw std::runtime_error(std::string("Could not find shader: ") + filename);
-	}
-	
-	PHYSFS_File* shaderFile = PHYSFS_openRead(filename);
-	if(!shaderFile) {
-		throw std::runtime_error(std::string("Could not open shader: ") + filename);
-	}
-	
-	PHYSFS_sint64 fileSizeLong = PHYSFS_fileLength(shaderFile);
-	if(fileSizeLong == -1)
-		throw std::runtime_error(std::string("Could not determine size of shader: ") + filename);
-	if(fileSizeLong > std::numeric_limits<int>::max())
-		throw std::runtime_error(std::string("Shader too large: ") + filename);
-	
-	int fileSize = static_cast<int>(fileSizeLong);
-	
-	// TODO: Avoid manual memory management mid-function
-	char* buffer = new char[fileSize];
-	int bytesRead = PHYSFS_read(shaderFile, buffer, 1, fileSize);
-	PHYSFS_close(shaderFile);
-	if(bytesRead < fileSize || bytesRead == -1) {
-		delete[] buffer;
-		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
-		throw std::runtime_error(std::string("Could not read all of shader: ") + filename);
-	}
-	
-	unsigned int id = glCreateShader(type);
-	
-	glShaderSource(id, 1, &buffer, &fileSize);
-	delete[] buffer;
-	glCompileShader(id);
-	
-	int isCompiled;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &isCompiled);
-	if(isCompiled == GL_FALSE) {
-		int maxLength;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-		std::vector<char> infoLog(maxLength);
-		glGetShaderInfoLog(id, maxLength, &maxLength, &infoLog[0]);
-		
-		g_logger->write(Logger::ERROR, infoLog.data());
-		
-		glDeleteShader(id);
-		throw std::runtime_error(std::string("Failed to compile shader: ") + filename);
-	}
-	
-	return id;
-}
-
-/**
- * Links a compiled vertex shader, pixel shader, and geometry shader into a shader program.
- * Does not attempt to destroy the compiled shader objects.
- *
- * @param [in] vertexShader    OpenGL id referencing a compiled vertex shader object
- * @param [in] pixelShader     OpenGL id referencing a compiled pixel shader object
- * @param [in] geometryShader  OpenGL id referencing a compile geometry shader object
- *
- * @return OpenGL id referencing the linked shader program
- */
-unsigned int RenderModel::linkShaders(unsigned int vertexShader, 
-                                      unsigned int pixelShader, 
-                                      unsigned int geometryShader) {
-	unsigned int id = glCreateProgram();
-	
-	glAttachShader(id, vertexShader);
-	glAttachShader(id, pixelShader);
-	glAttachShader(id, geometryShader);
-	
-	glLinkProgram(id);
-	
-	int isLinked;
-	glGetProgramiv(id, GL_LINK_STATUS, &isLinked);
-	if(isLinked == GL_FALSE) {
-		int maxLength = 0;
-		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
-		
-		g_logger->write(Logger::ERROR, infoLog.data());
-		
-		throw std::runtime_error("Failed to link shader program");
-	}
-	
-	glDetachShader(id, vertexShader);
-	glDetachShader(id, pixelShader);
-	glDetachShader(id, geometryShader);
-	
-	return id;
-}
-
-/**
- * Links a compiled vertex shader and pixel shader into a shader program.
- * Does not attempt to destroy the compiled shader objects.
- *
- * @param [in] vertexShader    OpenGL id referencing a compiled vertex shader object
- * @param [in] pixelShader     OpenGL id referencing a compiled pixel shader object
- *
- * @return OpenGL id referencing the linked shader program
- */
-unsigned int RenderModel::linkShaders(unsigned int vertexShader, 
-                                      unsigned int pixelShader) {
-	unsigned int id = glCreateProgram();
-	
-	glAttachShader(id, vertexShader);
-	glAttachShader(id, pixelShader);
-	
-	glLinkProgram(id);
-	
-	int isLinked;
-	glGetProgramiv(id, GL_LINK_STATUS, &isLinked);
-	if(isLinked == GL_FALSE) {
-		int maxLength = 0;
-		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
-		
-		g_logger->write(Logger::ERROR, infoLog.data());
-		
-		throw std::runtime_error("Failed to link shader program");
-	}
-	
-	glDetachShader(id, vertexShader);
-	glDetachShader(id, pixelShader);
-	
-	return id;
 }
 
 /**

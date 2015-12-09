@@ -1,9 +1,9 @@
 #include "RenderModel2D.h"
 
-RenderModel2D::RenderModel2D(const char* spriteFilename, 
-	                           const char* vertexShaderFilename, 
-	                           const char* pixelShaderFilename, 
-	                           const char* geometryShaderFilename)
+#define LOG_GL
+#include "glerr.h"
+
+RenderModel2D::RenderModel2D(const char* spriteFilename)
 {
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture laoding
@@ -40,23 +40,10 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 	
 	std::vector<unsigned int> indices(indicesPlain, indicesPlain + sizeof(indicesPlain)/sizeof(unsigned int));
 	
-	
-	// Compile shader program
+	// Send OpenGL our data
 	try {
-		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
-	}
-	catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		
-		std::stringstream message;
-		message << "RenderModel2D (" << this << "): Could not load shaders";
-		std::string messageString = message.str();
-		throw std::runtime_error(messageString);
-	}
-	
-	// Send OpenGL our data and describe how to use it
-	try {
-		glSetup(m_shaderProgram, vertices, indices);
+		fillBuffers(vertices, indices);
+		glLogErr("Uploading buffer data");
 	}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
@@ -65,6 +52,8 @@ RenderModel2D::RenderModel2D(const char* spriteFilename,
 		std::string messageString = message.str();
 		throw std::runtime_error(messageString);
 	}
+	
+	vaoSetup();
 }
 
 RenderModel2D::~RenderModel2D() {
@@ -78,25 +67,16 @@ RenderModel2D::~RenderModel2D() {
  * @param [in] viewMatrix        Camera's view transformation
  * @param [in] projectionMatrix  World-to-screen transformation
  */
-void RenderModel2D::draw(glm::mat4 modelMatrix, 
-                         glm::mat4 viewMatrix, 
-                         glm::mat4 projectionMatrix) {
-	glUseProgram(m_shaderProgram);
-	
-	glUniformMatrix4fv(m_modelUniform, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-	glUniformMatrix4fv(m_viewUniform, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniformMatrix4fv(m_projectionUniform, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	
-	glm::mat4 normalMatrix = glm::inverseTranspose(modelMatrix * viewMatrix);
-	glUniformMatrix4fv(m_normalUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
-	
-	glUniform1i(m_textureUniform, 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, m_texture);
+void RenderModel2D::draw(Shader& shader) {
+	shader.setTextureMap(m_texture);
+	glLogErr("Activating texture (2D)");
 	
 	glBindVertexArray(m_vertexArray);
+	glLogErr("Binding VAO (2D)");
 	
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glLogErr("Drawing for real (2D)");
 	
 	glBindVertexArray(0);
+	glLogErr("Un-binding VAO (2D)");
 }

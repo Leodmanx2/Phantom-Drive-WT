@@ -1,9 +1,9 @@
 #include "RenderModel3D.h"
 
-RenderModel3D::RenderModel3D(const char* modelFilename, 
-	                           const char* vertexShaderFilename, 
-	                           const char* pixelShaderFilename, 
-	                           const char* geometryShaderFilename)
+#define LOG_GL
+#include "glerr.h"
+
+RenderModel3D::RenderModel3D(const char* modelFilename)
 {
 	// Prepare buffer data
 	VertexList vertices;
@@ -11,30 +11,20 @@ RenderModel3D::RenderModel3D(const char* modelFilename,
 	
 	loadOBJ(modelFilename, vertices, indices);
 	
-	// Compile shader program
+	// Send OpenGL our data
 	try {
-		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
+		fillBuffers(vertices, indices);
+		glLogErr("Uploading buffer data");
 	}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
-		
 		std::stringstream message;
-		message << "RenderModel2D (" << this << "): Could not load shaders";
+		message << "RenderModel3D (" << this << "): Could not commit data to OpenGL";
 		std::string messageString = message.str();
 		throw std::runtime_error(messageString);
 	}
 	
-	// Send OpenGL our data and describe how to use it
-	try {
-		glSetup(m_shaderProgram, vertices, indices);
-	}
-	catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		std::stringstream message;
-		message << "RenderModel2D (" << this << "): Could not commit data to OpenGL";
-		std::string messageString = message.str();
-		throw std::runtime_error(messageString);
-	}
+	vaoSetup();
 }
 
 RenderModel3D::~RenderModel3D() {
@@ -48,23 +38,18 @@ RenderModel3D::~RenderModel3D() {
  * @param [in] viewMatrix        Camera's view transformation
  * @param [in] projectionMatrix  World-to-screen transformation
  */
-void RenderModel3D::draw(glm::mat4 modelMatrix, 
-                         glm::mat4 viewMatrix, 
-                         glm::mat4 projectionMatrix) {
-	glUseProgram(m_shaderProgram);
-	
-	glUniformMatrix4fv(m_modelUniform, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-	glUniformMatrix4fv(m_viewUniform, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniformMatrix4fv(m_projectionUniform, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	
-	glm::mat4 normalMatrix = glm::inverseTranspose(modelMatrix * viewMatrix);
-	glUniformMatrix4fv(m_normalUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+void RenderModel3D::draw(Shader& shader) {
+	//shader.setTextureMap(m_texture);
+	//glLogErr("Activating texture (3D)");
 	
 	glBindVertexArray(m_vertexArray);
+	glLogErr("Binding VAO (3D)");
 	
 	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);
+	glLogErr("Drawing for real (3D)");
 	
 	glBindVertexArray(0);
+	glLogErr("Un-binding VAO (3D)");
 }
 
 /**

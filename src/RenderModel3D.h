@@ -22,16 +22,11 @@ class RenderModel3D : public RenderModel {
 	
 	public:
 		// Geometry shader is optional
-		RenderModel3D(const char* modelFilename, 
-		              const char* vertexShaderFilename, 
-		              const char* pixelShaderFilename, 
-		              const char* geometryShaderFilename = nullptr);
+		explicit RenderModel3D(const char* modelFilename);
 		
 		~RenderModel3D();
 		
-		void draw(glm::mat4 modelMatrix, 
-		          glm::mat4 viewMatrix, 
-		          glm::mat4 projectionMatrix) override;
+		void draw(Shader& shader) override;
 };
 
 #endif

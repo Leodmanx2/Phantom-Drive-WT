@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "RenderModel.h"
 #include <btBulletDynamicsCommon.h>
+#include "Shader.h"
 
 #include <GL/glew.h>
 #include "Logger.h"
@@ -33,7 +34,7 @@ class Actor {
 		virtual void setPosition(float x, float y, float z);
 		
 		virtual void update();
-		virtual void draw(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+		virtual void draw(Shader& shader);
 };
 
 #endif

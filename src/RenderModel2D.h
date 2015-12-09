@@ -9,16 +9,11 @@
 class RenderModel2D : public RenderModel {
 	public:
 		// Geometry shader is optional
-		RenderModel2D(const char* spriteFilename, 
-		              const char* vertexShaderFilename, 
-		              const char* pixelShaderFilename, 
-		              const char* geometryShaderFilename = nullptr);
+		explicit RenderModel2D(const char* spriteFilename);
 								
 		~RenderModel2D();
 		
-		void draw(glm::mat4 modelMatrix, 
-		          glm::mat4 viewMatrix, 
-		          glm::mat4 projectionMatrix) override;
+		void draw(Shader& shader) override;;
 };
 
 #endif

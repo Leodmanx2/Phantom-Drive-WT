@@ -3,7 +3,7 @@
 DummyActor2::DummyActor2() {
 	try {
 		g_logger->write(Logger::DEBUG, "Making render model");
-		m_renderModel = new RenderModel3D("testModel.obj", "passthrough.vert.glsl", "passthrough.frag.glsl");
+		m_renderModel = new RenderModel3D("testModel.obj");
 	}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());

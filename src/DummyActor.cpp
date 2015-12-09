@@ -4,7 +4,7 @@ std::unique_ptr<btCollisionShape> DummyActor::s_collisionShape(new btBoxShape(bt
 
 DummyActor::DummyActor(PhysicsSimulator* simulator) : SimulatedPhysicsActor(simulator, 1.0f) {
 	try {
-		m_renderModel = new RenderModel2D("test.dds", "passthroughTex.vert.glsl", "passthroughTex.frag.glsl");
+		m_renderModel = new RenderModel2D("test.dds");
 	}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
