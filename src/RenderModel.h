@@ -45,7 +45,7 @@ class RenderModel {
 		
 		void           vaoSetup();
 		
-		unsigned int   loadTextureToGPU(const char* filename, 
+		unsigned int   loadTextureToGPU(const std::string& filename, 
 		                                int* baseWidth, 
 		                                int* baseHeight);
 

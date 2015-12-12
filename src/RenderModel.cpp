@@ -72,12 +72,12 @@ void RenderModel::vaoSetup() {
  *
  * @return OpenGL id referencing the texture object in GPU memory
  */
-unsigned int RenderModel::loadTextureToGPU(const char* filename, int* baseWidth, int* baseHeight) {
+unsigned int RenderModel::loadTextureToGPU(const std::string& filename, int* baseWidth, int* baseHeight) {
 	// Use PhysFS to read texture file into memory
-	if(std::string(filename).compare("") == 0 || !PHYSFS_exists(filename))
+	if(filename.compare("") == 0 || !PHYSFS_exists(filename.c_str()))
 		throw std::runtime_error(std::string("Could not find texture: ") + filename);
 	
-	PHYSFS_File* file = PHYSFS_openRead(filename);
+	PHYSFS_File* file = PHYSFS_openRead(filename.c_str());
 	if(!file)
 		throw std::runtime_error(std::string("Could not open texture: ") + filename);
 	

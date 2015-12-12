@@ -16,13 +16,13 @@ class RenderModel3D : public RenderModel {
 		size_t m_elementCount;
 	
 		// TODO: Replace with other model-loading code when required
-		void loadOBJ(const char* filename, 
+		void loadOBJ(const std::string& filename, 
 		             VertexList& vertices, 
 		             IndexList& indices);
 	
 	public:
 		// Geometry shader is optional
-		explicit RenderModel3D(const char* modelFilename);
+		explicit RenderModel3D(const std::string& modelFilename);
 		
 		~RenderModel3D();
 		

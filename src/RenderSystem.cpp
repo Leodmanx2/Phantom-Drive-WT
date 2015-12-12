@@ -29,7 +29,7 @@ RenderSystem::RenderSystem() {
 	
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		g_logger->write(Logger::CRITICAL, (const char*)glewGetErrorString(err));
+		g_logger->write(Logger::CRITICAL, std::string(reinterpret_cast<const char*>(glewGetErrorString(err))));
 		throw std::runtime_error("Failed to initialize GLEW");
 	}
 	
@@ -45,11 +45,11 @@ RenderSystem::RenderSystem(const RenderSystem& original) {
 	int width, height;
 	SDL_GetWindowSize(original.m_window, &width, &height);
 	
-	const char* title = SDL_GetWindowTitle(original.m_window);
+	const std::string title = SDL_GetWindowTitle(original.m_window);
 	
 	Uint32 flags = SDL_GetWindowFlags(original.m_window);
 	
-	m_window = SDL_CreateWindow(title, 
+	m_window = SDL_CreateWindow(title.c_str(), 
 	                            SDL_WINDOWPOS_UNDEFINED, 
 	                            SDL_WINDOWPOS_UNDEFINED, 
 	                            width, 

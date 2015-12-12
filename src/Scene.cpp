@@ -25,8 +25,8 @@ Scene::Scene() {
 }
 
 Scene::Scene(const Scene& original) {
-	m_player = new Actor(*original.m_player);
-	m_player2 = new Actor(*original.m_player2);
+	//m_player = new Actor(*original.m_player);
+	//m_player2 = new Actor(*original.m_player2);
 	m_player3 = new Actor(*original.m_player3);
 	m_activeCamera = new Camera(*original.m_activeCamera);
 	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
@@ -34,8 +34,8 @@ Scene::Scene(const Scene& original) {
 }
 
 Scene::~Scene() {
-	delete m_player;
-	delete m_player2;
+	//delete m_player;
+	//delete m_player2;
 	delete m_player3;
 	delete m_activeCamera;
 	delete m_physicsSimulator;

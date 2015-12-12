@@ -10,7 +10,8 @@ Logger::~Logger() {
 
 std::string Logger::timestamp() {
 	time_t timeNow = time(nullptr);
-	struct tm localTimeNow = *localtime(&timeNow);
+	struct tm localTimeNow;
+	localtime_s(&localTimeNow, &timeNow);
 	char buffer[80];
 	std::strftime(buffer, sizeof(buffer), "log/%Y-%m-%W_%H-%M-%S.log", &localTimeNow);
 	return std::string(buffer);
@@ -22,7 +23,7 @@ std::string Logger::timestamp() {
  * @param [in] level  The type of message. Determines how printing may be done. One of: INFO, DEBUG, WARNING, ERROR, CRITICAL.
  * @param [in] msg    The message to write
  */
-void Logger::write(LogLevel level, const char* msg) {
+void Logger::write(LogLevel level, const std::string& msg) {
 	switch(level) {
 		case INFO:
 			std::cout << "[INFO]  " << msg << std::endl;
@@ -46,10 +47,6 @@ void Logger::write(LogLevel level, const char* msg) {
 			break;
 	}
 	logFile << msg << std::endl;
-}
-
-void Logger::write(LogLevel level, std::string&& msg) {
-	write(level, msg.c_str());
 }
 
 Logger* g_logger = new Logger();

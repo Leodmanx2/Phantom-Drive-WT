@@ -1,8 +1,8 @@
 #include "Shader.h"
 
-Shader::Shader(const char* vertexShaderFilename, 
-               const char* pixelShaderFilename, 
-               const char* geometryShaderFilename) : m_active(false) {
+Shader::Shader(const std::string& vertexShaderFilename, 
+               const std::string& pixelShaderFilename, 
+               const std::string* geometryShaderFilename) : m_active(false) {
 	// Compile program
 	try {
 		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
@@ -61,9 +61,9 @@ Shader::~Shader() {
  * @param [in] pixelShaderFilename     Relative path to the pixel/fragment source file in the mounted asset location
  * @param [in] geometryShaderFilename  Optional. Relative path to the geometry shader source file in the mounted asset location
  */
-void Shader::loadShaders(const char* vertexShaderFilename, 
-                         const char* pixelShaderFilename, 
-                         const char* geometryShaderFilename) {
+void Shader::loadShaders(const std::string& vertexShaderFilename, 
+                         const std::string& pixelShaderFilename, 
+                         const std::string* geometryShaderFilename) {
 	unsigned int vertexShader;
 	unsigned int pixelShader;
 	unsigned int geometryShader;
@@ -81,7 +81,7 @@ void Shader::loadShaders(const char* vertexShaderFilename,
 	}
 	
 	if(geometryShaderFilename != nullptr) {
-		try {geometryShader = compileShader(geometryShaderFilename, GL_GEOMETRY_SHADER);}
+		try {geometryShader = compileShader(*geometryShaderFilename, GL_GEOMETRY_SHADER);}
 		catch(const std::exception& exception) {
 			g_logger->write(Logger::ERROR, exception.what());
 			throw std::runtime_error("Could not load geometry shader");
@@ -112,12 +112,12 @@ void Shader::loadShaders(const char* vertexShaderFilename,
  *
  * @return OpenGL id referencing the compiled shader object
  */
-unsigned int Shader::compileShader(const char* filename, GLenum type) {
-	if(!PHYSFS_exists(filename)) {
+unsigned int Shader::compileShader(const std::string& filename, GLenum type) {
+	if(!PHYSFS_exists(filename.c_str())) {
 		throw std::runtime_error(std::string("Could not find shader: ") + filename);
 	}
 	
-	PHYSFS_File* shaderFile = PHYSFS_openRead(filename);
+	PHYSFS_File* shaderFile = PHYSFS_openRead(filename.c_str());
 	if(!shaderFile) {
 		throw std::runtime_error(std::string("Could not open shader: ") + filename);
 	}

@@ -3,7 +3,7 @@
 #define LOG_GL
 #include "glerr.h"
 
-RenderModel2D::RenderModel2D(const char* spriteFilename)
+RenderModel2D::RenderModel2D(const std::string& spriteFilename)
 {
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture laoding

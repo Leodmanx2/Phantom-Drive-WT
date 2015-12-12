@@ -9,7 +9,7 @@
 class RenderModel2D : public RenderModel {
 	public:
 		// Geometry shader is optional
-		explicit RenderModel2D(const char* spriteFilename);
+		explicit RenderModel2D(const std::string& spriteFilename);
 								
 		~RenderModel2D();
 		

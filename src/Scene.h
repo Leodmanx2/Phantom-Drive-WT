@@ -14,8 +14,8 @@ class Scene {
 		
 		Camera* m_activeCamera;
 	
-		Actor* m_player;
-		Actor* m_player2;
+		//Actor* m_player;
+		//Actor* m_player2;
 		Actor* m_player3;
 	
 	public:

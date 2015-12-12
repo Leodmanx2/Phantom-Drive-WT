@@ -37,11 +37,11 @@ class Shader {
 		int            m_normalSamplerUniform;
 		int            m_deltaSamplerUniform;
 		
-		void           loadShaders(const char* vertexShaderFilename, 
-		                           const char* pixelShaderFilename, 
-		                           const char* geometryShaderFilename);
+		void           loadShaders(const std::string& vertexShaderFilename, 
+		                           const std::string& pixelShaderFilename, 
+		                           const std::string* geometryShaderFilename);
 		
-		unsigned int   compileShader(const char* filename, GLenum type);
+		unsigned int   compileShader(const std::string& filename, GLenum type);
 		
 		unsigned int   linkShaders(unsigned int vertexShader, 
 		                           unsigned int pixelShader, 
@@ -51,9 +51,9 @@ class Shader {
 		                           unsigned int pixelShader);
 	
 	public:
-		Shader(const char* vertexShaderFilename, 
-	         const char* pixelShaderFilename, 
-	         const char* geometryShaderFilename = nullptr);
+		Shader(const std::string& vertexShaderFilename, 
+	         const std::string& pixelShaderFilename, 
+	         const std::string* geometryShaderFilename = nullptr);
 					 
 		virtual ~Shader();
 		

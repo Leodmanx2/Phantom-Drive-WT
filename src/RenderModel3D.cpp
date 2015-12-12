@@ -3,7 +3,7 @@
 #define LOG_GL
 #include "glerr.h"
 
-RenderModel3D::RenderModel3D(const char* modelFilename)
+RenderModel3D::RenderModel3D(const std::string& modelFilename)
 {
 	// Prepare buffer data
 	VertexList vertices;
@@ -60,7 +60,7 @@ void RenderModel3D::draw(Shader& shader) {
  * @param [out] vertices  Reference to a std::vector<Vetrex> to be filled
  * @param [out] indices   Reference to a std::vector to be filled
  */
-void RenderModel3D::loadOBJ(const char* filename, 
+void RenderModel3D::loadOBJ(const std::string& filename, 
                             VertexList& vertices, 
                             IndexList& indices) {
 	
