@@ -15,6 +15,7 @@
 class Actor {
 	protected:
 		Actor();
+		Actor(const Actor&);
 	
 		glm::quat       m_orientation;
 		glm::vec4       m_position;

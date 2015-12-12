@@ -97,7 +97,7 @@ void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
 	                                0.0f, 
 	                                0.1f, 
 	                                100000.0f);
-																	
+	
 	SDL_SetWindowSize(m_window, width, height);
 }
 

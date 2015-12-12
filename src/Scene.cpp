@@ -27,7 +27,7 @@ Scene::Scene() {
 Scene::Scene(const Scene& original) {
 	//m_player = new Actor(*original.m_player);
 	//m_player2 = new Actor(*original.m_player2);
-	m_player3 = new Actor(*original.m_player3);
+	m_player3 = new DummyActor2(dynamic_cast<DummyActor2&>(*original.m_player3));
 	m_activeCamera = new Camera(*original.m_activeCamera);
 	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
 	// TODO: Shader copy (or preventing Scene copies)

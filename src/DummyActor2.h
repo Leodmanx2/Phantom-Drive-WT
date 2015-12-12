@@ -13,7 +13,6 @@
 class DummyActor2 : public Actor {
 	public:
 		DummyActor2();
-		~DummyActor2();
 };
 
 #endif

@@ -34,9 +34,7 @@ RenderModel3D::~RenderModel3D() {
 /**
  * Draws the model to the active buffer
  *
- * @param [in] modelMatrix       The world transformation
- * @param [in] viewMatrix        Camera's view transformation
- * @param [in] projectionMatrix  World-to-screen transformation
+ * @param [in] shader  The shader that will be used to draw the object
  */
 void RenderModel3D::draw(Shader& shader) {
 	//shader.setTextureMap(m_texture);

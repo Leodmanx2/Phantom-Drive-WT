@@ -20,7 +20,7 @@ class RenderModel {
 	
 	protected:
 		RenderModel();
-		explicit RenderModel(RenderModel& original);
+		explicit RenderModel(const RenderModel&);
 	
 		struct Vertex {
 			glm::vec3 position;

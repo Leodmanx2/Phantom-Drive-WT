@@ -2,7 +2,7 @@
 
 #include "Logger.h"
 
-int main(int argc, char* argv[]) {
+int main(int, char* argv[]) {
 	g_logger->write(Logger::INFO, "Starting program");
 	
 	g_logger->write(Logger::INFO, "Initializing virtual file system");

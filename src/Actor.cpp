@@ -11,6 +11,10 @@ Actor::Actor() {
 	m_left = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 }
 
+Actor::Actor(const Actor&) {
+	
+}
+
 Actor::~Actor() {
 	delete m_renderModel;
 }

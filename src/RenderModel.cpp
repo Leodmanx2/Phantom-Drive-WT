@@ -6,7 +6,7 @@ RenderModel::RenderModel() {
 	++m_instanceCount;
 }
 
-RenderModel::RenderModel(RenderModel& original) {
+RenderModel::RenderModel(const RenderModel&) {
 	++m_instanceCount;
 }
 

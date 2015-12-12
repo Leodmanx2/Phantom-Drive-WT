@@ -12,7 +12,12 @@ OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
 															SimulatedPhysicsActor.o RenderModel3D.o \
 															tiny_obj_loader.o Shader.o)
 
-CXXFLAGS = -std=c++0x -Wall -c -g
+ifeq ($(CXX), clang++)
+	CXXFLAGS_CLANG = -Wextra -Wdeprecated
+	CXXFLAGS_CLANG += -Wdocumentation -Werror=documentation
+endif
+
+CXXFLAGS = -std=c++11 -Wall $(CXXFLAGS_CLANG) -c -g
 LDFLAGS = -g
 
 # Certain library names and flags depend on the OS

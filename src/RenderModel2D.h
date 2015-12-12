@@ -13,7 +13,7 @@ class RenderModel2D : public RenderModel {
 								
 		~RenderModel2D();
 		
-		void draw(Shader& shader) override;;
+		void draw(Shader& shader) override;
 };
 
 #endif
