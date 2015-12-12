@@ -13,11 +13,11 @@ OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
 															tiny_obj_loader.o Shader.o)
 
 ifeq ($(CXX), clang++)
-	CXXFLAGS_CLANG = -Wextra -Wdeprecated
+	CXXFLAGS_CLANG = -Wdeprecated
 	CXXFLAGS_CLANG += -Wdocumentation -Werror=documentation
 endif
 
-CXXFLAGS = -std=c++11 -Wall $(CXXFLAGS_CLANG) -c -g
+CXXFLAGS = -std=c++11 -Wall -Wextra $(CXXFLAGS_CLANG) -c -g
 LDFLAGS = -g
 
 # Certain library names and flags depend on the OS
