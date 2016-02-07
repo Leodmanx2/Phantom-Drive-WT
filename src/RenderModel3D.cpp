@@ -5,6 +5,15 @@
 
 RenderModel3D::RenderModel3D(const std::string& modelFilename)
 {
+    // Load sprite
+	// TODO: We'll want to refactor a good deal of our file/texture laoding
+	int baseWidth, baseHeight;
+	try {m_texture = loadTextureToGPU("testWood.dds", &baseWidth, &baseHeight);}
+	catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not load RenderModel2D sprite");
+	}
+    
 	// Prepare buffer data
 	VertexList vertices;
 	IndexList indices;
@@ -37,8 +46,8 @@ RenderModel3D::~RenderModel3D() {
  * @param [in] shader  The shader that will be used to draw the object
  */
 void RenderModel3D::draw(Shader& shader) {
-	//shader.setTextureMap(m_texture);
-	//glLogErr("Activating texture (3D)");
+	shader.setDiffuseMap(m_texture);
+	glLogErr("Activating texture (3D)");
 	
 	glBindVertexArray(m_vertexArray);
 	glLogErr("Binding VAO (3D)");
@@ -70,7 +79,7 @@ void RenderModel3D::loadOBJ(const std::string& filename,
 	std::string file = std::string("ass/") + filename;
 	
 	std::string err;
-	bool ret = tinyobj::LoadObj(shapes, materials, err, file.c_str());
+	bool ret = tinyobj::LoadObj(shapes, materials, err, file.c_str(), "ass/");
 	// We will not bother handling any errors, just crashing and burning
 	if (!err.empty()) {
 		g_logger->write(Logger::ERROR, err.c_str());
@@ -92,21 +101,26 @@ void RenderModel3D::loadOBJ(const std::string& filename,
 	const size_t vertexCount = shapes[0].mesh.positions.size();
 	const size_t indexCount = shapes[0].mesh.indices.size();
 	const size_t normalCount = shapes[0].mesh.normals.size();
+    const size_t texcoordCount = shapes[0].mesh.texcoords.size();
 	std::stringstream debugVertexCount;
 	std::stringstream debugIndexCount;
 	std::stringstream debugNormalCount;
+    std::stringstream debugTexcoordCount;
 	debugVertexCount << "# of vertices: " << vertexCount;
 	debugIndexCount << "# of indices: " << indexCount;
 	debugNormalCount << "# of normals: " << normalCount;
+    debugTexcoordCount << "# of texcoords: " << texcoordCount;
 	g_logger->write(Logger::DEBUG, debugVertexCount.str());
 	g_logger->write(Logger::DEBUG, debugIndexCount.str());
-	g_logger->write(Logger::DEBUG, debugNormalCount.str());
+    g_logger->write(Logger::DEBUG, debugNormalCount.str());
+	g_logger->write(Logger::DEBUG, debugTexcoordCount.str());
 	
 	m_elementCount = indexCount;
 
 	g_logger->write(Logger::DEBUG, "Validating model");
 	assert(indexCount % 3 == 0);
 	assert(vertexCount == normalCount);
+    assert(texcoordCount == vertexCount/3*2);
 	
 	std::unique_ptr<glm::vec3[]> positions(new glm::vec3[vertexCount]);
 	std::unique_ptr<glm::vec3[]> normals(new glm::vec3[normalCount]);
@@ -123,7 +137,8 @@ void RenderModel3D::loadOBJ(const std::string& filename,
 		                          shapes[0].mesh.normals[3 * i + 1],
 		                          shapes[0].mesh.normals[3 * i + 2]);
 		
-		vertex.texCoord = glm::vec2(0, 0);
+		vertex.texCoord = glm::vec2(shapes[0].mesh.texcoords[3 * i + 0],
+		                            shapes[0].mesh.texcoords[3 * i + 1]);
 		
 		vertices.push_back(vertex);
 	}

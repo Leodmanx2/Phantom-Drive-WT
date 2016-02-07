@@ -68,7 +68,7 @@ RenderModel2D::~RenderModel2D() {
  * @param [in] projectionMatrix  World-to-screen transformation
  */
 void RenderModel2D::draw(Shader& shader) {
-	shader.setTextureMap(m_texture);
+	shader.setDiffuseMap(m_texture);
 	glLogErr("Activating texture (2D)");
 	
 	glBindVertexArray(m_vertexArray);

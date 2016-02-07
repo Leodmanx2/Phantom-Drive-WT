@@ -44,9 +44,8 @@ Shader::Shader(const std::string& vertexShaderFilename,
 	m_viewUniform = glGetUniformLocation(m_id, "view");
 	m_normalUniform = glGetUniformLocation(m_id, "normalMatrix");
 	m_projectionUniform = glGetUniformLocation(m_id, "projection");
-	m_textureSamplerUniform = glGetUniformLocation(m_id, "textureSampler");
-	m_normalSamplerUniform = glGetUniformLocation(m_id, "normalSampler");
-	m_deltaSamplerUniform = glGetUniformLocation(m_id, "deltaSampler");
+	m_diffuseUniform = glGetUniformLocation(m_id, "diffuseMap");
+	m_specularUniform = glGetUniformLocation(m_id, "specularMap");
 	m_eyePositionUniform = glGetUniformLocation(m_id, "eyePos");
 }
 
@@ -246,6 +245,11 @@ void Shader::bind() {
 		glUseProgram(m_id);
 }
 
+void Shader::unbind() {
+	if(m_active)
+		glUseProgram(0);
+}
+
 bool Shader::isBound() {
 	return m_active;
 }
@@ -269,24 +273,25 @@ void Shader::updateNormalMatrix() {
 	glUniformMatrix4fv(m_normalUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 }
 
+void Shader::setMatrices(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
+	setModelMatrix(model);
+	setViewMatrix(view);
+	setProjectionMatrix(projection);
+	updateNormalMatrix();
+}
+
 void Shader::setEyePosition(glm::vec3 position) {
 	glUniform3fv(m_eyePositionUniform, 1, glm::value_ptr(position));
 }
 
-void Shader::setTextureMap(unsigned int id) {
-	glUniform1i(m_textureSamplerUniform, 0);
+void Shader::setDiffuseMap(unsigned int id) {
+	glUniform1i(m_diffuseUniform, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, id);
 }
 
-void Shader::setNormalMap(unsigned int id) {
-	glUniform1i(m_normalSamplerUniform, 1);
-	glActiveTexture(GL_TEXTURE0 + 1);
-	glBindTexture(GL_TEXTURE_2D, id);
-}
-
-void Shader::setDeltaMap(unsigned int id) {
-	glUniform1i(m_deltaSamplerUniform, 2);
-	glActiveTexture(GL_TEXTURE0 + 2);
+void Shader::setSpecularMap(unsigned int id) {
+	glUniform1i(m_specularUniform, 1);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, id);
 }

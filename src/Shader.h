@@ -33,9 +33,9 @@ class Shader {
 		
 		int            m_eyePositionUniform;
 		
-		int            m_textureSamplerUniform;
-		int            m_normalSamplerUniform;
-		int            m_deltaSamplerUniform;
+		int            m_diffuseUniform;
+		int            m_specularUniform;
+		int            m_shineUniform;
 		
 		void           loadShaders(const std::string& vertexShaderFilename, 
 		                           const std::string& pixelShaderFilename, 
@@ -58,6 +58,7 @@ class Shader {
 		virtual ~Shader();
 		
 		void bind();
+		void unbind();
 		bool isBound();
 		
 		void setModelMatrix(glm::mat4 matrix);
@@ -66,11 +67,12 @@ class Shader {
 		
 		void updateNormalMatrix();
 		
+		void setMatrices(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
+		
 		void setEyePosition(glm::vec3 position);
 		
-		void setTextureMap(unsigned int id);
-		void setNormalMap(unsigned int id);
-		void setDeltaMap(unsigned int id);
+		void setDiffuseMap(unsigned int id);
+		void setSpecularMap(unsigned int id);
 };
 
 #endif

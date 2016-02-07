@@ -20,7 +20,7 @@ Scene::Scene() {
 	//m_player2->translate(0.0f, 400.0f, 0.0f);
 	m_player3->translate(-990.0f, 0.0f, 0.0f);
 	
-	m_activeShader = new Shader("passthrough.vert.glsl", "passthrough.frag.glsl");
+	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	glLogErr("Constructing passthrough shader program");
 }
 
