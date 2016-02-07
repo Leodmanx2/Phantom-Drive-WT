@@ -137,8 +137,8 @@ void RenderModel3D::loadOBJ(const std::string& filename,
 		                          shapes[0].mesh.normals[3 * i + 1],
 		                          shapes[0].mesh.normals[3 * i + 2]);
 		
-		vertex.texCoord = glm::vec2(shapes[0].mesh.texcoords[3 * i + 0],
-		                            shapes[0].mesh.texcoords[3 * i + 1]);
+		vertex.texCoord = glm::vec2(shapes[0].mesh.texcoords[2 * i + 0],
+		                            shapes[0].mesh.texcoords[2 * i + 1]);
 		
 		vertices.push_back(vertex);
 	}
