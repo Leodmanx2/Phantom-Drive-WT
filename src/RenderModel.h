@@ -31,9 +31,8 @@ class RenderModel {
 		using IndexList = std::vector<unsigned int>;
 	
 		// GPU Resources
-		unsigned int   m_texture;
-		unsigned int   m_normalMap;
-		unsigned int   m_deltaMap;
+		unsigned int   m_diffuseMap;
+		unsigned int   m_specularMap;
 		
 		unsigned int   m_vertexArray;
 		

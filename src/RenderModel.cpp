@@ -17,9 +17,8 @@ RenderModel::~RenderModel() {
 		glDeleteVertexArrays(1, &m_vertexArray);
 		glDeleteBuffers(1, &m_vertexBuffer);
 		glDeleteBuffers(1, &m_indexBuffer);
-		glDeleteTextures(1, &m_texture);
-		glDeleteTextures(1, &m_normalMap);
-		glDeleteTextures(1, &m_deltaMap);
+		glDeleteTextures(1, &m_diffuseMap);
+		glDeleteTextures(1, &m_specularMap);
 	}
 }
 

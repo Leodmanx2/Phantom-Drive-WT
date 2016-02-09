@@ -14,8 +14,8 @@ uniform sampler2D specularMap;
 
 // TODO: This information is to be passed in from the scene and camera
 // TODO: Lights and their properties
-const vec3 eyePos = {0.0f, 0.0f, -1000.0f};
-const vec3 lightPos = {200.0f, 400.0f, 50.0f};
+const vec3 eyePos = {0.0f, 0.0f, 1000.0f};
+const vec3 lightPos = {0.0f, 0.0f, 1000.0f};
 
 // ----------------------------------------------------------------------------
 //  Input
@@ -36,10 +36,11 @@ out vec4 out_color;
 // ----------------------------------------------------------------------------
 
 void main() {
-	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
-	vec3 ambientColor = diffuseColor;
+	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb
+	// TODO: Needs to be determined by brightness of scene
+	vec3 ambientColor = 0.2f * diffuseColor;
 	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
-    float shine = texture2D(specularMap, frag_texCoord).a;
+	float shine = 255.0f * texture2D(specularMap, frag_texCoord).a;
 	
 	vec3 normal = normalize(frag_normal);
 	vec3 toLight = normalize(lightPos - frag_position);
@@ -47,7 +48,7 @@ void main() {
 	vec3 halfVec = normalize(toLight + toEye);
 	
 	float diffuseIntensity = dot(normal, toLight);
-	      diffuseIntensity = clamp(diffuseIntensity, 0.0f, 1.0f);
+	      diffuseIntensity = max(diffuseIntensity, 0.0f);
 	
 	float specularIntensity = dot(normal, halfVec);
 	      specularIntensity = max(specularIntensity, 0.0f);

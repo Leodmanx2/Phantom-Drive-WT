@@ -5,15 +5,22 @@
 
 RenderModel3D::RenderModel3D(const std::string& modelFilename)
 {
-    // Load sprite
+	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture laoding
 	int baseWidth, baseHeight;
-	try {m_texture = loadTextureToGPU("testWood.dds", &baseWidth, &baseHeight);}
+	try {m_diffuseMap = loadTextureToGPU("testWood.dds", &baseWidth, &baseHeight);}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Could not load RenderModel2D sprite");
+		throw std::runtime_error("Could not load RenderModel3D diffuse map");
 	}
-    
+	
+	int baseWidth2, baseHeight2;
+	try {m_specularMap = loadTextureToGPU("testShine.dds", &baseWidth2, &baseHeight2);}
+	catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Could not load RenderModel2D specular map");
+	}
+	
 	// Prepare buffer data
 	VertexList vertices;
 	IndexList indices;
@@ -46,8 +53,11 @@ RenderModel3D::~RenderModel3D() {
  * @param [in] shader  The shader that will be used to draw the object
  */
 void RenderModel3D::draw(Shader& shader) {
-	shader.setDiffuseMap(m_texture);
-	glLogErr("Activating texture (3D)");
+	shader.setDiffuseMap(m_diffuseMap);
+	glLogErr("Activating diffuse texture (3D)");
+	
+	shader.setSpecularMap(m_specularMap);
+	glLogErr("Activating specular texture (3D)");
 	
 	glBindVertexArray(m_vertexArray);
 	glLogErr("Binding VAO (3D)");
