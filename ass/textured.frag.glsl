@@ -36,7 +36,7 @@ out vec4 out_color;
 // ----------------------------------------------------------------------------
 
 void main() {
-	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb
+	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
 	// TODO: Needs to be determined by brightness of scene
 	vec3 ambientColor = 0.2f * diffuseColor;
 	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
