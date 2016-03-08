@@ -18,7 +18,7 @@ RenderModel3D::RenderModel3D(const std::string& modelFilename)
 	try {m_specularMap = loadTextureToGPU("testShine.dds", &baseWidth2, &baseHeight2);}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Could not load RenderModel2D specular map");
+		throw std::runtime_error("Could not load RenderModel3D specular map");
 	}
 	
 	// Prepare buffer data

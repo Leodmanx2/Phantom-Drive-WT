@@ -8,7 +8,7 @@ RenderModel2D::RenderModel2D(const std::string& spriteFilename)
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture laoding
 	int baseWidth, baseHeight;
-	try {m_texture = loadTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
+	try {m_diffuseMap = loadTextureToGPU(spriteFilename, &baseWidth, &baseHeight);}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel2D sprite");
@@ -68,7 +68,7 @@ RenderModel2D::~RenderModel2D() {
  * @param [in] projectionMatrix  World-to-screen transformation
  */
 void RenderModel2D::draw(Shader& shader) {
-	shader.setDiffuseMap(m_texture);
+	shader.setDiffuseMap(m_diffuseMap);
 	glLogErr("Activating texture (2D)");
 	
 	glBindVertexArray(m_vertexArray);
