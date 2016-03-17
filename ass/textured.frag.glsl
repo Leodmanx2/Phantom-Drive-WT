@@ -9,14 +9,14 @@ uniform mat4 view;
 uniform mat4 model;
 uniform mat4 normalMatrix;
 
+uniform vec3 eyePos;
+
 uniform sampler2D diffuseMap;
 uniform sampler2D specularMap;
 
 uniform float ambience;
 
-// TODO: This information is to be passed in from the scene and camera
-// TODO: Lights and their properties
-const vec3 eyePos = vec3(0.0, 0.0, 1000.0);
+// TODO: Lights and their properties, to be passed in from scene
 const vec3 lightPos = vec3(0.0, 0.0, 1000.0);
 
 // ----------------------------------------------------------------------------
