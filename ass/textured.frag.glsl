@@ -12,6 +12,8 @@ uniform mat4 normalMatrix;
 uniform sampler2D diffuseMap;
 uniform sampler2D specularMap;
 
+uniform float ambience;
+
 // TODO: This information is to be passed in from the scene and camera
 // TODO: Lights and their properties
 const vec3 eyePos = vec3(0.0, 0.0, 1000.0);
@@ -37,8 +39,7 @@ out vec4 out_color;
 
 void main() {
 	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
-	// TODO: Needs to be determined by brightness of scene
-	vec3 ambientColor = 0.2 * diffuseColor;
+	vec3 ambientColor = ambience * diffuseColor;
 	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
 	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
 	

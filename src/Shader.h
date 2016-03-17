@@ -36,6 +36,7 @@ class Shader {
 		int            m_diffuseUniform;
 		int            m_specularUniform;
 		int            m_shineUniform;
+		int            m_ambienceUniform;
 		
 		void           loadShaders(const std::string& vertexShaderFilename, 
 		                           const std::string& pixelShaderFilename, 
@@ -73,6 +74,8 @@ class Shader {
 		
 		void setDiffuseMap(unsigned int id);
 		void setSpecularMap(unsigned int id);
+		
+		void setAmbience(float ambience);
 };
 
 #endif

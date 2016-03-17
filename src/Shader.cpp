@@ -46,6 +46,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 	m_projectionUniform = glGetUniformLocation(m_id, "projection");
 	m_diffuseUniform = glGetUniformLocation(m_id, "diffuseMap");
 	m_specularUniform = glGetUniformLocation(m_id, "specularMap");
+	m_ambienceUniform = glGetUniformLocation(m_id, "ambience");
 	m_eyePositionUniform = glGetUniformLocation(m_id, "eyePos");
 }
 
@@ -294,4 +295,8 @@ void Shader::setSpecularMap(unsigned int id) {
 	glUniform1i(m_specularUniform, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Shader::setAmbience(float ambience) {
+	glUniform1f(m_ambienceUniform, ambience);
 }

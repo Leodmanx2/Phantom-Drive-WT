@@ -4,6 +4,8 @@
 #include "glerr.h"
 
 Scene::Scene() {
+	m_ambience = 0.2f;
+	
 	m_physicsSimulator = new PhysicsSimulator();
 	
 	m_activeCamera = new Camera();
@@ -73,6 +75,8 @@ void Scene::simulate() {
  */
 void Scene::draw(glm::mat4 projectionMatrix) {
 	glLogErr("Pre-draw check");
+	
+	m_activeShader->setAmbience(m_ambience);
 	
 	// Send camera position to the GPU.
 	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at 

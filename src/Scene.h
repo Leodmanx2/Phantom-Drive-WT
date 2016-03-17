@@ -17,6 +17,8 @@ class Scene {
 		//Actor* m_player;
 		//Actor* m_player2;
 		Actor* m_player3;
+		
+		float m_ambience; // How bright the scene is on average
 	
 	public:
 		Scene();
