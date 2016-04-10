@@ -13,9 +13,10 @@ class Scene {
 		
 		Camera* m_activeCamera;
 	
-		//Actor* m_player;
-		//Actor* m_player2;
-		Actor* m_player3;
+		// TODO: Remove specific actors, etc. These are for development purposes only.
+		// Scene should not have details of specific scenes. Scenes must be built 
+		// from external descriptions, just like Shader and RenderModel.
+		Actor* m_player;
 		
 		float m_ambience; // How bright the scene is on average
 	
