@@ -2,7 +2,7 @@
 #define SIMULATEDPHYSICSACTOR_H
 
 #include "Actor.h"
-#include "RenderModel2D.h"
+#include "RenderModel.h"
 #include <GL/glew.h>
 #include <memory>
 #include "Logger.h"

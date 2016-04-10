@@ -6,21 +6,27 @@
 #include <sstream>
 #include <vector>
 #include <stdexcept>
-#include "Logger.h"
 #include <physfs.h>
 #include <limits>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <memory>
+#include "Logger.h"
 #include "Shader.h"
+
+// We're only using tiny_obj_loader for development purposes. 
+// We'll require something supporting animations when we get to that.
+// Will eventually implement own model format.
+#include "tiny_obj_loader.h"
 
 class RenderModel {
 	private:
 		static int     m_instanceCount;
-	
-	protected:
-		RenderModel();
-		explicit RenderModel(const RenderModel&);
+		
+		size_t m_elementCount;
 	
 		struct Vertex {
 			glm::vec3 position;
@@ -29,6 +35,15 @@ class RenderModel {
 		};
 		using VertexList = std::vector<Vertex>;
 		using IndexList = std::vector<unsigned int>;
+	
+		// TODO: Replace with other model-loading code when required
+		void loadOBJ(const std::string& filename, 
+		             VertexList& vertices, 
+		             IndexList& indices);
+	
+	protected:
+		RenderModel();
+		explicit RenderModel(const RenderModel&);
 	
 		// GPU Resources
 		unsigned int   m_diffuseMap;
@@ -49,9 +64,12 @@ class RenderModel {
 		                                int* baseHeight);
 
 	public:
+		// Geometry shader is optional
+		explicit RenderModel(const std::string& modelFilename);
+		
 		virtual ~RenderModel();
 		
-		virtual void draw(Shader& shader) = 0;
+		void draw(Shader& shader);
 };
 
 #endif

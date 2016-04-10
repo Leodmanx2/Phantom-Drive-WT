@@ -4,7 +4,6 @@
 #include "Camera.h"
 
 #include "DummyActor.h"
-#include "DummyActor2.h"
 
 class Scene {
 	private:

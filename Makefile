@@ -31,10 +31,10 @@ ASSDIR = $(CURDIR)/ass
 BINDIR = $(CURDIR)/bin
 
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
-                              Actor.o RenderModel.o RenderModel2D.o \
-                              Camera.o DummyActor.o DummyActor2.o Logger.o \
+                              Actor.o RenderModel.o \
+                              Camera.o DummyActor.o Logger.o \
                               Scene.o PhysicsSimulator.o ActorMotionState.o \
-                              SimulatedPhysicsActor.o RenderModel3D.o \
+                              SimulatedPhysicsActor.o \
                               tiny_obj_loader.o Shader.o)
 
 ifeq ($(CXX), clang++)
