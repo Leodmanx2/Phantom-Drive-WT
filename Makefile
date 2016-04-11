@@ -35,7 +35,7 @@ OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
                               Camera.o DummyActor.o Logger.o \
                               Scene.o PhysicsSimulator.o ActorMotionState.o \
                               SimulatedPhysicsActor.o \
-                              tiny_obj_loader.o Shader.o)
+                              tiny_obj_loader.o Shader.o Light.o)
 
 ifeq ($(CXX), clang++)
 	CXXFLAGS_CLANG = -Wdeprecated

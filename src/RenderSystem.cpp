@@ -73,7 +73,8 @@ RenderSystem::~RenderSystem() {
  * @param [in] scene  The scene to be drawn
  */
 void RenderSystem::draw(Scene* scene) {
-	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
+	//glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
+	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLogErr("Clearing buffers");
 	

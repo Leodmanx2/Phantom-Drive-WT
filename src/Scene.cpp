@@ -9,16 +9,19 @@ Scene::Scene() {
 	m_physicsSimulator = new PhysicsSimulator();
 	
 	m_activeCamera = new Camera();
-	m_activeCamera->translate(-1000.0f, 0.0f, 0.0f);
+	m_activeCamera->translate(-10.0f, 0.0f, 0.0f);
 	
 	g_logger->write(Logger::DEBUG, "Creating new DummyActor");
 	m_player = new DummyActor();
 	glLogErr("Constructing DummyActor");
 	
-	m_player->translate(-990.0f, 0.0f, 0.0f);
-	
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	glLogErr("Constructing passthrough shader program");
+	
+	m_light = new PointLight(glm::vec3(0.0f, 0.0f, 0.0f), // Position
+	                         glm::vec3(1.0f, 0.0f, 1.0f), // Color
+	                         5.0f,                        // Intensity
+	                         10.0f);                      // Radius
 }
 
 Scene::Scene(const Scene& original) {
@@ -30,6 +33,7 @@ Scene::Scene(const Scene& original) {
 
 Scene::~Scene() {
 	delete m_player;
+	delete m_light;
 	delete m_activeCamera;
 	delete m_physicsSimulator;
 	delete m_activeShader;
@@ -64,6 +68,7 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 	glLogErr("Pre-draw check");
 	
 	m_activeShader->setAmbience(m_ambience);
+	m_activeShader->addPointLight(*m_light);
 	
 	// Send camera position to the GPU.
 	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at 

@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_inverse.hpp>
 #include <physfs.h>
 #include "Logger.h"
+#include "Light.h"
 
 // TODO: Update render model construction to use shader object instead of making a shader themselves
 
@@ -37,6 +38,11 @@ class Shader {
 		int            m_specularUniform;
 		int            m_shineUniform;
 		int            m_ambienceUniform;
+		
+		int            m_lightPosUniform;
+		int            m_lightColorUniform;
+		int            m_lightIntensityUniform;
+		int            m_lightRadiusUniform;
 		
 		void           loadShaders(const std::string& vertexShaderFilename, 
 		                           const std::string& pixelShaderFilename, 
@@ -76,6 +82,8 @@ class Shader {
 		void setSpecularMap(unsigned int id);
 		
 		void setAmbience(float ambience);
+		
+		void addPointLight(PointLight& light);
 };
 
 #endif

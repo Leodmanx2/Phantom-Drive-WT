@@ -48,6 +48,11 @@ Shader::Shader(const std::string& vertexShaderFilename,
 	m_specularUniform = glGetUniformLocation(m_id, "specularMap");
 	m_ambienceUniform = glGetUniformLocation(m_id, "ambience");
 	m_eyePositionUniform = glGetUniformLocation(m_id, "eyePos");
+	
+	m_lightPosUniform = glGetUniformLocation(m_id, "lightPos");
+	m_lightColorUniform = glGetUniformLocation(m_id, "lightColor");
+	m_lightIntensityUniform = glGetUniformLocation(m_id, "lightIntensity");
+	m_lightRadiusUniform = glGetUniformLocation(m_id, "lightRadius");
 }
 
 Shader::~Shader() {
@@ -299,4 +304,11 @@ void Shader::setSpecularMap(unsigned int id) {
 
 void Shader::setAmbience(float ambience) {
 	glUniform1f(m_ambienceUniform, ambience);
+}
+
+void Shader::addPointLight(PointLight& light) {
+	glUniform3fv(m_lightPosUniform, 1, glm::value_ptr(light.position));
+	glUniform3fv(m_lightColorUniform, 1, glm::value_ptr(light.color));
+	glUniform1f(m_lightIntensityUniform, light.intensity);
+	glUniform1f(m_lightRadiusUniform, light.radius);
 }

@@ -4,6 +4,7 @@
 #include "Camera.h"
 
 #include "DummyActor.h"
+#include "Light.h"
 
 class Scene {
 	private:
@@ -16,6 +17,7 @@ class Scene {
 		// TODO: Remove specific actors, etc. These are for development purposes only.
 		// Scene should not have details of specific scenes. Scenes must be built 
 		// from external descriptions, just like Shader and RenderModel.
+		PointLight* m_light;
 		Actor* m_player;
 		
 		float m_ambience; // How bright the scene is on average
