@@ -6,7 +6,7 @@
 #include <GL/glew.h>
 
 #ifdef LOG_GL
-inline void glLogErr(std::string context) {
+inline void glLogErr(const std::string& context) {
 	std::stringstream ss;
 	ss << context << ": ";
 	bool write = true;
@@ -44,7 +44,7 @@ inline void glLogErr(std::string context) {
 	if(write) g_logger->write(Logger::DEBUG, ss.str());
 }
 #else
-inline void glLogErr(std::string context) {return;}
+inline void glLogErr(const std::string& context) {return;}
 #endif
 
 #endif

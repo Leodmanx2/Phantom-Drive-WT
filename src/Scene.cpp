@@ -5,23 +5,28 @@
 
 Scene::Scene() {
 	m_ambience = 0.2f;
-	
+
 	m_physicsSimulator = new PhysicsSimulator();
-	
+
 	m_activeCamera = new Camera();
 	m_activeCamera->translate(-10.0f, 0.0f, 0.0f);
-	
+
 	g_logger->write(Logger::DEBUG, "Creating new DummyActor");
 	m_player = new DummyActor();
 	glLogErr("Constructing DummyActor");
-	
+
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	glLogErr("Constructing passthrough shader program");
-	
+
 	m_light = new PointLight(glm::vec3(0.0f, 0.0f, 0.0f), // Position
 	                         glm::vec3(1.0f, 0.0f, 1.0f), // Color
 	                         5.0f,                        // Intensity
 	                         10.0f);                      // Radius
+
+	m_light2 = new PointLight(glm::vec3(2.0f, 0.0f, 0.0f), // Position
+	                          glm::vec3(0.0f, 1.0f, 0.0f), // Color
+	                          5.0f,                        // Intensity
+	                          10.0f);                      // Radius
 }
 
 Scene::Scene(const Scene& original) {
@@ -46,7 +51,7 @@ Scene::~Scene() {
  */
 void Scene::update() {
 	m_player->update();
-	
+
 	m_player->rotate(0.0001f, 0.0001f, 0.0f);
 }
 
@@ -66,26 +71,27 @@ void Scene::simulate() {
  */
 void Scene::draw(glm::mat4 projectionMatrix) {
 	glLogErr("Pre-draw check");
-	
+
 	m_activeShader->setAmbience(m_ambience);
-	m_activeShader->addPointLight(*m_light);
-	
+	m_activeShader->setPointLight(0, *m_light);
+	m_activeShader->setPointLight(1, *m_light2);
+
 	// Send camera position to the GPU.
-	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at 
-	//       location 0 in the shader, and lights from 1-8 (while we use forward 
+	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at
+	//       location 0 in the shader, and lights from 1-8 (while we use forward
 	//       rendering)
 	glm::vec4 camPos4 = m_activeCamera->getPosition();
 	glm::vec3 camPos3 = glm::vec3(camPos4.x, camPos4.y, camPos4.z);
 
 	m_activeShader->setViewMatrix(m_activeCamera->getViewMatrix());
 	glLogErr("Uploading view matrix");
-	
+
 	m_activeShader->setEyePosition(camPos3);
 	glLogErr("Uploading camera position");
-	
+
 	m_activeShader->setProjectionMatrix(projectionMatrix);
 	glLogErr("Uploading projection matrix");
-	
+
 	m_player->draw(*m_activeShader);
 	glLogErr("Drawing actors");
 }
