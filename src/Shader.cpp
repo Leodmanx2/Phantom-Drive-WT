@@ -72,11 +72,6 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		light.color = glGetUniformLocation(m_id, color.c_str());
 		light.intensity = glGetUniformLocation(m_id, intensity.c_str());
 		light.radius = glGetUniformLocation(m_id, radius.c_str());
-
-		std::cout << position << " = " << light.position << "\n";
-		std::cout << color << " = " << light.color << "\n";
-		std::cout << intensity << " = " << light.intensity << "\n";
-		std::cout << radius << " = " << light.radius << "\n";
 	}
 }
 

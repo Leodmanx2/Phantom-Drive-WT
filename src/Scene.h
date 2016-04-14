@@ -20,6 +20,9 @@ class Scene {
 		PointLight* m_light;
 		PointLight* m_light2;
 		Actor* m_player;
+		Actor* m_player2;
+		Actor* m_player3;
+		Actor* m_player4;
 
 		float m_ambience; // How bright the scene is on average
 

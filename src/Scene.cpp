@@ -14,23 +14,35 @@ Scene::Scene() {
 	g_logger->write(Logger::DEBUG, "Creating new DummyActor");
 	m_player = new DummyActor();
 	glLogErr("Constructing DummyActor");
+	m_player2 = new DummyActor();
+	m_player2->translate(3.0f, 3.0f, 3.0f);
+	m_player3 = new DummyActor();
+	m_player3->translate(-3.0f, -3.0f, 0.0f);
+	m_player4 = new DummyActor();
+	m_player4->translate(0.0f, 0.0f, -4.0f);
 
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	glLogErr("Constructing passthrough shader program");
 
 	m_light = new PointLight(glm::vec3(0.0f, 0.0f, 0.0f), // Position
 	                         glm::vec3(1.0f, 0.0f, 1.0f), // Color
-	                         5.0f,                        // Intensity
-	                         10.0f);                      // Radius
+	                         7.0f,                        // Intensity
+	                         15.0f);                      // Radius
 
 	m_light2 = new PointLight(glm::vec3(2.0f, 0.0f, 0.0f), // Position
 	                          glm::vec3(0.0f, 1.0f, 0.0f), // Color
-	                          5.0f,                        // Intensity
-	                          10.0f);                      // Radius
+	                          7.0f,                        // Intensity
+	                          15.0f);                      // Radius
 }
 
 Scene::Scene(const Scene& original) {
 	m_player = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_player2 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_player3 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_player4 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_light = new PointLight(*original.m_light);
+	m_light2 = new PointLight(*original.m_light);
+
 	m_activeCamera = new Camera(*original.m_activeCamera);
 	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
 	// TODO: Shader copy (or preventing Scene copies)
@@ -38,7 +50,14 @@ Scene::Scene(const Scene& original) {
 
 Scene::~Scene() {
 	delete m_player;
+	delete m_player2;
+	delete m_player3;
+	delete m_player4;
+
 	delete m_light;
+	delete m_light2;
+
+
 	delete m_activeCamera;
 	delete m_physicsSimulator;
 	delete m_activeShader;
@@ -51,8 +70,14 @@ Scene::~Scene() {
  */
 void Scene::update() {
 	m_player->update();
+	m_player2->update();
+	m_player3->update();
+	m_player4->update();
 
 	m_player->rotate(0.0001f, 0.0001f, 0.0f);
+	m_player2->rotate(0.0001f, 0.0f, 0.0f);
+	m_player3->rotate(0.0f, 0.0f, 0.00005f);
+	m_player4->rotate(0.0f, 0.0001f, 0.0001f);
 }
 
 /**
@@ -93,5 +118,8 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 	glLogErr("Uploading projection matrix");
 
 	m_player->draw(*m_activeShader);
+	m_player2->draw(*m_activeShader);
+	m_player3->draw(*m_activeShader);
+	m_player4->draw(*m_activeShader);
 	glLogErr("Drawing actors");
 }
