@@ -33,6 +33,12 @@ class Shader {
 		int radius;
 	};
 
+	struct DirectionLightUniform {
+		int direction;
+		int color;
+		int intensity;
+	};
+
 	// Disable copying
 		Shader(const Shader&) = delete;
 		Shader& operator=(const Shader&) = delete;
@@ -58,6 +64,7 @@ class Shader {
 
 		std::array<PointLightUniform, 8> m_pointLightUniforms;
 		std::array<SpotLightUniform, 8> m_spotLightUniforms;
+		std::array<DirectionLightUniform, 8> m_directionLightUniforms;
 
 		void           loadShaders(const std::string& vertexShaderFilename,
 		                           const std::string& pixelShaderFilename,
@@ -100,6 +107,7 @@ class Shader {
 
 		void setPointLight(int index, PointLight& light);
 		void setSpotLight(int index, SpotLight& light);
+		void setDirectionLight(int index, DirectionLight& light);
 };
 
 #endif

@@ -130,6 +130,31 @@ vec3 spotLight(SpotLight light) {
 	return color;
 }
 
+vec3 directionLight(DirectionLight light) {
+	vec3 normal = normalize(frag_normal);
+	vec3 toLight = normalize(-light.direction);
+	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
+
+	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
+	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
+	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
+
+	float diffuseIntensity = dot(normal, toLight);
+	      diffuseIntensity = max(diffuseIntensity, 0.0);
+
+	float specularIntensity = dot(normal, halfVec);
+	      specularIntensity = max(specularIntensity, 0.0);
+	      specularIntensity = pow(specularIntensity, shine);
+
+	diffuseColor *= light.color * light.intensity;
+	specularColor *= light.color * light.intensity;
+
+	vec3 color = diffuseIntensity * diffuseColor +
+	             specularIntensity * specularColor;
+
+	return color;
+}
+
 // ----------------------------------------------------------------------------
 //  Entry point
 // ----------------------------------------------------------------------------
@@ -141,7 +166,10 @@ void main() {
 
 	vec3 color = vec3(0);
 
-	// TODO: Directional lights
+	// Directional lights
+	for(int i=0; i<DIRECTION_LIGHT_COUNT; ++i) {
+		color += directionLight(directionLights[i]);
+	}
 
 	// Point lights
 	for(int i=0; i<POINT_LIGHT_COUNT; ++i) {

@@ -108,6 +108,26 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		light.angle = glGetUniformLocation(m_id, angle.c_str());
 		light.radius = glGetUniformLocation(m_id, radius.c_str());
 	}
+
+	for(size_t i=0; i<m_directionLightUniforms.size(); ++i) {
+		DirectionLightUniform& light = m_directionLightUniforms.at(i);
+
+		std::stringstream directionStream;
+		directionStream << "directionLights[" << i << "].direction";
+		const std::string direction = directionStream.str();
+
+		std::stringstream colorStream;
+		colorStream << "directionLights[" << i << "].color";
+		const std::string color = colorStream.str();
+
+		std::stringstream intensityStream;
+		intensityStream << "directionLights[" << i << "].intensity";
+		const std::string intensity = intensityStream.str();
+
+		light.direction = glGetUniformLocation(m_id, direction.c_str());
+		light.color = glGetUniformLocation(m_id, color.c_str());
+		light.intensity = glGetUniformLocation(m_id, intensity.c_str());
+	}
 }
 
 Shader::~Shader() {
@@ -377,4 +397,11 @@ void Shader::setSpotLight(int index, SpotLight& light) {
 	glUniform1f(m_spotLightUniforms[index].radius, light.radius);
 	glUniform3fv(m_spotLightUniforms[index].direction, 1, glm::value_ptr(light.direction));
 	glUniform1f(m_spotLightUniforms[index].angle, light.angle);
+}
+
+void Shader::setDirectionLight(int index, DirectionLight& light) {
+	assert(index >= 0 && index <= 2);
+	glUniform3fv(m_directionLightUniforms[index].color, 1, glm::value_ptr(light.color));
+	glUniform1f(m_directionLightUniforms[index].intensity, light.intensity);
+	glUniform3fv(m_directionLightUniforms[index].direction, 1, glm::value_ptr(light.direction));
 }

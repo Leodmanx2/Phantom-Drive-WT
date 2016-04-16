@@ -24,17 +24,21 @@ Scene::Scene() {
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	glLogErr("Constructing passthrough shader program");
 
-	m_light = new PointLight(glm::vec3(-3.0f, 0.0f, 0.0f), // Position
-	                         glm::vec3(1.0f, 0.0f, 1.0f),  // Color
-	                         20.0f,                         // Intensity
-	                         3.0f);                        // Radius
+	m_pointLight = new PointLight(glm::vec3(-3.0f, 0.0f, 0.0f), // Position
+	                              glm::vec3(1.0f, 0.0f, 0.0f),  // Color
+	                              20.0f,                        // Intensity
+	                              3.0f);                        // Radius
 
-	m_light2 = new SpotLight(glm::vec3(2.0f, 0.0f, 0.0f),   // Position
-	                          glm::vec3(0.0f, 0.0f, -1.0f), // Direction
-	                          glm::vec3(0.0f, 1.0f, 0.0f),  // Color
-	                          7.0f,                         // Intensity
-	                          5.0f,                         // Angle
-	                          15.0f);                       // Radius
+	m_spotLight = new SpotLight(glm::vec3(2.0f, 0.0f, 0.0f),  // Position
+	                            glm::vec3(0.0f, 0.0f, -1.0f), // Direction
+	                            glm::vec3(0.0f, 1.0f, 0.0f),  // Color
+	                            7.0f,                         // Intensity
+	                            5.0f,                         // Angle
+	                            15.0f);                       // Radius
+
+	m_directionLight = new DirectionLight(glm::vec3(1.0f, 0.0f, 0.0f), // Direction
+	                                      glm::vec3(0.0f, 0.0f, 1.0f), // Color
+	                                      1.0f);                       // Intensity
 }
 
 Scene::Scene(const Scene& original) {
@@ -42,8 +46,9 @@ Scene::Scene(const Scene& original) {
 	m_player2 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
 	m_player3 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
 	m_player4 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_light = new PointLight(*original.m_light);
-	m_light2 = new SpotLight(*original.m_light2);
+	m_pointLight = new PointLight(*original.m_pointLight);
+	m_spotLight = new SpotLight(*original.m_spotLight);
+	m_directionLight = new DirectionLight(*original.m_directionLight);
 
 	m_activeCamera = new Camera(*original.m_activeCamera);
 	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
@@ -56,8 +61,9 @@ Scene::~Scene() {
 	delete m_player3;
 	delete m_player4;
 
-	delete m_light;
-	delete m_light2;
+	delete m_pointLight;
+	delete m_spotLight;
+	delete m_directionLight;
 
 
 	delete m_activeCamera;
@@ -100,8 +106,9 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 	glLogErr("Pre-draw check");
 
 	m_activeShader->setAmbience(m_ambience);
-	m_activeShader->setPointLight(0, *m_light);
-	m_activeShader->setSpotLight(1, *m_light2);
+	m_activeShader->setPointLight(0, *m_pointLight);
+	m_activeShader->setSpotLight(0, *m_spotLight);
+	m_activeShader->setDirectionLight(0, *m_directionLight);
 
 	// Send camera position to the GPU.
 	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at

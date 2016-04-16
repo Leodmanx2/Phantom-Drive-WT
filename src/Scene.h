@@ -17,8 +17,9 @@ class Scene {
 		// TODO: Remove specific actors, etc. These are for development purposes only.
 		// Scene should not have details of specific scenes. Scenes must be built
 		// from external descriptions, just like Shader and RenderModel.
-		PointLight* m_light;
-		SpotLight* m_light2;
+		PointLight* m_pointLight;
+		SpotLight* m_spotLight;
+		DirectionLight* m_directionLight;
 		Actor* m_player;
 		Actor* m_player2;
 		Actor* m_player3;
