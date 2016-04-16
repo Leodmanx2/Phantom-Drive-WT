@@ -14,8 +14,6 @@
 #include "Logger.h"
 #include "Light.h"
 
-// TODO: Update render model construction to use shader object instead of making a shader themselves
-
 class Shader {
 	struct PointLightUniform {
 		int position;
