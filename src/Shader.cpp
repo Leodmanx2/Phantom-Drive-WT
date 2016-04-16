@@ -53,24 +53,59 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		PointLightUniform& light = m_pointLightUniforms.at(i);
 
 		std::stringstream positionStream;
-		positionStream << "lights[" << i << "].position";
+		positionStream << "pointLights[" << i << "].position";
 		const std::string position = positionStream.str();
 
 		std::stringstream colorStream;
-		colorStream << "lights[" << i << "].color";
+		colorStream << "pointLights[" << i << "].color";
 		const std::string color = colorStream.str();
 
 		std::stringstream intensityStream;
-		intensityStream << "lights[" << i << "].intensity";
+		intensityStream << "pointLights[" << i << "].intensity";
 		const std::string intensity = intensityStream.str();
 
 		std::stringstream radiusStream;
-		radiusStream << "lights[" << i << "].radius";
+		radiusStream << "pointLights[" << i << "].radius";
 		const std::string radius = radiusStream.str();
 
 		light.position = glGetUniformLocation(m_id, position.c_str());
 		light.color = glGetUniformLocation(m_id, color.c_str());
 		light.intensity = glGetUniformLocation(m_id, intensity.c_str());
+		light.radius = glGetUniformLocation(m_id, radius.c_str());
+	}
+
+	for(size_t i=0; i<m_spotLightUniforms.size(); ++i) {
+		SpotLightUniform& light = m_spotLightUniforms.at(i);
+
+		std::stringstream positionStream;
+		positionStream << "spotLights[" << i << "].position";
+		const std::string position = positionStream.str();
+
+		std::stringstream directionStream;
+		directionStream << "spotLights[" << i << "].direction";
+		const std::string direction = directionStream.str();
+
+		std::stringstream colorStream;
+		colorStream << "spotLights[" << i << "].color";
+		const std::string color = colorStream.str();
+
+		std::stringstream intensityStream;
+		intensityStream << "spotLights[" << i << "].intensity";
+		const std::string intensity = intensityStream.str();
+
+		std::stringstream angleStream;
+		angleStream << "spotLights[" << i << "].angle";
+		const std::string angle = angleStream.str();
+
+		std::stringstream radiusStream;
+		radiusStream << "spotLights[" << i << "].radius";
+		const std::string radius = radiusStream.str();
+
+		light.position = glGetUniformLocation(m_id, position.c_str());
+		light.direction = glGetUniformLocation(m_id, direction.c_str());
+		light.color = glGetUniformLocation(m_id, color.c_str());
+		light.intensity = glGetUniformLocation(m_id, intensity.c_str());
+		light.angle = glGetUniformLocation(m_id, angle.c_str());
 		light.radius = glGetUniformLocation(m_id, radius.c_str());
 	}
 }
@@ -332,4 +367,14 @@ void Shader::setPointLight(int index, PointLight& light) {
 	glUniform3fv(m_pointLightUniforms[index].color, 1, glm::value_ptr(light.color));
 	glUniform1f(m_pointLightUniforms[index].intensity, light.intensity);
 	glUniform1f(m_pointLightUniforms[index].radius, light.radius);
+}
+
+void Shader::setSpotLight(int index, SpotLight& light) {
+	assert(index >= 0 && index <= 8);
+	glUniform3fv(m_spotLightUniforms[index].position, 1, glm::value_ptr(light.position));
+	glUniform3fv(m_spotLightUniforms[index].color, 1, glm::value_ptr(light.color));
+	glUniform1f(m_spotLightUniforms[index].intensity, light.intensity);
+	glUniform1f(m_spotLightUniforms[index].radius, light.radius);
+	glUniform3fv(m_spotLightUniforms[index].direction, 1, glm::value_ptr(light.direction));
+	glUniform1f(m_spotLightUniforms[index].angle, light.angle);
 }

@@ -8,7 +8,7 @@
 #ifdef LOG_GL
 inline void glLogErr(const std::string& context) {
 	std::stringstream ss;
-	ss << context << ": ";
+	ss << context << ": "; // TODO: Here be bugs
 	bool write = true;
 	switch(glGetError()) {
 		case GL_NO_ERROR:

@@ -24,6 +24,15 @@ class Shader {
 		int radius;
 	};
 
+	struct SpotLightUniform {
+		int position;
+		int direction;
+		int color;
+		int intensity;
+		int angle;
+		int radius;
+	};
+
 	// Disable copying
 		Shader(const Shader&) = delete;
 		Shader& operator=(const Shader&) = delete;
@@ -48,6 +57,7 @@ class Shader {
 		int            m_ambienceUniform;
 
 		std::array<PointLightUniform, 8> m_pointLightUniforms;
+		std::array<SpotLightUniform, 8> m_spotLightUniforms;
 
 		void           loadShaders(const std::string& vertexShaderFilename,
 		                           const std::string& pixelShaderFilename,
@@ -89,6 +99,7 @@ class Shader {
 		void setAmbience(float ambience);
 
 		void setPointLight(int index, PointLight& light);
+		void setSpotLight(int index, SpotLight& light);
 };
 
 #endif

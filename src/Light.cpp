@@ -31,11 +31,13 @@ SpotLight::SpotLight(glm::vec3 pos,
                      glm::vec3 dir,
                      glm::vec3 clr,
                      float its,
-                     float agl) : position(pos),
+                     float agl,
+                     float rad) : position(pos),
                                   direction(dir),
                                   color(clr),
                                   intensity(its),
-                                  angle(agl) {
+                                  angle(agl),
+	                                radius(rad) {
 
 }
 
@@ -43,7 +45,8 @@ SpotLight::SpotLight(const SpotLight& original) : position(original.position),
                                                   direction(original.direction),
                                                   color(original.color),
                                                   intensity(original.intensity),
-                                                  angle(original.angle) {
+                                                  angle(original.angle),
+                                                  radius(original.radius) {
 
 }
 

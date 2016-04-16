@@ -25,12 +25,14 @@ struct SpotLight {
 	glm::vec3 color;
 	float intensity;
 	float angle;
+	float radius;
 
-	SpotLight(glm::vec3 position,
-	          glm::vec3 direction,
-	          glm::vec3 color,
-	          float intensity,
-	          float angle);
+	SpotLight(glm::vec3 pos,
+	          glm::vec3 dir,
+	          glm::vec3 clr,
+	          float its,
+	          float agl,
+	          float rad);
 
 	SpotLight(const SpotLight& original);
 
@@ -42,9 +44,9 @@ struct DirectionLight {
 	glm::vec3 color;
 	float intensity;
 
-	DirectionLight(glm::vec3 direction,
-	               glm::vec3 color,
-	               float intensity);
+	DirectionLight(glm::vec3 dir,
+	               glm::vec3 clr,
+	               float its);
 
 	DirectionLight(const DirectionLight& original);
 

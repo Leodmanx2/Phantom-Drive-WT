@@ -1,10 +1,10 @@
 #include "Scene.h"
 
-#define LOG_GL
+//#define LOG_GL
 #include "glerr.h"
 
 Scene::Scene() {
-	m_ambience = 0.2f;
+	m_ambience = 0.1f;
 
 	m_physicsSimulator = new PhysicsSimulator();
 
@@ -24,15 +24,17 @@ Scene::Scene() {
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	glLogErr("Constructing passthrough shader program");
 
-	m_light = new PointLight(glm::vec3(0.0f, 0.0f, 0.0f), // Position
-	                         glm::vec3(1.0f, 0.0f, 1.0f), // Color
-	                         7.0f,                        // Intensity
-	                         15.0f);                      // Radius
+	m_light = new PointLight(glm::vec3(-3.0f, 0.0f, 0.0f), // Position
+	                         glm::vec3(1.0f, 0.0f, 1.0f),  // Color
+	                         20.0f,                         // Intensity
+	                         3.0f);                        // Radius
 
-	m_light2 = new PointLight(glm::vec3(2.0f, 0.0f, 0.0f), // Position
-	                          glm::vec3(0.0f, 1.0f, 0.0f), // Color
-	                          7.0f,                        // Intensity
-	                          15.0f);                      // Radius
+	m_light2 = new SpotLight(glm::vec3(2.0f, 0.0f, 0.0f),   // Position
+	                          glm::vec3(0.0f, 0.0f, -1.0f), // Direction
+	                          glm::vec3(0.0f, 1.0f, 0.0f),  // Color
+	                          7.0f,                         // Intensity
+	                          5.0f,                         // Angle
+	                          15.0f);                       // Radius
 }
 
 Scene::Scene(const Scene& original) {
@@ -41,7 +43,7 @@ Scene::Scene(const Scene& original) {
 	m_player3 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
 	m_player4 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
 	m_light = new PointLight(*original.m_light);
-	m_light2 = new PointLight(*original.m_light);
+	m_light2 = new SpotLight(*original.m_light2);
 
 	m_activeCamera = new Camera(*original.m_activeCamera);
 	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
@@ -99,7 +101,7 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 
 	m_activeShader->setAmbience(m_ambience);
 	m_activeShader->setPointLight(0, *m_light);
-	m_activeShader->setPointLight(1, *m_light2);
+	m_activeShader->setSpotLight(1, *m_light2);
 
 	// Send camera position to the GPU.
 	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at
