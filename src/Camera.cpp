@@ -1,13 +1,5 @@
 #include "Camera.h"
 
-Camera::Camera() {
-	
-}
-
-Camera::~Camera() {
-	
-}
-
 glm::vec4 Camera::getPosition() {
 	return m_position;
 }

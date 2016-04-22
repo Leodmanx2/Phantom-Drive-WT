@@ -1,5 +1,8 @@
 #include "RenderSystem.h"
 
+#define LOG_GL
+#include "glerr.h"
+
 RenderSystem::RenderSystem() {
 	int width = 640;
 	int height = 480;
@@ -26,7 +29,7 @@ RenderSystem::RenderSystem() {
 	
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		g_logger->write(Logger::CRITICAL, (const char*)glewGetErrorString(err));
+		g_logger->write(Logger::CRITICAL, std::string(reinterpret_cast<const char*>(glewGetErrorString(err))));
 		throw std::runtime_error("Failed to initialize GLEW");
 	}
 	
@@ -42,11 +45,11 @@ RenderSystem::RenderSystem(const RenderSystem& original) {
 	int width, height;
 	SDL_GetWindowSize(original.m_window, &width, &height);
 	
-	const char* title = SDL_GetWindowTitle(original.m_window);
+	const std::string title = SDL_GetWindowTitle(original.m_window);
 	
 	Uint32 flags = SDL_GetWindowFlags(original.m_window);
 	
-	m_window = SDL_CreateWindow(title, 
+	m_window = SDL_CreateWindow(title.c_str(), 
 	                            SDL_WINDOWPOS_UNDEFINED, 
 	                            SDL_WINDOWPOS_UNDEFINED, 
 	                            width, 
@@ -70,12 +73,16 @@ RenderSystem::~RenderSystem() {
  * @param [in] scene  The scene to be drawn
  */
 void RenderSystem::draw(Scene* scene) {
-	glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
+	//glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
+	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLogErr("Clearing buffers");
 	
 	scene->draw(m_projectionMatrix);
+	glLogErr("Drawing scene");
 	
 	SDL_GL_SwapWindow(m_window);
+	glLogErr("Swapping buffers");
 }
 
 /**
@@ -91,7 +98,7 @@ void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
 	                                0.0f, 
 	                                0.1f, 
 	                                100000.0f);
-																	
+	
 	SDL_SetWindowSize(m_window, width, height);
 }
 

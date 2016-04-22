@@ -8,9 +8,6 @@ class Camera : public Actor {
 		glm::mat4 m_viewMatrix;
 	
 	public:
-		Camera();
-		~Camera();
-	
 		glm::vec4 getPosition();
 		glm::mat4 getViewMatrix();
 };

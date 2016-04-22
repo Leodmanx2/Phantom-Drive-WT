@@ -1,11 +1,18 @@
 #include "Actor.h"
 
+#define LOG_GL
+#include "glerr.h"
+
 Actor::Actor() {
 	m_position = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	m_forward = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 	m_up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	m_left = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+}
+
+Actor::Actor(const Actor&) {
+	
 }
 
 Actor::~Actor() {
@@ -63,7 +70,7 @@ void Actor::update() {
  * @param [in] viewMatrix        The matrix used to transform the model respective to a camera's viewpoint
  * @param [in] projectionMatrix  The matrix used to project the model from 3D/4D world space to 2D screen space
  */
-void Actor::draw(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
+void Actor::draw(Shader& shader) {
 	if(m_renderModel == nullptr) return;
 	
 	glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
@@ -71,9 +78,14 @@ void Actor::draw(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	
 	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;
 	
-	m_renderModel->draw(modelMatrix, 
-	                    viewMatrix, 
-											projectionMatrix);
+	shader.setModelMatrix(modelMatrix);
+	glLogErr("Uploading model matrix");
+	
+	shader.updateNormalMatrix();
+	glLogErr("Uploading normal matrix");
+	
+	m_renderModel->draw(shader);
+	glLogErr("drawing render model");
 }
 
 /*

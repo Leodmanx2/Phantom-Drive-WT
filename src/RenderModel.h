@@ -6,19 +6,27 @@
 #include <sstream>
 #include <vector>
 #include <stdexcept>
-#include "Logger.h"
 #include <physfs.h>
 #include <limits>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <memory>
+#include "Logger.h"
+#include "Shader.h"
+
+// We're only using tiny_obj_loader for development purposes. 
+// We'll require something supporting animations when we get to that.
+// Will eventually implement own model format.
+#include "tiny_obj_loader.h"
 
 class RenderModel {
 	private:
 		static int     m_instanceCount;
-	
-	protected:
-		RenderModel();
-		explicit RenderModel(RenderModel& original);
+		
+		size_t m_elementCount;
 	
 		struct Vertex {
 			glm::vec3 position;
@@ -28,50 +36,40 @@ class RenderModel {
 		using VertexList = std::vector<Vertex>;
 		using IndexList = std::vector<unsigned int>;
 	
+		// TODO: Replace with other model-loading code when required
+		void loadOBJ(const std::string& filename, 
+		             VertexList& vertices, 
+		             IndexList& indices);
+	
+	protected:
+		RenderModel();
+		explicit RenderModel(const RenderModel&);
+	
 		// GPU Resources
+		unsigned int   m_diffuseMap;
+		unsigned int   m_specularMap;
+		
 		unsigned int   m_vertexArray;
 		
 		unsigned int   m_vertexBuffer;
 		unsigned int   m_indexBuffer;
 		
-		unsigned int   m_texture;
-		unsigned int   m_sampler;
-		
-		unsigned int   m_shaderProgram;
-		
-		unsigned int   m_modelUniform;
-		unsigned int   m_viewUniform;
-		unsigned int   m_projectionUniform;
-		unsigned int   m_textureUniform;
-		
 		// Setup functions
-		void           glSetup(unsigned int shaderProgram, 
-		                       VertexList& vertices, 
-		                       IndexList& indices);
+		void           fillBuffers(VertexList& vertices, IndexList& indices);
 		
-		void           loadShaders(const char* vertexShaderFilename, 
-		                           const char* pixelShaderFilename, 
-		                           const char* geometryShaderFilename);
+		void           vaoSetup();
 		
-		unsigned int   compileShader(const char* filename, GLenum type);
-		
-		unsigned int   linkShaders(unsigned int vertexShader, 
-		                           unsigned int pixelShader, 
-		                           unsigned int geometryShader);
-		
-		unsigned int   linkShaders(unsigned int vertexShader, 
-		                           unsigned int pixelShader);
-		
-		unsigned int   loadTextureToGPU(const char* filename, 
+		unsigned int   loadTextureToGPU(const std::string& filename, 
 		                                int* baseWidth, 
 		                                int* baseHeight);
 
 	public:
+		// Geometry shader is optional
+		explicit RenderModel(const std::string& modelFilename);
+		
 		virtual ~RenderModel();
 		
-		virtual void draw(glm::mat4 modelMatrix, 
-		                  glm::mat4 viewMatrix, 
-		                  glm::mat4 projectionMatrix) = 0;
+		void draw(Shader& shader);
 };
 
 #endif

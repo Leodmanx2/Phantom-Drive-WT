@@ -1,8 +1,8 @@
 #ifndef DUMMYACTOR_H
 #define DUMMYACTOR_H
 
-#include "SimulatedPhysicsActor.h"
-#include "RenderModel2D.h"
+#include "Actor.h"
+#include "RenderModel.h"
 #include <GL/glew.h>
 #include <memory>
 #include "Logger.h"
@@ -10,15 +10,9 @@
 #include "PhysicsSimulator.h"
 #include "ActorMotionState.h"
 
-class DummyActor : public SimulatedPhysicsActor {
-	protected:
-		// Should be static, so must be declared by child.
-		// TODO: Look into making sure this variable is declared while maintaining static-ness
-		static std::unique_ptr<btCollisionShape> s_collisionShape;
-	
+class DummyActor : public Actor {
 	public:
-		explicit DummyActor(PhysicsSimulator* simulator);
-		~DummyActor();
+		DummyActor();
 };
 
 #endif
