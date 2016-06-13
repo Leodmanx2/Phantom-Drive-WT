@@ -5,7 +5,7 @@
 
 int RenderModel::m_instanceCount = 0;
 
-RenderModel::RenderModel(const std::string& modelFilename)
+RenderModel::RenderModel(const std::string& modelName)
 {
 	++m_instanceCount;
 
@@ -13,14 +13,14 @@ RenderModel::RenderModel(const std::string& modelFilename)
 	// TODO: We'll want to refactor a good deal of our file/texture loading
 	// TODO: Select file from model material description
 	int baseWidth, baseHeight;
-	try {m_diffuseMap = loadTextureToGPU("testWood.dds", &baseWidth, &baseHeight);}
+	try {m_diffuseMap = loadTextureToGPU(modelName + "/diffuse.dds", &baseWidth, &baseHeight);}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D diffuse map");
 	}
 
 	int baseWidth2, baseHeight2;
-	try {m_specularMap = loadTextureToGPU("testShine.dds", &baseWidth2, &baseHeight2);}
+	try {m_specularMap = loadTextureToGPU(modelName + "/specular.dds", &baseWidth2, &baseHeight2);}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D specular map");
@@ -30,6 +30,7 @@ RenderModel::RenderModel(const std::string& modelFilename)
 	VertexList vertices;
 	IndexList indices;
 
+	std::string modelFilename = modelName + "/model.obj";
 	loadOBJ(modelFilename, vertices, indices);
 
 	// Send OpenGL our data

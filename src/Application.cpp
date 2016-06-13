@@ -1,6 +1,12 @@
 #include "Application.h"
 
-Application::Application() {
+Application::Application(int argc, char** argv) {
+	g_logger->write(Logger::INFO, "Initializing virtual file system");
+	if(PHYSFS_init(argv[0]) == 0) {
+		g_logger->write(Logger::CRITICAL, PHYSFS_getLastError());
+		throw std::runtime_error("Could not initialize virtual file system");
+	}
+	
 	std::string assetDir = PHYSFS_getBaseDir() + std::string("ass");
 	std::string logMessage = "Mounting asset location: " + assetDir;
 	g_logger->write(Logger::INFO, logMessage.c_str());
@@ -33,6 +39,7 @@ Application::~Application() {
 	delete m_renderSystem;
 	delete m_scene;
 	SDL_Quit();
+	PHYSFS_deinit();
 }
 
 /**

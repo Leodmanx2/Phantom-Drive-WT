@@ -18,7 +18,7 @@ class Application {
 		Scene* m_scene; // Temporary variable for dev. purposes
 	
 	public:
-		Application();
+		Application(int argc, char** argv);
 		Application(const Application& original);
 		~Application();
 		void run();

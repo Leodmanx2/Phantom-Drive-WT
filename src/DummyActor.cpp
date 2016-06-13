@@ -3,7 +3,7 @@
 DummyActor::DummyActor() {
 	try {
 		g_logger->write(Logger::DEBUG, "Making render model");
-		m_renderModel = new RenderModel("testModelTex.obj");
+		m_renderModel = new RenderModel("TestCube");
 	}
 	catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
