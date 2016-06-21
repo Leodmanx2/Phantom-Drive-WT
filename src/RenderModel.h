@@ -17,11 +17,6 @@
 #include "Logger.h"
 #include "Shader.h"
 
-// We're only using tiny_obj_loader for development purposes. 
-// We'll require something supporting animations when we get to that.
-// Will eventually implement own model format.
-#include "tiny_obj_loader.h"
-
 class RenderModel {
 	private:
 		static int     m_instanceCount;
