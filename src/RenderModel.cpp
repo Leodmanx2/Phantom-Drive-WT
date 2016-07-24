@@ -9,7 +9,7 @@ RenderModel::RenderModel(const std::string& modelName) {
 	int baseWidth, baseHeight;
 	try {
 		m_diffuseMap = loadTextureToGPU(
-		  "Models/" + modelName + "/diffuse.dds", &baseWidth, &baseHeight);
+		  MODEL_DIR + modelName + "/diffuse.dds", &baseWidth, &baseHeight);
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D diffuse map");
@@ -18,7 +18,7 @@ RenderModel::RenderModel(const std::string& modelName) {
 	int baseWidth2, baseHeight2;
 	try {
 		m_specularMap = loadTextureToGPU(
-		  "Models/" + modelName + "/specular.dds", &baseWidth2, &baseHeight2);
+		  MODEL_DIR + modelName + "/specular.dds", &baseWidth2, &baseHeight2);
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D specular map");
@@ -27,7 +27,7 @@ RenderModel::RenderModel(const std::string& modelName) {
 	// Prepare buffer data
 	VertexList vertices;
 	IndexList  indices;
-	//std::string modelFilename = "Models/" + modelName + "/model.mdl";
+	//std::string modelFilename = MODEL_DIR + modelName + "/model.mdl";
 	// TODO: Load geometry
 
 	// Send OpenGL our data

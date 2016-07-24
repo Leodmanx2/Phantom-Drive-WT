@@ -18,6 +18,8 @@
 #include <vector>
 
 class RenderModel {
+	const std::string MODEL_DIR = "Models/";
+
 	// Disable copying
 	RenderModel(const RenderModel&) = delete;
 	RenderModel& operator=(const RenderModel&) = delete;
