@@ -36,24 +36,24 @@ Scene::Scene() {
 	                            5.0f,                         // Angle
 	                            15.0f);                       // Radius
 
-	m_directionLight = new DirectionLight(glm::vec3(1.0f, 0.0f, 0.0f), // Direction
-	                                      glm::vec3(0.0f, 0.0f, 1.0f), // Color
-	                                      1.0f);                       // Intensity
+	m_directionLight =
+	  new DirectionLight(glm::vec3(1.0f, 0.0f, 0.0f), // Direction
+	                     glm::vec3(0.0f, 0.0f, 1.0f), // Color
+	                     1.0f);                       // Intensity
 }
 
 Scene::Scene(const Scene& original) {
 	// This objects in this block exist only for development
-	m_player = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_player2 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_player3 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_player4 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_player     = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_player2    = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_player3    = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
+	m_player4    = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
 	m_pointLight = new PointLight(*original.m_pointLight);
-	m_spotLight = new SpotLight(*original.m_spotLight);
+	m_spotLight  = new SpotLight(*original.m_spotLight);
 	m_directionLight = new DirectionLight(*original.m_directionLight);
-	
-	m_ambience = original.m_ambience;
-	m_activeShader = new Shader(*original.m_activeShader);
-	m_activeCamera = new Camera(*original.m_activeCamera);
+
+	m_ambience         = original.m_ambience;
+	m_activeCamera     = new Camera(*original.m_activeCamera);
 	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
 	// TODO: Shader copy (or preventing Scene copies)
 }
@@ -67,7 +67,6 @@ Scene::~Scene() {
 	delete m_pointLight;
 	delete m_spotLight;
 	delete m_directionLight;
-
 
 	delete m_activeCamera;
 	delete m_physicsSimulator;
@@ -96,9 +95,7 @@ void Scene::update() {
  *
  * TODO: Needs to take time since last cycle as input
  */
-void Scene::simulate() {
-	m_physicsSimulator->stepSimulation();
-}
+void Scene::simulate() { m_physicsSimulator->stepSimulation(); }
 
 /**
  * Draws all render models that are part of the scene using information passed down by the renderer

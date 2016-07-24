@@ -2,12 +2,13 @@
 
 Shader::Shader(const std::string& vertexShaderFilename,
                const std::string& pixelShaderFilename,
-               const std::string* geometryShaderFilename) : m_active(false) {
+               const std::string* geometryShaderFilename)
+  : m_active(false) {
 	// Compile program
 	try {
-		loadShaders(vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
-	}
-	catch(const std::exception& exception) {
+		loadShaders(
+		  vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
+	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 
 		std::stringstream message;
@@ -21,35 +22,38 @@ Shader::Shader(const std::string& vertexShaderFilename,
 	int positionAttrib = glGetAttribLocation(m_id, "position");
 	if(positionAttrib != 0) {
 		std::stringstream message;
-		message << "Shader position attribute not at 0. Position obtained: " << positionAttrib;
+		message << "Shader position attribute not at 0. Position obtained: "
+		        << positionAttrib;
 		throw std::logic_error(message.str());
 	}
 
 	int normalAttrib = glGetAttribLocation(m_id, "normal");
 	if(normalAttrib != 1) {
 		std::stringstream message;
-		message << "Shader normal attribute not at 1. Position obtained: " << normalAttrib;
+		message << "Shader normal attribute not at 1. Position obtained: "
+		        << normalAttrib;
 		throw std::logic_error(message.str());
 	}
 
 	int texCoordAttrib = glGetAttribLocation(m_id, "texCoord");
 	if(texCoordAttrib != 2) {
 		std::stringstream message;
-		message << "Shader texCoord attribute not at 2. Position obtained: " << texCoordAttrib;
+		message << "Shader texCoord attribute not at 2. Position obtained: "
+		        << texCoordAttrib;
 		throw std::logic_error(message.str());
 	}
 
 	// Save uniform locations
-	m_modelUniform = glGetUniformLocation(m_id, "model");
-	m_viewUniform = glGetUniformLocation(m_id, "view");
-	m_normalUniform = glGetUniformLocation(m_id, "normalMatrix");
-	m_projectionUniform = glGetUniformLocation(m_id, "projection");
-	m_diffuseUniform = glGetUniformLocation(m_id, "diffuseMap");
-	m_specularUniform = glGetUniformLocation(m_id, "specularMap");
-	m_ambienceUniform = glGetUniformLocation(m_id, "ambience");
+	m_modelUniform       = glGetUniformLocation(m_id, "model");
+	m_viewUniform        = glGetUniformLocation(m_id, "view");
+	m_normalUniform      = glGetUniformLocation(m_id, "normalMatrix");
+	m_projectionUniform  = glGetUniformLocation(m_id, "projection");
+	m_diffuseUniform     = glGetUniformLocation(m_id, "diffuseMap");
+	m_specularUniform    = glGetUniformLocation(m_id, "specularMap");
+	m_ambienceUniform    = glGetUniformLocation(m_id, "ambience");
 	m_eyePositionUniform = glGetUniformLocation(m_id, "eyePos");
 
-	for(size_t i=0; i<m_pointLightUniforms.size(); ++i) {
+	for(size_t i = 0; i < m_pointLightUniforms.size(); ++i) {
 		PointLightUniform& light = m_pointLightUniforms.at(i);
 
 		std::stringstream positionStream;
@@ -68,13 +72,13 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		radiusStream << "pointLights[" << i << "].radius";
 		const std::string radius = radiusStream.str();
 
-		light.position = glGetUniformLocation(m_id, position.c_str());
-		light.color = glGetUniformLocation(m_id, color.c_str());
+		light.position  = glGetUniformLocation(m_id, position.c_str());
+		light.color     = glGetUniformLocation(m_id, color.c_str());
 		light.intensity = glGetUniformLocation(m_id, intensity.c_str());
-		light.radius = glGetUniformLocation(m_id, radius.c_str());
+		light.radius    = glGetUniformLocation(m_id, radius.c_str());
 	}
 
-	for(size_t i=0; i<m_spotLightUniforms.size(); ++i) {
+	for(size_t i = 0; i < m_spotLightUniforms.size(); ++i) {
 		SpotLightUniform& light = m_spotLightUniforms.at(i);
 
 		std::stringstream positionStream;
@@ -101,15 +105,15 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		radiusStream << "spotLights[" << i << "].radius";
 		const std::string radius = radiusStream.str();
 
-		light.position = glGetUniformLocation(m_id, position.c_str());
+		light.position  = glGetUniformLocation(m_id, position.c_str());
 		light.direction = glGetUniformLocation(m_id, direction.c_str());
-		light.color = glGetUniformLocation(m_id, color.c_str());
+		light.color     = glGetUniformLocation(m_id, color.c_str());
 		light.intensity = glGetUniformLocation(m_id, intensity.c_str());
-		light.angle = glGetUniformLocation(m_id, angle.c_str());
-		light.radius = glGetUniformLocation(m_id, radius.c_str());
+		light.angle     = glGetUniformLocation(m_id, angle.c_str());
+		light.radius    = glGetUniformLocation(m_id, radius.c_str());
 	}
 
-	for(size_t i=0; i<m_directionLightUniforms.size(); ++i) {
+	for(size_t i = 0; i < m_directionLightUniforms.size(); ++i) {
 		DirectionLightUniform& light = m_directionLightUniforms.at(i);
 
 		std::stringstream directionStream;
@@ -125,14 +129,12 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		const std::string intensity = intensityStream.str();
 
 		light.direction = glGetUniformLocation(m_id, direction.c_str());
-		light.color = glGetUniformLocation(m_id, color.c_str());
+		light.color     = glGetUniformLocation(m_id, color.c_str());
 		light.intensity = glGetUniformLocation(m_id, intensity.c_str());
 	}
 }
 
-Shader::~Shader() {
-	glDeleteProgram(m_id);
-}
+Shader::~Shader() { glDeleteProgram(m_id); }
 
 /**
  * Compiles and links GLSL shader source files
@@ -148,21 +150,25 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 	unsigned int pixelShader;
 	unsigned int geometryShader;
 
-	try {vertexShader = compileShader(vertexShaderFilename, GL_VERTEX_SHADER);}
-	catch(const std::exception& exception) {
+	try {
+		vertexShader = compileShader(vertexShaderFilename, GL_VERTEX_SHADER);
+	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load vertex shader");
 	}
 
-	try {pixelShader = compileShader(pixelShaderFilename, GL_FRAGMENT_SHADER);}
-	catch(const std::exception& exception) {
+	try {
+		pixelShader = compileShader(pixelShaderFilename, GL_FRAGMENT_SHADER);
+	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not load pixel shader");
 	}
 
 	if(geometryShaderFilename != nullptr) {
-		try {geometryShader = compileShader(*geometryShaderFilename, GL_GEOMETRY_SHADER);}
-		catch(const std::exception& exception) {
+		try {
+			geometryShader =
+			  compileShader(*geometryShaderFilename, GL_GEOMETRY_SHADER);
+		} catch(const std::exception& exception) {
 			g_logger->write(Logger::ERROR, exception.what());
 			throw std::runtime_error("Could not load geometry shader");
 		}
@@ -173,8 +179,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 			m_id = linkShaders(vertexShader, pixelShader, geometryShader);
 		else
 			m_id = linkShaders(vertexShader, pixelShader);
-	}
-	catch(const std::exception& exception) {
+	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Could not link shader program");
 	}
@@ -204,20 +209,22 @@ unsigned int Shader::compileShader(const std::string& filename, GLenum type) {
 
 	PHYSFS_sint64 fileSizeLong = PHYSFS_fileLength(shaderFile);
 	if(fileSizeLong == -1)
-		throw std::runtime_error(std::string("Could not determine size of shader: ") + filename);
+		throw std::runtime_error(
+		  std::string("Could not determine size of shader: ") + filename);
 	if(fileSizeLong > std::numeric_limits<int>::max())
 		throw std::runtime_error(std::string("Shader too large: ") + filename);
 
 	int fileSize = static_cast<int>(fileSizeLong);
 
 	// TODO: Avoid manual memory management mid-function
-	char* buffer = new char[fileSize];
-	int bytesRead = PHYSFS_read(shaderFile, buffer, 1, fileSize);
+	char* buffer    = new char[fileSize];
+	int   bytesRead = PHYSFS_read(shaderFile, buffer, 1, fileSize);
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
 		delete[] buffer;
 		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
-		throw std::runtime_error(std::string("Could not read all of shader: ") + filename);
+		throw std::runtime_error(std::string("Could not read all of shader: ") +
+		                         filename);
 	}
 
 	unsigned int id = glCreateShader(type);
@@ -237,7 +244,8 @@ unsigned int Shader::compileShader(const std::string& filename, GLenum type) {
 		g_logger->write(Logger::ERROR, infoLog.data());
 
 		glDeleteShader(id);
-		throw std::runtime_error(std::string("Failed to compile shader: ") + filename);
+		throw std::runtime_error(std::string("Failed to compile shader: ") +
+		                         filename);
 	}
 
 	return id;
@@ -322,18 +330,14 @@ unsigned int Shader::linkShaders(unsigned int vertexShader,
 }
 
 void Shader::bind() {
-	if(!m_active)
-		glUseProgram(m_id);
+	if(!m_active) glUseProgram(m_id);
 }
 
 void Shader::unbind() {
-	if(m_active)
-		glUseProgram(0);
+	if(m_active) glUseProgram(0);
 }
 
-bool Shader::isBound() {
-	return m_active;
-}
+bool Shader::isBound() { return m_active; }
 
 void Shader::setModelMatrix(glm::mat4 matrix) {
 	m_modelMatrix = matrix;
@@ -351,10 +355,13 @@ void Shader::setProjectionMatrix(glm::mat4 matrix) {
 
 void Shader::updateNormalMatrix() {
 	glm::mat4 normalMatrix = glm::inverseTranspose(m_modelMatrix * m_viewMatrix);
-	glUniformMatrix4fv(m_normalUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+	glUniformMatrix4fv(
+	  m_normalUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 }
 
-void Shader::setMatrices(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
+void Shader::setMatrices(glm::mat4 model,
+                         glm::mat4 view,
+                         glm::mat4 projection) {
 	setModelMatrix(model);
 	setViewMatrix(view);
 	setProjectionMatrix(projection);
@@ -383,25 +390,33 @@ void Shader::setAmbience(float ambience) {
 
 void Shader::setPointLight(int index, PointLight& light) {
 	assert(index >= 0 && index <= 8);
-	glUniform3fv(m_pointLightUniforms[index].position, 1, glm::value_ptr(light.position));
-	glUniform3fv(m_pointLightUniforms[index].color, 1, glm::value_ptr(light.color));
+	glUniform3fv(
+	  m_pointLightUniforms[index].position, 1, glm::value_ptr(light.position));
+	glUniform3fv(
+	  m_pointLightUniforms[index].color, 1, glm::value_ptr(light.color));
 	glUniform1f(m_pointLightUniforms[index].intensity, light.intensity);
 	glUniform1f(m_pointLightUniforms[index].radius, light.radius);
 }
 
 void Shader::setSpotLight(int index, SpotLight& light) {
 	assert(index >= 0 && index <= 8);
-	glUniform3fv(m_spotLightUniforms[index].position, 1, glm::value_ptr(light.position));
-	glUniform3fv(m_spotLightUniforms[index].color, 1, glm::value_ptr(light.color));
+	glUniform3fv(
+	  m_spotLightUniforms[index].position, 1, glm::value_ptr(light.position));
+	glUniform3fv(
+	  m_spotLightUniforms[index].color, 1, glm::value_ptr(light.color));
 	glUniform1f(m_spotLightUniforms[index].intensity, light.intensity);
 	glUniform1f(m_spotLightUniforms[index].radius, light.radius);
-	glUniform3fv(m_spotLightUniforms[index].direction, 1, glm::value_ptr(light.direction));
+	glUniform3fv(
+	  m_spotLightUniforms[index].direction, 1, glm::value_ptr(light.direction));
 	glUniform1f(m_spotLightUniforms[index].angle, light.angle);
 }
 
 void Shader::setDirectionLight(int index, DirectionLight& light) {
 	assert(index >= 0 && index <= 2);
-	glUniform3fv(m_directionLightUniforms[index].color, 1, glm::value_ptr(light.color));
+	glUniform3fv(
+	  m_directionLightUniforms[index].color, 1, glm::value_ptr(light.color));
 	glUniform1f(m_directionLightUniforms[index].intensity, light.intensity);
-	glUniform3fv(m_directionLightUniforms[index].direction, 1, glm::value_ptr(light.direction));
+	glUniform3fv(m_directionLightUniforms[index].direction,
+	             1,
+	             glm::value_ptr(light.direction));
 }

@@ -1,19 +1,16 @@
 #include "Logger.h"
 
-Logger::Logger() {
-	logFile.open(timestamp());
-}
+Logger::Logger() { logFile.open(timestamp()); }
 
-Logger::~Logger() {
-	logFile.close();
-}
+Logger::~Logger() { logFile.close(); }
 
 std::string Logger::timestamp() {
-	time_t timeNow = time(nullptr);
+	time_t    timeNow = time(nullptr);
 	struct tm localTimeNow;
 	localtime_s(&localTimeNow, &timeNow);
 	char buffer[80];
-	std::strftime(buffer, sizeof(buffer), "log/%Y-%m-%W_%H-%M-%S.log", &localTimeNow);
+	std::strftime(
+	  buffer, sizeof(buffer), "log/%Y-%m-%W_%H-%M-%S.log", &localTimeNow);
 	return std::string(buffer);
 }
 

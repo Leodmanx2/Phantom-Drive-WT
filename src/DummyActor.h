@@ -2,17 +2,17 @@
 #define DUMMYACTOR_H
 
 #include "Actor.h"
+#include "ActorMotionState.h"
+#include "Logger.h"
+#include "PhysicsSimulator.h"
 #include "RenderModel.h"
 #include <GL/glew.h>
 #include <memory>
-#include "Logger.h"
 #include <stdexcept>
-#include "PhysicsSimulator.h"
-#include "ActorMotionState.h"
 
 class DummyActor : public Actor {
 	public:
-		DummyActor();
+	DummyActor();
 };
 
 #endif

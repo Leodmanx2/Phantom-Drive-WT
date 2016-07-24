@@ -6,21 +6,22 @@
 
 class PhysicsSimulator {
 	private:
-		static std::unique_ptr<btBroadphaseInterface> s_broadphase;
-		static std::unique_ptr<btDefaultCollisionConfiguration> s_collisionConfiguration;
-		static std::unique_ptr<btCollisionDispatcher> s_dispatcher;
-		static std::unique_ptr<btSequentialImpulseConstraintSolver> s_solver;
+	static std::unique_ptr<btBroadphaseInterface> s_broadphase;
+	static std::unique_ptr<btDefaultCollisionConfiguration>
+	                                                            s_collisionConfiguration;
+	static std::unique_ptr<btCollisionDispatcher>               s_dispatcher;
+	static std::unique_ptr<btSequentialImpulseConstraintSolver> s_solver;
 
-		btDiscreteDynamicsWorld* m_world;
-	
+	btDiscreteDynamicsWorld* m_world;
+
 	public:
-		PhysicsSimulator();
-		PhysicsSimulator(PhysicsSimulator& original);
-		~PhysicsSimulator();
-		
-		void addRigidBody(btRigidBody* body);
-		void removeRigidBody(btRigidBody* body);
-		void stepSimulation();
+	PhysicsSimulator();
+	PhysicsSimulator(PhysicsSimulator& original);
+	~PhysicsSimulator();
+
+	void addRigidBody(btRigidBody* body);
+	void removeRigidBody(btRigidBody* body);
+	void stepSimulation();
 };
 
 #endif

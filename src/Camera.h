@@ -5,11 +5,11 @@
 
 class Camera : public Actor {
 	private:
-		glm::mat4 m_viewMatrix;
-	
+	glm::mat4 m_viewMatrix;
+
 	public:
-		glm::vec4 getPosition();
-		glm::mat4 getViewMatrix();
+	glm::vec4 getPosition();
+	glm::mat4 getViewMatrix();
 };
 
 #endif

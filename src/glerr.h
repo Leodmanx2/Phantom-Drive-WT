@@ -2,8 +2,8 @@
 #define GLERR_H
 
 #include "Logger.h"
-#include <sstream>
 #include <GL/glew.h>
+#include <sstream>
 
 #ifdef LOG_GL
 inline void glLogErr(const std::string& context) {
@@ -12,9 +12,9 @@ inline void glLogErr(const std::string& context) {
 	bool write = true;
 	switch(glGetError()) {
 		case GL_NO_ERROR:
-			#ifndef LOG_GL_LOGNOERR
+#ifndef LOG_GL_LOGNOERR
 			write = false;
-			#endif
+#endif
 			ss << "No error";
 			break;
 		case GL_INVALID_ENUM:
@@ -33,10 +33,12 @@ inline void glLogErr(const std::string& context) {
 			ss << "There is not enough memory left to execute the command.";
 			break;
 		case GL_STACK_UNDERFLOW:
-			ss << "An attempt has been made to perform an operation that would cause an internal stack to underflow.";
+			ss << "An attempt has been made to perform an operation that would cause "
+			      "an internal stack to underflow.";
 			break;
 		case GL_STACK_OVERFLOW:
-			ss << "An attempt has been made to perform an operation that would cause an internal stack to overflow.";
+			ss << "An attempt has been made to perform an operation that would cause "
+			      "an internal stack to overflow.";
 			break;
 		default:
 			ss << "Unknown error!";
@@ -44,7 +46,7 @@ inline void glLogErr(const std::string& context) {
 	if(write) g_logger->write(Logger::DEBUG, ss.str());
 }
 #else
-inline void glLogErr(const std::string& context) {return;}
+inline void glLogErr(const std::string& context) { return; }
 #endif
 
 #endif
