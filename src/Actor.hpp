@@ -14,17 +14,17 @@
 class Actor {
 	protected:
 	Actor();
-	Actor(const Actor& original);
-
 	glm::quat m_orientation;
 	glm::vec4 m_position;
 	glm::vec4 m_forward;
 	glm::vec4 m_up;
 	glm::vec4 m_left;
 
-	RenderModel* m_renderModel;
+	std::shared_ptr<RenderModel> m_renderModel;
 
 	public:
+	Actor(std::shared_ptr<RenderModel> model);
+	Actor(const Actor& original);
 	virtual ~Actor();
 
 	virtual void translate(float longitude, float latitude, float altitude);

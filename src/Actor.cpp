@@ -3,7 +3,8 @@
 #define LOG_GL
 #include "glerr.hpp"
 
-Actor::Actor() : m_renderModel(nullptr) {
+Actor::Actor(std::shared_ptr<RenderModel> model)
+  : m_renderModel(std::move(model)) {
 	m_position    = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	m_forward     = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
@@ -11,9 +12,9 @@ Actor::Actor() : m_renderModel(nullptr) {
 	m_left        = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 }
 
-Actor::Actor(const Actor& original) : m_renderModel(original.m_renderModel) {}
+Actor::Actor(const Actor& original) {}
 
-Actor::~Actor() { delete m_renderModel; }
+Actor::~Actor() {}
 
 /**
  * Translates the actor along its personal axes
@@ -56,6 +57,7 @@ void Actor::rotate(float roll, float pitch, float yaw) {
  * progress animations, respond to collisions, etc.
  *
  * TODO: Needs to take time since last cycle as input
+ * TODO: Allow user definition via scripting
  */
 void Actor::update() {}
 

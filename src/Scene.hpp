@@ -2,8 +2,8 @@
 #define SCENE_H
 
 #include "Camera.hpp"
-#include "DummyActor.hpp"
 #include "Light.hpp"
+#include "PhysicsSimulator.hpp"
 
 class Scene {
 	private:
@@ -20,9 +20,6 @@ class Scene {
 	SpotLight*      m_spotLight;
 	DirectionLight* m_directionLight;
 	Actor*          m_player;
-	Actor*          m_player2;
-	Actor*          m_player3;
-	Actor*          m_player4;
 
 	float m_ambience; // How bright the scene is on average
 

@@ -25,10 +25,38 @@ RenderModel::RenderModel(const std::string& modelName) {
 	}
 
 	// Prepare buffer data
-	VertexList vertices;
-	IndexList  indices;
-	//std::string modelFilename = MODEL_DIR + modelName + "/model.mdl";
-	// TODO: Load geometry
+	VertexList  vertices;
+	IndexList   indices;
+	std::string modelFilename = MODEL_DIR + modelName + "/model.mdl";
+	if(!PHYSFS_exists(modelFilename.c_str())) {
+		throw std::runtime_error("Could not find model file");
+	}
+	PHYSFS_file*  file         = PHYSFS_openRead(modelFilename.c_str());
+	PHYSFS_sint64 fileSize     = PHYSFS_fileLength(file);
+	char*         fileBuffer   = new char[fileSize];
+	int           fileSizeRead = PHYSFS_read(file, fileBuffer, 1, fileSize);
+	PHYSFS_close(file);
+	std::string        fileString(fileBuffer, fileSize);
+	std::istringstream fileStream(fileString, std::istringstream::binary);
+	PMDL::File         fileData = PMDL::File::parse(fileStream);
+	delete[] fileBuffer;
+
+	for(PMDL::Vertex fileVert : fileData.body.vertices) {
+		glm::vec3 pos(
+		  fileVert.position.x, fileVert.position.y, fileVert.position.z);
+		glm::vec3 norm(fileVert.normal.x, fileVert.normal.y, fileVert.normal.z);
+		glm::vec2 uv(fileVert.texCoord.u, fileVert.texCoord.v);
+		Vertex    vert;
+		vert.position = pos;
+		vert.normal   = norm;
+		vert.texCoord = uv;
+		vertices.push_back(vert);
+	}
+
+	for(PMDL::Index fileInd : fileData.body.indices) {
+		indices.push_back(fileInd);
+	}
+	m_elementCount = indices.size();
 
 	// Send OpenGL our data
 	try {
