@@ -1,4 +1,4 @@
-#include "SimulatedPhysicsActor.h"
+#include "SimulatedPhysicsActor.hpp"
 
 std::unique_ptr<btCollisionShape>
   SimulatedPhysicsActor::s_defaultCollisionShape(

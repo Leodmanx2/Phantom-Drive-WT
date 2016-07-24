@@ -1,7 +1,7 @@
 #ifndef GLERR_H
 #define GLERR_H
 
-#include "Logger.h"
+#include "Logger.hpp"
 #include <GL/glew.h>
 #include <sstream>
 

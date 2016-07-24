@@ -1,6 +1,6 @@
-#include "Application.h"
+#include "Application.hpp"
 
-#include "Logger.h"
+#include "Logger.hpp"
 
 int main(int argc, char* argv[]) {
 	g_logger->write(Logger::INFO, "Starting program");

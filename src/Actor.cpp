@@ -1,7 +1,7 @@
-#include "Actor.h"
+#include "Actor.hpp"
 
 #define LOG_GL
-#include "glerr.h"
+#include "glerr.hpp"
 
 Actor::Actor() : m_renderModel(nullptr) {
 	m_position    = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);

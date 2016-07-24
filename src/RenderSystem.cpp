@@ -1,7 +1,7 @@
-#include "RenderSystem.h"
+#include "RenderSystem.hpp"
 
 #define LOG_GL
-#include "glerr.h"
+#include "glerr.hpp"
 
 RenderSystem::RenderSystem() {
 	int width  = 640;

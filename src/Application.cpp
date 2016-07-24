@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "Application.hpp"
 
 Application::Application(int argc, char** argv) {
 	g_logger->write(Logger::INFO, "Initializing virtual file system");

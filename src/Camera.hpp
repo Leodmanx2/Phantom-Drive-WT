@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Actor.h"
+#include "Actor.hpp"
 
 class Camera : public Actor {
 	private:

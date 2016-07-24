@@ -1,13 +1,14 @@
-#include "Shader.h"
+#include "Shader.hpp"
 
 Shader::Shader(const std::string& vertexShaderFilename,
                const std::string& pixelShaderFilename,
-               const std::string* geometryShaderFilename)
+               const std::string& geometryShaderFilename)
   : m_active(false) {
 	// Compile program
 	try {
-		loadShaders(
-		  vertexShaderFilename, pixelShaderFilename, geometryShaderFilename);
+		loadShaders("Shaders/" + vertexShaderFilename,
+		            "Shaders/" + pixelShaderFilename,
+		            "Shaders/" + geometryShaderFilename);
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 
@@ -145,7 +146,7 @@ Shader::~Shader() { glDeleteProgram(m_id); }
  */
 void Shader::loadShaders(const std::string& vertexShaderFilename,
                          const std::string& pixelShaderFilename,
-                         const std::string* geometryShaderFilename) {
+                         const std::string& geometryShaderFilename) {
 	unsigned int vertexShader;
 	unsigned int pixelShader;
 	unsigned int geometryShader;
@@ -164,10 +165,10 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 		throw std::runtime_error("Could not load pixel shader");
 	}
 
-	if(geometryShaderFilename != nullptr) {
+	if(geometryShaderFilename.compare(SHADER_DIR) != 0) {
 		try {
 			geometryShader =
-			  compileShader(*geometryShaderFilename, GL_GEOMETRY_SHADER);
+			  compileShader(geometryShaderFilename, GL_GEOMETRY_SHADER);
 		} catch(const std::exception& exception) {
 			g_logger->write(Logger::ERROR, exception.what());
 			throw std::runtime_error("Could not load geometry shader");
@@ -175,7 +176,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 	}
 
 	try {
-		if(geometryShaderFilename != nullptr)
+		if(geometryShaderFilename.compare(SHADER_DIR) != 0)
 			m_id = linkShaders(vertexShader, pixelShader, geometryShader);
 		else
 			m_id = linkShaders(vertexShader, pixelShader);
@@ -186,7 +187,8 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(pixelShader);
-	if(geometryShaderFilename != nullptr) glDeleteShader(geometryShader);
+	if(geometryShaderFilename.compare(SHADER_DIR) != 0)
+		glDeleteShader(geometryShader);
 }
 
 /**

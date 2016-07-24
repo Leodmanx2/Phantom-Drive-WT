@@ -1,4 +1,4 @@
-#include "ActorMotionState.h"
+#include "ActorMotionState.hpp"
 
 ActorMotionState::ActorMotionState(const btTransform& initialPosition,
                                    Actor*             actor)

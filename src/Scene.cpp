@@ -1,7 +1,7 @@
-#include "Scene.h"
+#include "Scene.hpp"
 
 //#define LOG_GL
-#include "glerr.h"
+#include "glerr.hpp"
 
 Scene::Scene() {
 	m_ambience = 0.1f;

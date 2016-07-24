@@ -1,10 +1,10 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "Logger.h"
-#include "PhysicsSimulator.h"
-#include "RenderSystem.h"
-#include "Scene.h"
+#include "Logger.hpp"
+#include "PhysicsSimulator.hpp"
+#include "RenderSystem.hpp"
+#include "Scene.hpp"
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <physfs.h>

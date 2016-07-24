@@ -1,10 +1,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "Camera.h"
-
-#include "DummyActor.h"
-#include "Light.h"
+#include "Camera.hpp"
+#include "DummyActor.hpp"
+#include "Light.hpp"
 
 class Scene {
 	private:

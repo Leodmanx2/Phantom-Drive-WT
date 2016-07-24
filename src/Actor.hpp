@@ -1,9 +1,9 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
-#include "Logger.h"
-#include "RenderModel.h"
-#include "Shader.h"
+#include "Logger.hpp"
+#include "RenderModel.hpp"
+#include "Shader.hpp"
 #include <GL/glew.h>
 #include <btBulletDynamicsCommon.h>
 #include <glm/glm.hpp>

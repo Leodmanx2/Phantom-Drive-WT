@@ -1,11 +1,11 @@
 #ifndef SIMULATEDPHYSICSACTOR_H
 #define SIMULATEDPHYSICSACTOR_H
 
-#include "Actor.h"
-#include "ActorMotionState.h"
-#include "Logger.h"
-#include "PhysicsSimulator.h"
-#include "RenderModel.h"
+#include "Actor.hpp"
+#include "ActorMotionState.hpp"
+#include "Logger.hpp"
+#include "PhysicsSimulator.hpp"
+#include "RenderModel.hpp"
 #include <GL/glew.h>
 #include <memory>
 #include <stdexcept>

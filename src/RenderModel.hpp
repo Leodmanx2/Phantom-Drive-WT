@@ -1,8 +1,8 @@
 #ifndef RENDERMODEL_H
 #define RENDERMODEL_H
 
-#include "Logger.h"
-#include "Shader.h"
+#include "Logger.hpp"
+#include "Shader.hpp"
 #include <GL/glew.h>
 #include <fstream>
 #include <gli/gli.hpp>

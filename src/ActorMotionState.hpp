@@ -1,7 +1,7 @@
 #ifndef ACTORMOTIONSTATE_H
 #define ACTORMOTIONSTATE_H
 
-#include "Actor.h"
+#include "Actor.hpp"
 #include <btBulletDynamicsCommon.h>
 
 class ActorMotionState : public btMotionState {

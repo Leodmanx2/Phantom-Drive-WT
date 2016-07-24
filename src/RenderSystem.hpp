@@ -3,7 +3,7 @@
 
 #define GLEW_STATIC
 
-#include "Scene.h"
+#include "Scene.hpp"
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <glm/gtc/matrix_transform.hpp>

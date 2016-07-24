@@ -1,7 +1,7 @@
-#include "RenderModel.h"
+#include "RenderModel.hpp"
 
 #define LOG_GL
-#include "glerr.h"
+#include "glerr.hpp"
 
 RenderModel::RenderModel(const std::string& modelName) {
 	// Load sprite

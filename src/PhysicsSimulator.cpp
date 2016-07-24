@@ -1,4 +1,4 @@
-#include "PhysicsSimulator.h"
+#include "PhysicsSimulator.hpp"
 
 std::unique_ptr<btBroadphaseInterface>
   PhysicsSimulator::s_broadphase(new btDbvtBroadphase());

@@ -1,4 +1,4 @@
-#include "DummyActor.h"
+#include "DummyActor.hpp"
 
 DummyActor::DummyActor() {
 	try {

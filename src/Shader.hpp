@@ -1,8 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "Light.h"
-#include "Logger.h"
+#include "Light.hpp"
+#include "Logger.hpp"
 #include <GL/glew.h>
 #include <array>
 #include <cassert>
@@ -15,6 +15,8 @@
 #include <stdexcept>
 
 class Shader {
+	const std::string SHADER_DIR = "Shaders/";
+
 	struct PointLightUniform {
 		int position;
 		int color;
@@ -66,7 +68,7 @@ class Shader {
 
 	void loadShaders(const std::string& vertexShaderFilename,
 	                 const std::string& pixelShaderFilename,
-	                 const std::string* geometryShaderFilename);
+	                 const std::string& geometryShaderFilename);
 
 	unsigned int compileShader(const std::string& filename, GLenum type);
 
@@ -79,7 +81,7 @@ class Shader {
 	public:
 	Shader(const std::string& vertexShaderFilename,
 	       const std::string& pixelShaderFilename,
-	       const std::string* geometryShaderFilename = nullptr);
+	       const std::string& geometryShaderFilename = "");
 
 	virtual ~Shader();
 
