@@ -3,7 +3,7 @@
 #define LOG_GL
 #include "glerr.h"
 
-Actor::Actor() {
+Actor::Actor() : m_renderModel(nullptr) {
 	m_position    = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	m_forward     = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
@@ -11,7 +11,7 @@ Actor::Actor() {
 	m_left        = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 }
 
-Actor::Actor(const Actor&) {}
+Actor::Actor(const Actor& original) : m_renderModel(original.m_renderModel) {}
 
 Actor::~Actor() { delete m_renderModel; }
 
