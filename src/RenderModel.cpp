@@ -3,11 +3,7 @@
 #define LOG_GL
 #include "glerr.h"
 
-int RenderModel::m_instanceCount = 0;
-
 RenderModel::RenderModel(const std::string& modelName) {
-	++m_instanceCount;
-
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture loading
 	int baseWidth, baseHeight;
@@ -50,18 +46,13 @@ RenderModel::RenderModel(const std::string& modelName) {
 	vaoSetup();
 }
 
-RenderModel::RenderModel(const RenderModel&) { ++m_instanceCount; }
-
 RenderModel::~RenderModel() {
-	--m_instanceCount;
-	if(m_instanceCount == 0) {
-		// Release GPU resources
-		glDeleteVertexArrays(1, &m_vertexArray);
-		glDeleteBuffers(1, &m_vertexBuffer);
-		glDeleteBuffers(1, &m_indexBuffer);
-		glDeleteTextures(1, &m_diffuseMap);
-		glDeleteTextures(1, &m_specularMap);
-	}
+	// Release GPU resources
+	glDeleteVertexArrays(1, &m_vertexArray);
+	glDeleteBuffers(1, &m_vertexBuffer);
+	glDeleteBuffers(1, &m_indexBuffer);
+	glDeleteTextures(1, &m_diffuseMap);
+	glDeleteTextures(1, &m_specularMap);
 }
 
 void RenderModel::fillBuffers(VertexList& vertices, IndexList& indices) {

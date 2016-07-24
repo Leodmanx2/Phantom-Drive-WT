@@ -18,9 +18,11 @@
 #include <vector>
 
 class RenderModel {
-	private:
-	static int m_instanceCount;
+	// Disable copying
+	RenderModel(const RenderModel&) = delete;
+	RenderModel& operator=(const RenderModel&) = delete;
 
+	private:
 	size_t m_elementCount;
 
 	struct Vertex {
@@ -31,15 +33,7 @@ class RenderModel {
 	using VertexList = std::vector<Vertex>;
 	using IndexList  = std::vector<unsigned int>;
 
-	// TODO: Replace with other model-loading code when required
-	void loadOBJ(const std::string& filename,
-	             VertexList&        vertices,
-	             IndexList&         indices);
-
 	protected:
-	RenderModel();
-	explicit RenderModel(const RenderModel&);
-
 	// GPU Resources
 	unsigned int m_diffuseMap;
 	unsigned int m_specularMap;
