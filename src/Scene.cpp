@@ -82,7 +82,7 @@ Scene::~Scene() {
  * TODO: Need to take time since last cycle as input
  */
 void Scene::update() {
-	m_player->update();
+	//m_player->update();
 
 	m_player->rotate(0.0001f, 0.0001f, 0.0f);
 }

@@ -59,7 +59,7 @@ void Actor::rotate(float roll, float pitch, float yaw) {
  * TODO: Needs to take time since last cycle as input
  * TODO: Allow user definition via scripting
  */
-void Actor::update() {}
+// void Actor::update() {}
 
 /* Draws the actor's render model to the active frame buffer
  *
