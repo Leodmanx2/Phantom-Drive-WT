@@ -13,10 +13,17 @@ Scene::Scene() {
 
 	try {
 		g_logger->write(Logger::DEBUG, "Making render model");
-		auto akari = std::make_shared<RenderModel>("Akari");
+		// This will be read from an Actor description file
+		const std::string modelName = "Akari";
+
+		// Construct model if it has not been constructed yet
+		if(m_renderModels.count(modelName) == 0) {
+			m_renderModels.emplace(modelName,
+			                       std::make_shared<RenderModel>(modelName));
+		}
 
 		g_logger->write(Logger::DEBUG, "Creating new Actor");
-		m_player = new Actor(akari);
+		m_player = new Actor(m_renderModels.find("Akari")->second);
 		glLogErr("Constructing Actor");
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());

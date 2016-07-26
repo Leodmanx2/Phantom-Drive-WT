@@ -33,7 +33,6 @@ class Actor {
 	virtual void setOrientation(float deg, float x, float y, float z);
 	virtual void setPosition(float x, float y, float z);
 
-	virtual void update();
 	virtual void draw(Shader& shader);
 };
 
