@@ -1,5 +1,5 @@
 ################################################################################
-# Progress indicator by Giovanni Funchal with modifications 
+# Progress indicator by Giovanni Funchal with modifications
 # by phyatt and myself (https://stackoverflow.com/q/451413)
 ################################################################################
 
@@ -31,11 +31,10 @@ ASSDIR = $(CURDIR)/ass
 BINDIR = $(CURDIR)/bin
 
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
-                              Actor.o RenderModel.o \
-                              Camera.o DummyActor.o Logger.o \
-                              Scene.o PhysicsSimulator.o ActorMotionState.o \
-                              SimulatedPhysicsActor.o \
-                              tiny_obj_loader.o Shader.o Light.o)
+Actor.o RenderModel.o Camera.o Logger.o Scene.o \
+PhysicsSimulator.o ActorMotionState.o Shader.o \
+Light.o)
+
 
 ifeq ($(CXX), clang++)
 	CXXFLAGS_CLANG = -Wdeprecated

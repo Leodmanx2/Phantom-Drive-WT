@@ -1,7 +1,7 @@
-#include "Scene.h"
+#include "Scene.hpp"
 
 //#define LOG_GL
-#include "glerr.h"
+#include "glerr.hpp"
 
 Scene::Scene() {
 	m_ambience = 0.1f;
@@ -11,15 +11,17 @@ Scene::Scene() {
 	m_activeCamera = new Camera();
 	m_activeCamera->translate(-10.0f, 0.0f, 0.0f);
 
-	g_logger->write(Logger::DEBUG, "Creating new DummyActor");
-	m_player = new DummyActor();
-	glLogErr("Constructing DummyActor");
-	m_player2 = new DummyActor();
-	m_player2->translate(3.0f, 3.0f, 3.0f);
-	m_player3 = new DummyActor();
-	m_player3->translate(-3.0f, -3.0f, 0.0f);
-	m_player4 = new DummyActor();
-	m_player4->translate(0.0f, 0.0f, -4.0f);
+	try {
+		g_logger->write(Logger::DEBUG, "Making render model");
+		auto akari = std::make_shared<RenderModel>("Akari");
+
+		g_logger->write(Logger::DEBUG, "Creating new Actor");
+		m_player = new Actor(akari);
+		glLogErr("Constructing Actor");
+	} catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Failed to load RenderModel");
+	}
 
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	glLogErr("Constructing passthrough shader program");
@@ -36,35 +38,31 @@ Scene::Scene() {
 	                            5.0f,                         // Angle
 	                            15.0f);                       // Radius
 
-	m_directionLight = new DirectionLight(glm::vec3(1.0f, 0.0f, 0.0f), // Direction
-	                                      glm::vec3(0.0f, 0.0f, 1.0f), // Color
-	                                      1.0f);                       // Intensity
+	m_directionLight =
+	  new DirectionLight(glm::vec3(1.0f, 0.0f, 0.0f), // Direction
+	                     glm::vec3(0.0f, 0.0f, 1.0f), // Color
+	                     1.0f);                       // Intensity
 }
 
 Scene::Scene(const Scene& original) {
-	m_player = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_player2 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_player3 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_player4 = new DummyActor(dynamic_cast<DummyActor&>(*original.m_player));
-	m_pointLight = new PointLight(*original.m_pointLight);
-	m_spotLight = new SpotLight(*original.m_spotLight);
+	// This objects in this block exist only for development
+	m_player         = new Actor(*original.m_player);
+	m_pointLight     = new PointLight(*original.m_pointLight);
+	m_spotLight      = new SpotLight(*original.m_spotLight);
 	m_directionLight = new DirectionLight(*original.m_directionLight);
 
-	m_activeCamera = new Camera(*original.m_activeCamera);
+	m_ambience         = original.m_ambience;
+	m_activeCamera     = new Camera(*original.m_activeCamera);
 	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
 	// TODO: Shader copy (or preventing Scene copies)
 }
 
 Scene::~Scene() {
 	delete m_player;
-	delete m_player2;
-	delete m_player3;
-	delete m_player4;
 
 	delete m_pointLight;
 	delete m_spotLight;
 	delete m_directionLight;
-
 
 	delete m_activeCamera;
 	delete m_physicsSimulator;
@@ -78,14 +76,8 @@ Scene::~Scene() {
  */
 void Scene::update() {
 	m_player->update();
-	m_player2->update();
-	m_player3->update();
-	m_player4->update();
 
 	m_player->rotate(0.0001f, 0.0001f, 0.0f);
-	m_player2->rotate(0.0001f, 0.0f, 0.0f);
-	m_player3->rotate(0.0f, 0.0f, 0.00005f);
-	m_player4->rotate(0.0f, 0.0001f, 0.0001f);
 }
 
 /**
@@ -93,9 +85,7 @@ void Scene::update() {
  *
  * TODO: Needs to take time since last cycle as input
  */
-void Scene::simulate() {
-	m_physicsSimulator->stepSimulation();
-}
+void Scene::simulate() { m_physicsSimulator->stepSimulation(); }
 
 /**
  * Draws all render models that are part of the scene using information passed down by the renderer
@@ -127,8 +117,5 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 	glLogErr("Uploading projection matrix");
 
 	m_player->draw(*m_activeShader);
-	m_player2->draw(*m_activeShader);
-	m_player3->draw(*m_activeShader);
-	m_player4->draw(*m_activeShader);
 	glLogErr("Drawing actors");
 }

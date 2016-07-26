@@ -1,23 +1,20 @@
-#include "Actor.h"
+#include "Actor.hpp"
 
 #define LOG_GL
-#include "glerr.h"
+#include "glerr.hpp"
 
-Actor::Actor() {
-	m_position = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+Actor::Actor(std::shared_ptr<RenderModel> model)
+  : m_renderModel(std::move(model)) {
+	m_position    = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-	m_forward = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-	m_up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	m_left = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	m_forward     = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_up          = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	m_left        = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 }
 
-Actor::Actor(const Actor&) {
-	
-}
+Actor::Actor(const Actor& original) {}
 
-Actor::~Actor() {
-	delete m_renderModel;
-}
+Actor::~Actor() {}
 
 /**
  * Translates the actor along its personal axes
@@ -28,9 +25,9 @@ Actor::~Actor() {
  */
 void Actor::translate(float longitude, float latitude, float altitude) {
 	glm::vec4 longVec = m_forward * longitude;
-	glm::vec4 latVec = m_left * latitude;
-	glm::vec4 altVec = m_up * altitude;
-	
+	glm::vec4 latVec  = m_left * latitude;
+	glm::vec4 altVec  = m_up * altitude;
+
 	m_position += longVec + latVec + altVec;
 }
 
@@ -44,15 +41,15 @@ void Actor::translate(float longitude, float latitude, float altitude) {
 void Actor::rotate(float roll, float pitch, float yaw) {
 	glm::quat rotationQuat(glm::vec3(pitch, yaw, roll));
 	m_orientation *= rotationQuat;
-	
+
 	glm::vec4 canonicalForward(0.0f, 0.0f, -1.0f, 0.0f);
 	glm::vec4 canonicalUp(0.0f, 1.0f, 0.0f, 0.0f);
 	glm::vec4 canonicalLeft(-1.0f, 0.0f, 0.0f, 0.0f);
 
 	glm::mat4 orientationMatrix = glm::mat4_cast(m_orientation);
-	m_forward = orientationMatrix * canonicalForward;
-	m_up = orientationMatrix * canonicalUp;
-	m_left = orientationMatrix * canonicalLeft;
+	m_forward                   = orientationMatrix * canonicalForward;
+	m_up                        = orientationMatrix * canonicalUp;
+	m_left                      = orientationMatrix * canonicalLeft;
 }
 
 /**
@@ -60,10 +57,9 @@ void Actor::rotate(float roll, float pitch, float yaw) {
  * progress animations, respond to collisions, etc.
  *
  * TODO: Needs to take time since last cycle as input
+ * TODO: Allow user definition via scripting
  */
-void Actor::update() {
-
-}
+void Actor::update() {}
 
 /* Draws the actor's render model to the active frame buffer
  *
@@ -72,18 +68,19 @@ void Actor::update() {
  */
 void Actor::draw(Shader& shader) {
 	if(m_renderModel == nullptr) return;
-	
+
 	glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
-	glm::mat4 translationMatrix = glm::translate(glm::mat4(), glm::vec3(m_position));
-	
+	glm::mat4 translationMatrix =
+	  glm::translate(glm::mat4(), glm::vec3(m_position));
+
 	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;
-	
+
 	shader.setModelMatrix(modelMatrix);
 	glLogErr("Uploading model matrix");
-	
+
 	shader.updateNormalMatrix();
 	glLogErr("Uploading normal matrix");
-	
+
 	m_renderModel->draw(shader);
 	glLogErr("drawing render model");
 }
