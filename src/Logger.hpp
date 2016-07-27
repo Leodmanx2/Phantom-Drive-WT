@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-class Logger {
+class Logger final {
 	private:
 	std::string   timestamp();
 	std::ofstream logFile;

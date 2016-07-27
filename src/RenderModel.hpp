@@ -18,7 +18,7 @@
 #include <stdexcept>
 #include <vector>
 
-class RenderModel {
+class RenderModel final {
 	const std::string MODEL_DIR = "Models/";
 
 	// Disable copying
@@ -59,7 +59,7 @@ class RenderModel {
 	// Geometry shader is optional
 	explicit RenderModel(const std::string& modelFilename);
 
-	virtual ~RenderModel();
+	~RenderModel();
 
 	void draw(Shader& shader);
 };

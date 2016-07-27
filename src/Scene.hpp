@@ -32,7 +32,8 @@ class Scene {
 
 	public:
 	Scene();
-	Scene(const Scene& original);
+	Scene(const Scene&) = delete;
+	Scene& operator=(const Scene&) = delete;
 	~Scene();
 
 	void update();

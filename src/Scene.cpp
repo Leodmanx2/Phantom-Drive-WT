@@ -51,19 +51,6 @@ Scene::Scene() {
 	                     1.0f);                       // Intensity
 }
 
-Scene::Scene(const Scene& original) {
-	// This objects in this block exist only for development
-	//m_player         = new Actor(*original.m_player);
-	m_pointLight     = new PointLight(*original.m_pointLight);
-	m_spotLight      = new SpotLight(*original.m_spotLight);
-	m_directionLight = new DirectionLight(*original.m_directionLight);
-
-	m_ambience         = original.m_ambience;
-	m_activeCamera     = new Camera(*original.m_activeCamera);
-	m_physicsSimulator = new PhysicsSimulator(*original.m_physicsSimulator);
-	// TODO: Shader copy (or preventing Scene copies)
-}
-
 Scene::~Scene() {
 	m_actors.clear();
 

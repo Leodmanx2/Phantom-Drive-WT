@@ -31,10 +31,10 @@ RenderModel::RenderModel(const std::string& modelName) {
 	if(!PHYSFS_exists(modelFilename.c_str())) {
 		throw std::runtime_error("Could not find model file");
 	}
-	PHYSFS_file*  file         = PHYSFS_openRead(modelFilename.c_str());
-	PHYSFS_sint64 fileSize     = PHYSFS_fileLength(file);
-	char*         fileBuffer   = new char[fileSize];
-	int           fileSizeRead = PHYSFS_read(file, fileBuffer, 1, fileSize);
+	PHYSFS_file*  file       = PHYSFS_openRead(modelFilename.c_str());
+	PHYSFS_sint64 fileSize   = PHYSFS_fileLength(file);
+	char*         fileBuffer = new char[fileSize];
+	PHYSFS_read(file, fileBuffer, 1, fileSize);
 	PHYSFS_close(file);
 	std::string        fileString(fileBuffer, fileSize);
 	std::istringstream fileStream(fileString, std::istringstream::binary);

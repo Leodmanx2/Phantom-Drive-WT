@@ -19,9 +19,8 @@ PhysicsSimulator::PhysicsSimulator() {
 	m_world->setGravity(btVector3(0.0f, -0.98f, 0.0f));
 }
 
-PhysicsSimulator::PhysicsSimulator(PhysicsSimulator& original) {
-	m_world = new btDiscreteDynamicsWorld(*original.m_world);
-}
+PhysicsSimulator::PhysicsSimulator(PhysicsSimulator& original)
+  : m_world(new btDiscreteDynamicsWorld(*original.m_world)) {}
 
 PhysicsSimulator::~PhysicsSimulator() { delete m_world; }
 

@@ -4,15 +4,20 @@
 #include "glerr.hpp"
 
 Actor::Actor(std::shared_ptr<RenderModel> model)
-  : m_renderModel(std::move(model)) {
-	m_position    = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	m_orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-	m_forward     = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-	m_up          = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	m_left        = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
-}
+  : m_orientation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
+  , m_position(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f))
+  , m_forward(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f))
+  , m_up(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f))
+  , m_left(glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f))
+  , m_renderModel(model) {}
 
-Actor::Actor(const Actor& original) {}
+/*Actor::Actor(const Actor& original)
+  : m_orientation(original.m_orientation)
+  , m_position(original.m_position)
+  , m_forward(original.m_forward)
+  , m_up(original.m_up)
+  , m_left(original.m_left)
+  , m_renderModel(original.m_renderModel) {}*/
 
 Actor::~Actor() {}
 

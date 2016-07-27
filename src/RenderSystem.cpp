@@ -42,27 +42,6 @@ RenderSystem::RenderSystem() {
 	glInit();
 }
 
-RenderSystem::RenderSystem(const RenderSystem& original) {
-	int width, height;
-	SDL_GetWindowSize(original.m_window, &width, &height);
-
-	const std::string title = SDL_GetWindowTitle(original.m_window);
-
-	Uint32 flags = SDL_GetWindowFlags(original.m_window);
-
-	m_window = SDL_CreateWindow(title.c_str(),
-	                            SDL_WINDOWPOS_UNDEFINED,
-	                            SDL_WINDOWPOS_UNDEFINED,
-	                            width,
-	                            height,
-	                            flags);
-	if(m_window == nullptr) {
-		throw std::runtime_error("SDL Window could not be initialized");
-	}
-
-	glInit();
-}
-
 RenderSystem::~RenderSystem() {
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);

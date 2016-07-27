@@ -4,7 +4,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <memory>
 
-class PhysicsSimulator {
+class PhysicsSimulator final {
 	private:
 	static std::unique_ptr<btBroadphaseInterface> s_broadphase;
 	static std::unique_ptr<btDefaultCollisionConfiguration>

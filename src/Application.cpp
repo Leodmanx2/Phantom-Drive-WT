@@ -31,11 +31,6 @@ Application::Application(int argc, char** argv) {
 	m_scene = new Scene();
 }
 
-Application::Application(const Application& original) {
-	m_renderSystem = new RenderSystem(*original.m_renderSystem);
-	m_scene        = new Scene(*original.m_scene);
-}
-
 Application::~Application() {
 	delete m_renderSystem;
 	delete m_scene;

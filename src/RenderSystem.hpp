@@ -22,7 +22,8 @@ class RenderSystem {
 
 	public:
 	RenderSystem();
-	RenderSystem(const RenderSystem& original);
+	RenderSystem(const RenderSystem&) = delete;
+	RenderSystem& operator=(const RenderSystem&) = delete;
 	~RenderSystem();
 
 	void draw(Scene* scene);

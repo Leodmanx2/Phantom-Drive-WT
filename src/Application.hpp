@@ -11,7 +11,7 @@
 #include <sstream>
 #include <stdexcept>
 
-class Application {
+class Application final {
 	private:
 	RenderSystem* m_renderSystem;
 
@@ -19,7 +19,8 @@ class Application {
 
 	public:
 	Application(int argc, char** argv);
-	Application(const Application& original);
+	Application(const Application&) = delete;
+	Application& operator=(const Application&) = delete;
 	~Application();
 	void run();
 };

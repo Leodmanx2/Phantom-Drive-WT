@@ -13,7 +13,6 @@
 
 class Actor {
 	protected:
-	Actor();
 	glm::quat m_orientation;
 	glm::vec4 m_position;
 	glm::vec4 m_forward;
@@ -24,7 +23,13 @@ class Actor {
 
 	public:
 	Actor(std::shared_ptr<RenderModel> model);
-	Actor(const Actor& original);
+
+	Actor(const Actor& original) = default;
+	Actor& operator=(const Actor& original) = default;
+
+	Actor(Actor&& original) = default;
+	Actor& operator=(Actor&& original) = default;
+
 	virtual ~Actor();
 
 	virtual void translate(float longitude, float latitude, float altitude);

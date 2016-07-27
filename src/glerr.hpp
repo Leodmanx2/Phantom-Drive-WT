@@ -46,7 +46,7 @@ inline void glLogErr(const std::string& context) {
 	if(write) g_logger->write(Logger::DEBUG, ss.str());
 }
 #else
-inline void glLogErr(const std::string& context) { return; }
+inline constexpr void glLogErr(const std::string& context) { return; }
 #endif
 
 #endif
