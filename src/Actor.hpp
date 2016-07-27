@@ -22,7 +22,7 @@ class Actor {
 	std::shared_ptr<RenderModel> m_renderModel;
 
 	public:
-	Actor(std::shared_ptr<RenderModel> model);
+	explicit Actor(std::shared_ptr<RenderModel> model);
 
 	Actor(const Actor& original) = default;
 	Actor& operator=(const Actor& original) = default;
