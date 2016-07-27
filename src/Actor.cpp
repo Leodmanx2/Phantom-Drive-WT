@@ -15,7 +15,6 @@ Actor::Actor(const std::string& actorName)
 	if(name.compare("") != 0) {
 		// TODO: Review construction of Actor without model
 		try {
-			g_logger->write(Logger::DEBUG, "Making render model");
 			// TODO: Model name neds to be read from Actor description file
 			// For the time being, we're assuming it's the same as the Actor's name.
 
