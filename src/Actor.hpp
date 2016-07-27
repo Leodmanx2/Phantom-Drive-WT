@@ -28,7 +28,7 @@ class Actor {
 	std::shared_ptr<RenderModel> m_renderModel;
 
 	public:
-	Actor(const std::string& name);
+	explicit Actor(const std::string& name);
 
 	Actor(const Actor& original) = default;
 	Actor& operator=(const Actor& original) = default;
