@@ -13,7 +13,7 @@ class Scene {
 
 	Camera* m_activeCamera;
 
-	std::vector<Actor*> m_actors;
+	std::vector<std::unique_ptr<Actor>> m_actors;
 
 	// TODO: Remove specific actors, etc. These are for development purposes only.
 	// Scene should not have details of specific scenes. Scenes must be built

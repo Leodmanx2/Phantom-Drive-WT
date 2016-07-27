@@ -7,7 +7,7 @@ Scene::Scene() {
 	m_ambience = 0.1f;
 
 	try {
-		m_actors.emplace_back(new Actor("Akari"));
+		m_actors.emplace_back(std::make_unique<Actor>("Akari"));
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		throw std::runtime_error("Failed to load Actor");
@@ -39,8 +39,6 @@ Scene::Scene() {
 }
 
 Scene::~Scene() {
-	m_actors.clear();
-
 	delete m_pointLight;
 	delete m_spotLight;
 	delete m_directionLight;
