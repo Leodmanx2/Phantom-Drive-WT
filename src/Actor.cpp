@@ -5,12 +5,13 @@
 
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
-Actor::Actor(const std::string& name)
+Actor::Actor(const std::string& actorName)
   : m_orientation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
   , m_position(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f))
   , m_forward(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f))
   , m_up(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f))
-  , m_left(glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f)) {
+  , m_left(glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f))
+  , name(actorName) {
 	if(name.compare("") != 0) {
 		// TODO: Review construction of Actor without model
 		try {
@@ -30,7 +31,12 @@ Actor::Actor(const std::string& name)
 	}
 }
 
-Actor::~Actor() {}
+Actor::~Actor() {
+	// Remove model from dictionary if no Actor is using it
+	if(name.compare("") != 0 && s_modelDictionary.find(name)->second.unique()) {
+		s_modelDictionary.erase(name);
+	}
+}
 
 /**
  * Translates the actor along its personal axes

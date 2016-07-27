@@ -3,7 +3,7 @@
 #define LOG_GL
 #include "glerr.hpp"
 
-RenderModel::RenderModel(const std::string& modelName) {
+RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture loading
 	int baseWidth, baseHeight;

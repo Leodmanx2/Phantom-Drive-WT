@@ -58,8 +58,9 @@ class RenderModel final {
 	public:
 	// Geometry shader is optional
 	explicit RenderModel(const std::string& modelFilename);
-
 	~RenderModel();
+
+	const std::string name;
 
 	void draw(Shader& shader);
 };

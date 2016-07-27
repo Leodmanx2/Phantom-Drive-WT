@@ -38,6 +38,8 @@ class Actor {
 
 	virtual ~Actor();
 
+	const std::string name;
+
 	virtual void translate(float longitude, float latitude, float altitude);
 	virtual void rotate(float roll, float pitch, float yaw);
 
