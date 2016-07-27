@@ -4,15 +4,9 @@
 #include "Camera.hpp"
 #include "Light.hpp"
 #include "PhysicsSimulator.hpp"
-#include <map>
 
 class Scene {
 	private:
-	// We maintain a dictionary of already-constructed render models so that if
-	// we need to make a new Actor with one of them, we don't have to
-	// reconstruct it.
-	std::map<std::string, std::shared_ptr<RenderModel>> m_renderModels;
-
 	PhysicsSimulator* m_physicsSimulator;
 
 	Shader* m_activeShader;

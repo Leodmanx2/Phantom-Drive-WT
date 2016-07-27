@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 
-Camera::Camera() : Actor(nullptr) {}
+Camera::Camera() : Actor("") {}
 
 glm::vec4 Camera::getPosition() { return m_position; }
 

@@ -6,32 +6,19 @@
 Scene::Scene() {
 	m_ambience = 0.1f;
 
+	try {
+		m_actors.emplace_back(new Actor("Akari"));
+	} catch(const std::exception& exception) {
+		g_logger->write(Logger::ERROR, exception.what());
+		throw std::runtime_error("Failed to load Actor");
+	}
+
 	m_physicsSimulator = new PhysicsSimulator();
 
 	m_activeCamera = new Camera();
 	m_activeCamera->translate(-10.0f, 0.0f, 0.0f);
 
-	try {
-		g_logger->write(Logger::DEBUG, "Making render model");
-		// This will be read from an Actor description file
-		const std::string modelName = "Akari";
-
-		// Construct model if it has not been constructed yet
-		if(m_renderModels.count(modelName) == 0) {
-			m_renderModels.emplace(modelName,
-			                       std::make_shared<RenderModel>(modelName));
-		}
-
-		g_logger->write(Logger::DEBUG, "Creating new Actor");
-		m_actors.emplace_back(new Actor(m_renderModels.find(modelName)->second));
-		glLogErr("Constructing Actor");
-	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
-		throw std::runtime_error("Failed to load RenderModel");
-	}
-
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
-	glLogErr("Constructing passthrough shader program");
 
 	m_pointLight = new PointLight(glm::vec3(-3.0f, 0.0f, 0.0f), // Position
 	                              glm::vec3(1.0f, 0.0f, 0.0f),  // Color

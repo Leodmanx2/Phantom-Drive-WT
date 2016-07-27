@@ -3,13 +3,32 @@
 #define LOG_GL
 #include "glerr.hpp"
 
-Actor::Actor(std::shared_ptr<RenderModel> model)
+std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
+
+Actor::Actor(const std::string& name)
   : m_orientation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
   , m_position(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f))
   , m_forward(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f))
   , m_up(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f))
-  , m_left(glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f))
-  , m_renderModel(model) {}
+  , m_left(glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f)) {
+	if(name.compare("") != 0) {
+		// TODO: Review construction of Actor without model
+		try {
+			g_logger->write(Logger::DEBUG, "Making render model");
+			// TODO: Model name neds to be read from Actor description file
+			// For the time being, we're assuming it's the same as the Actor's name.
+
+			// Construct model if it has not been constructed yet
+			if(s_modelDictionary.count(name) == 0) {
+				s_modelDictionary.emplace(name, std::make_shared<RenderModel>(name));
+			}
+			m_renderModel = s_modelDictionary.find(name)->second;
+		} catch(const std::exception& exception) {
+			g_logger->write(Logger::ERROR, exception.what());
+			throw std::runtime_error("Failed to load RenderModel");
+		}
+	}
+}
 
 Actor::~Actor() {}
 
