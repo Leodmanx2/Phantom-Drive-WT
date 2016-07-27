@@ -23,7 +23,7 @@ Scene::Scene() {
 		}
 
 		g_logger->write(Logger::DEBUG, "Creating new Actor");
-		m_player = new Actor(m_renderModels.find("Akari")->second);
+		m_actors.emplace_back(new Actor(m_renderModels.find(modelName)->second));
 		glLogErr("Constructing Actor");
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
@@ -53,7 +53,7 @@ Scene::Scene() {
 
 Scene::Scene(const Scene& original) {
 	// This objects in this block exist only for development
-	m_player         = new Actor(*original.m_player);
+	//m_player         = new Actor(*original.m_player);
 	m_pointLight     = new PointLight(*original.m_pointLight);
 	m_spotLight      = new SpotLight(*original.m_spotLight);
 	m_directionLight = new DirectionLight(*original.m_directionLight);
@@ -65,7 +65,7 @@ Scene::Scene(const Scene& original) {
 }
 
 Scene::~Scene() {
-	delete m_player;
+	m_actors.clear();
 
 	delete m_pointLight;
 	delete m_spotLight;
@@ -81,11 +81,7 @@ Scene::~Scene() {
  *
  * TODO: Need to take time since last cycle as input
  */
-void Scene::update() {
-	//m_player->update();
-
-	m_player->rotate(0.0001f, 0.0001f, 0.0f);
-}
+void Scene::update() { m_actors.at(0)->rotate(0.0001f, 0.0001f, 0.0f); }
 
 /**
  * Runs the once-per-cycle physics simulation. Likely to be merged into the default update() method.
@@ -123,6 +119,6 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 	m_activeShader->setProjectionMatrix(projectionMatrix);
 	glLogErr("Uploading projection matrix");
 
-	m_player->draw(*m_activeShader);
+	m_actors.at(0)->draw(*m_activeShader);
 	glLogErr("Drawing actors");
 }
