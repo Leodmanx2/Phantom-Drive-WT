@@ -15,7 +15,7 @@ Download
 Dependencies
 ------------
 
-*   [GLEW](http://glew.sourceforge.net/)
+*   [glbinding](https://github.com/cginternals/glbinding)
 *   [PHYSFS](https://icculus.org/physfs/)
 *   [GLFW 3.x](http://www.glfw.org/)
 *   [Bullet](http://bulletphysics.org/)

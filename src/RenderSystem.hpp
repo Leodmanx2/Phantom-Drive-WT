@@ -1,10 +1,11 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
-#define GLEW_STATIC
+#include <glbinding/Binding.h>
+#include <glbinding/gl/gl.h>
+#define GLFW_INCLUDE_NONE
 
 #include "Scene.hpp"
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>

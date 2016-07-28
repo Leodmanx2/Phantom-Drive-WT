@@ -4,7 +4,6 @@
 #include "Logger.hpp"
 #include "Shader.hpp"
 #include "pmdl.hpp"
-#include <GL/glew.h>
 #include <fstream>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>

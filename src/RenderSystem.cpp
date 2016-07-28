@@ -15,13 +15,7 @@ RenderSystem::RenderSystem() {
 	glfwMakeContextCurrent(m_window);
 	glfwSwapInterval(1);
 
-	GLenum err = glewInit();
-	if(err != GLEW_OK) {
-		g_logger->write(
-		  Logger::CRITICAL,
-		  std::string(reinterpret_cast<const char*>(glewGetErrorString(err))));
-		throw std::runtime_error("Failed to initialize GLEW");
-	}
+	glbinding::Binding::initialize();
 
 	m_projectionMatrix =
 	  glm::perspective(45.0f,
@@ -40,8 +34,8 @@ RenderSystem::~RenderSystem() { glfwDestroyWindow(m_window); }
  */
 void RenderSystem::draw(Scene* scene) {
 	//glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	gl::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
 	glLogErr("Clearing buffers");
 
 	scene->draw(m_projectionMatrix);
@@ -69,9 +63,9 @@ void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
 }
 
 void RenderSystem::glInit() {
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LINE_SMOOTH);
+	gl::glEnable(gl::GL_CULL_FACE);
+	gl::glEnable(gl::GL_DEPTH_TEST);
+	gl::glEnable(gl::GL_LINE_SMOOTH);
 }
 
 bool RenderSystem::running() { return !glfwWindowShouldClose(m_window); }

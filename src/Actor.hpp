@@ -4,8 +4,8 @@
 #include "Logger.hpp"
 #include "RenderModel.hpp"
 #include "Shader.hpp"
-#include <GL/glew.h>
 #include <btBulletDynamicsCommon.h>
+#include <glbinding/gl/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
