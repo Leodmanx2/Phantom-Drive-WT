@@ -1,10 +1,10 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
-#define GLEW_STATIC
+#include <glbinding/Binding.h>
+#include <glbinding/gl/gl.h>
 
 #include "Scene.hpp"
-#include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>

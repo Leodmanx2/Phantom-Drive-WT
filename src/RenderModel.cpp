@@ -3,6 +3,8 @@
 #define LOG_GL
 #include "glerr.hpp"
 
+using namespace gl;
+
 RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture loading
@@ -76,69 +78,71 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 
 RenderModel::~RenderModel() {
 	// Release GPU resources
-	glDeleteVertexArrays(1, &m_vertexArray);
-	glDeleteBuffers(1, &m_vertexBuffer);
-	glDeleteBuffers(1, &m_indexBuffer);
-	glDeleteTextures(1, &m_diffuseMap);
-	glDeleteTextures(1, &m_specularMap);
+	gl::glDeleteVertexArrays(1, &m_vertexArray);
+	gl::glDeleteBuffers(1, &m_vertexBuffer);
+	gl::glDeleteBuffers(1, &m_indexBuffer);
+	gl::glDeleteTextures(1, &m_diffuseMap);
+	gl::glDeleteTextures(1, &m_specularMap);
 }
 
 void RenderModel::fillBuffers(VertexList& vertices, IndexList& indices) {
 	// Vertex buffer
-	glGenBuffers(1, &m_vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER,
-	             sizeof(Vertex) * vertices.size(),
-	             vertices.data(),
-	             GL_STATIC_DRAW);
+	gl::glGenBuffers(1, &m_vertexBuffer);
+	gl::glBindBuffer(gl::GL_ARRAY_BUFFER, m_vertexBuffer);
+	gl::glBufferData(gl::GL_ARRAY_BUFFER,
+	                 sizeof(Vertex) * vertices.size(),
+	                 vertices.data(),
+	                 gl::GL_STATIC_DRAW);
 	//Index buffer
-	glGenBuffers(1, &m_indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-	             sizeof(unsigned int) * indices.size(),
-	             indices.data(),
-	             GL_STATIC_DRAW);
+	gl::glGenBuffers(1, &m_indexBuffer);
+	gl::glBindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+	gl::glBufferData(gl::GL_ELEMENT_ARRAY_BUFFER,
+	                 sizeof(unsigned int) * indices.size(),
+	                 indices.data(),
+	                 gl::GL_STATIC_DRAW);
 }
 
 void RenderModel::vaoSetup() {
-	glGenVertexArrays(1, &m_vertexArray);
-	glBindVertexArray(m_vertexArray);
+	gl::glGenVertexArrays(1, &m_vertexArray);
+	gl::glBindVertexArray(m_vertexArray);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+	gl::glBindBuffer(gl::GL_ARRAY_BUFFER, m_vertexBuffer);
+	gl::glBindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 
 	// Save buffer layout descriptions to the VAO
 	const int positionAttribPosition = 0;
-	glVertexAttribPointer(positionAttribPosition,
-	                      3,
-	                      GL_FLOAT,
-	                      GL_FALSE,
-	                      sizeof(Vertex),
-	                      reinterpret_cast<void*>(offsetof(Vertex, position)));
-	glEnableVertexAttribArray(positionAttribPosition);
+	gl::glVertexAttribPointer(
+	  positionAttribPosition,
+	  3,
+	  gl::GL_FLOAT,
+	  gl::GL_FALSE,
+	  sizeof(Vertex),
+	  reinterpret_cast<void*>(offsetof(Vertex, position)));
+	gl::glEnableVertexAttribArray(positionAttribPosition);
 
 	const int normalAttribPosition = 1;
-	glVertexAttribPointer(normalAttribPosition,
-	                      3,
-	                      GL_FLOAT,
-	                      GL_FALSE,
-	                      sizeof(Vertex),
-	                      reinterpret_cast<void*>(offsetof(Vertex, normal)));
-	glEnableVertexAttribArray(normalAttribPosition);
+	gl::glVertexAttribPointer(normalAttribPosition,
+	                          3,
+	                          gl::GL_FLOAT,
+	                          gl::GL_FALSE,
+	                          sizeof(Vertex),
+	                          reinterpret_cast<void*>(offsetof(Vertex, normal)));
+	gl::glEnableVertexAttribArray(normalAttribPosition);
 
 	const int texCoordAttribPosition = 2;
-	glVertexAttribPointer(texCoordAttribPosition,
-	                      2,
-	                      GL_FLOAT,
-	                      GL_FALSE,
-	                      sizeof(Vertex),
-	                      reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
-	glEnableVertexAttribArray(texCoordAttribPosition);
+	gl::glVertexAttribPointer(
+	  texCoordAttribPosition,
+	  2,
+	  gl::GL_FLOAT,
+	  gl::GL_FALSE,
+	  sizeof(Vertex),
+	  reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
+	gl::glEnableVertexAttribArray(texCoordAttribPosition);
 
 	// TODO: Everything related to animations
 
 	// Clean up
-	glBindVertexArray(0);
+	gl::glBindVertexArray(0);
 }
 
 /**
@@ -183,8 +187,8 @@ unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
 	delete[] buffer;
 	gli::gl               gl;
 	const gli::gl::format format = gl.translate(texture.format());
-	GLenum                target = gl.translate(texture.target());
-	if(target != GL_TEXTURE_2D) {
+	gl::GLenum target = static_cast<gl::GLenum>(gl.translate(texture.target()));
+	if(target != gl::GL_TEXTURE_2D) {
 		throw std::runtime_error(
 		  "Texture target is not GL_TEXTURE_2D/gli::TARGET_2D");
 	}
@@ -200,22 +204,22 @@ unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
 
 	// Reserve memory on the GPU for texture and describe its layout
 	unsigned int textureID;
-	glGenTextures(1, &textureID);
+	gl::glGenTextures(1, &textureID);
 
-	glBindTexture(target, textureID);
+	gl::glBindTexture(target, textureID);
 
-	glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
-	glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, texture.levels() - 1);
-	glTexParameteri(target, GL_TEXTURE_SWIZZLE_R, format.Swizzle[0]);
-	glTexParameteri(target, GL_TEXTURE_SWIZZLE_G, format.Swizzle[1]);
-	glTexParameteri(target, GL_TEXTURE_SWIZZLE_B, format.Swizzle[2]);
-	glTexParameteri(target, GL_TEXTURE_SWIZZLE_A, format.Swizzle[3]);
+	gl::glTexParameteri(target, gl::GL_TEXTURE_BASE_LEVEL, 0);
+	gl::glTexParameteri(target, gl::GL_TEXTURE_MAX_LEVEL, texture.levels() - 1);
+	gl::glTexParameteri(target, gl::GL_TEXTURE_SWIZZLE_R, format.Swizzle[0]);
+	gl::glTexParameteri(target, gl::GL_TEXTURE_SWIZZLE_G, format.Swizzle[1]);
+	gl::glTexParameteri(target, gl::GL_TEXTURE_SWIZZLE_B, format.Swizzle[2]);
+	gl::glTexParameteri(target, gl::GL_TEXTURE_SWIZZLE_A, format.Swizzle[3]);
 
-	glTexStorage2D(target,
-	               texture.levels(),
-	               format.Internal,
-	               texture.dimensions().x,
-	               texture.dimensions().y);
+	gl::glTexStorage2D(target,
+	                   texture.levels(),
+	                   static_cast<gl::GLenum>(format.Internal),
+	                   texture.dimensions().x,
+	                   texture.dimensions().y);
 
 	// Write image data to GPU memory
 	for(unsigned int layer = 0; layer < texture.layers(); ++layer) {
@@ -228,7 +232,7 @@ unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
 					                          0,
 					                          texture.dimensions().x,
 					                          texture.dimensions().y,
-					                          format.Internal,
+					                          static_cast<gl::GLenum>(format.Internal),
 					                          texture.size(level),
 					                          texture.data(layer, face, level));
 				} else {
@@ -238,8 +242,8 @@ unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
 					                0,
 					                texture.dimensions().x,
 					                texture.dimensions().y,
-					                format.External,
-					                format.Type,
+					                static_cast<gl::GLenum>(format.External),
+					                static_cast<gl::GLenum>(format.Type),
 					                texture.data(layer, face, level));
 				}
 			}
@@ -261,12 +265,12 @@ void RenderModel::draw(Shader& shader) {
 	shader.setSpecularMap(m_specularMap);
 	glLogErr("Activating specular texture (3D)");
 
-	glBindVertexArray(m_vertexArray);
+	gl::glBindVertexArray(m_vertexArray);
 	glLogErr("Binding VAO (3D)");
 
-	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);
+	gl::glDrawElements(gl::GL_TRIANGLES, m_elementCount, gl::GL_UNSIGNED_INT, 0);
 	glLogErr("Drawing for real (3D)");
 
-	glBindVertexArray(0);
+	gl::glBindVertexArray(0);
 	glLogErr("Un-binding VAO (3D)");
 }

@@ -3,9 +3,9 @@
 
 #include "Light.hpp"
 #include "Logger.hpp"
-#include <GL/glew.h>
 #include <array>
 #include <cassert>
+#include <glbinding/gl/gl.h>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
@@ -70,7 +70,7 @@ class Shader {
 	                 const std::string& pixelShaderFilename,
 	                 const std::string& geometryShaderFilename);
 
-	unsigned int compileShader(const std::string& filename, GLenum type);
+	unsigned int compileShader(const std::string& filename, gl::GLenum type);
 
 	unsigned int linkShaders(unsigned int vertexShader,
 	                         unsigned int pixelShader,
