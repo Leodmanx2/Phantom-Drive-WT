@@ -17,6 +17,7 @@ class PhysicsSimulator final {
 	public:
 	PhysicsSimulator();
 	PhysicsSimulator(PhysicsSimulator& original);
+	PhysicsSimulator& operator=(const PhysicsSimulator& original);
 	~PhysicsSimulator();
 
 	void addRigidBody(btRigidBody* body);

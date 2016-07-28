@@ -22,6 +22,14 @@ PhysicsSimulator::PhysicsSimulator() {
 PhysicsSimulator::PhysicsSimulator(PhysicsSimulator& original)
   : m_world(new btDiscreteDynamicsWorld(*original.m_world)) {}
 
+PhysicsSimulator& PhysicsSimulator::
+operator=(const PhysicsSimulator& original) {
+	if(this != &original) {
+		m_world = new btDiscreteDynamicsWorld(*original.m_world);
+	}
+	return *this;
+}
+
 PhysicsSimulator::~PhysicsSimulator() { delete m_world; }
 
 /**
