@@ -5,16 +5,15 @@
 
 #include "Scene.hpp"
 #include <GL/glew.h>
-#include <SDL2/SDL.h>
+#include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <iostream>
 #include <stdexcept>
 
-class RenderSystem {
+class RenderSystem final {
 	private:
-	SDL_GLContext m_context;
-	SDL_Window*   m_window;
+	GLFWwindow* m_window;
 
 	glm::mat4 m_projectionMatrix;
 
@@ -25,6 +24,8 @@ class RenderSystem {
 	RenderSystem(const RenderSystem&) = delete;
 	RenderSystem& operator=(const RenderSystem&) = delete;
 	~RenderSystem();
+
+	bool running();
 
 	void draw(Scene* scene);
 	void resizeWindow(unsigned int width, unsigned int height);
