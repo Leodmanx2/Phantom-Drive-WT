@@ -7,23 +7,13 @@ RenderSystem::RenderSystem() {
 	int width  = 640;
 	int height = 480;
 
-	m_window = SDL_CreateWindow("Hello World!",
-	                            SDL_WINDOWPOS_UNDEFINED,
-	                            SDL_WINDOWPOS_UNDEFINED,
-	                            width,
-	                            height,
-	                            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-	if(m_window == nullptr) {
-		g_logger->write(Logger::CRITICAL, SDL_GetError());
-		throw std::runtime_error("SDL Window could not be initialized");
+	m_window = glfwCreateWindow(width, height, "Hello World!", nullptr, nullptr);
+	if(!m_window) {
+		throw std::runtime_error("Window or OpenGL context could not be created");
 	}
 
-	m_context = SDL_GL_CreateContext(m_window);
-	if(m_context == nullptr) {
-		SDL_DestroyWindow(m_window);
-		g_logger->write(Logger::CRITICAL, SDL_GetError());
-		throw std::runtime_error("Could not create OpenGL context");
-	}
+	glfwMakeContextCurrent(m_window);
+	glfwSwapInterval(1);
 
 	glbinding::Binding::initialize();
 
@@ -36,10 +26,7 @@ RenderSystem::RenderSystem() {
 	glInit();
 }
 
-RenderSystem::~RenderSystem() {
-	SDL_GL_DeleteContext(m_context);
-	SDL_DestroyWindow(m_window);
-}
+RenderSystem::~RenderSystem() { glfwDestroyWindow(m_window); }
 
 /** Requests that a scene draw itself onto the system's active rendering buffer
  *
@@ -54,7 +41,7 @@ void RenderSystem::draw(Scene* scene) {
 	scene->draw(m_projectionMatrix);
 	glLogErr("Drawing scene");
 
-	SDL_GL_SwapWindow(m_window);
+	glfwSwapBuffers(m_window);
 	glLogErr("Swapping buffers");
 }
 
@@ -72,7 +59,7 @@ void RenderSystem::resizeWindow(unsigned int width, unsigned int height) {
 	                                0.1f,
 	                                100000.0f);
 
-	SDL_SetWindowSize(m_window, width, height);
+	glfwSetWindowSize(m_window, width, height);
 }
 
 void RenderSystem::glInit() {
@@ -80,3 +67,5 @@ void RenderSystem::glInit() {
 	gl::glEnable(gl::GL_DEPTH_TEST);
 	gl::glEnable(gl::GL_LINE_SMOOTH);
 }
+
+bool RenderSystem::running() { return !glfwWindowShouldClose(m_window); }
