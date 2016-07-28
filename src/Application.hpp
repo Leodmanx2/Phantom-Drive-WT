@@ -5,7 +5,7 @@
 #include "PhysicsSimulator.hpp"
 #include "RenderSystem.hpp"
 #include "Scene.hpp"
-#include <SDL2/SDL.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <physfs.h>
 #include <sstream>
@@ -16,6 +16,8 @@ class Application final {
 	RenderSystem* m_renderSystem;
 
 	Scene* m_scene; // Temporary variable for dev. purposes
+
+	static void error_callback(int error, const char* description);
 
 	public:
 	Application(int argc, char** argv);

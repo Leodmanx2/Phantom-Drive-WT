@@ -17,7 +17,7 @@ Dependencies
 
 *   [GLEW](http://glew.sourceforge.net/)
 *   [PHYSFS](https://icculus.org/physfs/)
-*   [SDL 2.x](https://www.libsdl.org/)
+*   [GLFW 3.x](http://www.glfw.org/)
 *   [Bullet](http://bulletphysics.org/)
 *   [GLM](http://glm.g-truc.net/)
 *   [GLI 0.7.0.0+](http://gli.g-truc.net/)

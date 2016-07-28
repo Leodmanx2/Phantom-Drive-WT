@@ -15,15 +15,13 @@ Application::Application(int argc, char** argv) {
 		throw std::runtime_error("Could not mount asset files");
 	}
 
-	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
-		g_logger->write(Logger::CRITICAL, SDL_GetError());
-		throw std::runtime_error("Failed to initialize SDL_video");
-	}
+	glfwSetErrorCallback(error_callback);
+	if(!glfwInit()) { throw std::runtime_error("GLFW initialization failed"); }
 
 	try {
 		m_renderSystem = new RenderSystem();
 	} catch(const std::exception& exception) {
-		SDL_Quit();
+		glfwTerminate();
 		g_logger->write(Logger::CRITICAL, exception.what());
 		throw std::runtime_error("Could not initialize rendering system");
 	}
@@ -34,23 +32,22 @@ Application::Application(int argc, char** argv) {
 Application::~Application() {
 	delete m_renderSystem;
 	delete m_scene;
-	SDL_Quit();
+	glfwTerminate();
 	PHYSFS_deinit();
+}
+
+void Application::error_callback(int error, const char* description) {
+	g_logger->write(Logger::ERROR, description);
 }
 
 /**
  * Needs to be called once in order for the application to begin processing
  */
 void Application::run() {
-	bool      quit = false;
-	SDL_Event event;
-
-	while(!quit) {
-		while(SDL_PollEvent(&event)) {
-			if(event.type == SDL_QUIT) { quit = true; }
-		}
+	while(m_renderSystem->running()) {
 		m_scene->simulate();
 		m_scene->update();
 		m_renderSystem->draw(m_scene);
+		glfwPollEvents();
 	}
 }

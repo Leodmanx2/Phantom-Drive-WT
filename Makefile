@@ -53,14 +53,14 @@ LDFLAGS += -g
 
 # Certain library names and flags depend on the OS
 ifeq ($(OS), Windows_NT)
-	LDLIBS = -lmingw32 -lopengl32 -lglu32 -lglew32 -llibphysfs -lSDL2main
+	LDLIBS = -lmingw32 -lopengl32 -lglu32 -lglew32 -llibphysfs
 	LDFLAGS += -mwindows
 	EXE_NAME = $(PROJECT_NAME).exe
 else
-	LDLIBS = -lGL -lGLU -lGLEW -lphysfs -lSDLmain
+	LDLIBS = -lGL -lGLU -lGLEW -lphysfs
 	EXE_NAME = $(PROJECT_NAME)
 endif
-LDLIBS += -lSDL2 -lBulletDynamics -lBulletCollision -lLinearMath
+LDLIBS += -lglfw3 -lBulletDynamics -lBulletCollision -lLinearMath
 
 
 ################################################################################
