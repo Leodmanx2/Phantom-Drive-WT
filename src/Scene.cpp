@@ -53,7 +53,7 @@ Scene::~Scene() {
  *
  * TODO: Need to take time since last cycle as input
  */
-void Scene::update() { m_actors.at(0)->rotate(0.0001f, 0.0001f, 0.0f); }
+void Scene::update() { m_actors.at(0)->rotate(0.01f, 0.01f, 0.0f); }
 
 /**
  * Runs the once-per-cycle physics simulation. Likely to be merged into the default update() method.
