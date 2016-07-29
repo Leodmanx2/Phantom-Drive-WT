@@ -48,7 +48,7 @@ CXXFLAGS_WARNINGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
                     -Wshadow -Wstrict-overflow=5 -Wswitch-default -Wundef \
                     -Weffc++ -Winline -Wswitch-enum
 
-CXXFLAGS += -std=c++14 $(CXXFLAGS_CLANG) $(CXXFLAGS_WARNINGS) -c -g
+CXXFLAGS += -std=c++14 $(CXXFLAGS_CLANG) $(CXXFLAGS_WARNINGS) -c -g -D DEBUG
 LDFLAGS += -g
 
 # Certain library names and flags depend on the OS

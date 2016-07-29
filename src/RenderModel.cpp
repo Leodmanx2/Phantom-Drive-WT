@@ -10,7 +10,7 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 		m_diffuseMap = loadTextureToGPU(
 		  MODEL_DIR + modelName + "/diffuse.dds", &baseWidth, &baseHeight);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D diffuse map");
 	}
 
@@ -19,7 +19,7 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 		m_specularMap = loadTextureToGPU(
 		  MODEL_DIR + modelName + "/specular.dds", &baseWidth2, &baseHeight2);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D specular map");
 	}
 
@@ -61,7 +61,7 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	try {
 		fillBuffers(vertices, indices);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::LOG_ERROR, exception.what());
 		std::stringstream message;
 		message << "RenderModel3D (" << this
 		        << "): Could not commit data to OpenGL";
@@ -173,7 +173,7 @@ unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
 	PHYSFS_close(file);
 	if(bytesRead < fileSize || bytesRead == -1) {
 		delete[] buffer;
-		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
+		g_logger->write(Logger::LOG_ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of texture: ") +
 		                         filename);
 	}

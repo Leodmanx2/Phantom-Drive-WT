@@ -14,6 +14,7 @@ RenderSystem::RenderSystem() {
 
 	glbinding::Binding::initialize();
 
+#ifdef DEBUG
 	glbinding::setCallbackMaskExcept(glbinding::CallbackMask::After,
 	                                 {"glGetError"});
 	glbinding::setAfterCallback([](const glbinding::FunctionCall& call) {
@@ -21,9 +22,10 @@ RenderSystem::RenderSystem() {
 		if(error != gl::GL_NO_ERROR) {
 			std::stringstream ss("OpenGL Error: ");
 			ss << std::hex << error << " after function: " << call.function->name();
-			g_logger->write(Logger::ERROR, ss.str());
+			g_logger->write(Logger::LOG_DEBUG, ss.str());
 		}
 	});
+#endif
 
 	m_projectionMatrix =
 	  glm::perspective(45.0f,

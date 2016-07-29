@@ -22,23 +22,23 @@ std::string Logger::timestamp() {
  */
 void Logger::write(LogLevel level, const std::string& msg) {
 	switch(level) {
-		case INFO:
+		case LOG_INFO:
 			std::cout << "[INFO]  " << msg << std::endl;
 			logFile << "[INFO] ";
 			break;
-		case DEBUG:
+		case LOG_DEBUG:
 			std::clog << "[DEBUG] " << msg << std::endl;
 			logFile << "[DEBUG] ";
 			break;
-		case WARNING:
+		case LOG_WARNING:
 			std::cerr << "[WARNING]  " << msg << std::endl;
 			logFile << "[WARNING] ";
 			break;
-		case ERROR:
+		case LOG_ERROR:
 			std::cerr << "[ERROR] " << msg << std::endl;
 			logFile << "[ERROR] ";
 			break;
-		case CRITICAL:
+		case LOG_CRITICAL:
 			std::cerr << "[CRITICAL] " << msg << std::endl;
 			logFile << "[CRITICAL] ";
 			break;

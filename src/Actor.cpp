@@ -21,7 +21,7 @@ Actor::Actor(const std::string& actorName)
 			}
 			m_renderModel = s_modelDictionary.find(name)->second;
 		} catch(const std::exception& exception) {
-			g_logger->write(Logger::ERROR, exception.what());
+			g_logger->write(Logger::LOG_ERROR, exception.what());
 			throw std::runtime_error("Failed to load RenderModel");
 		}
 	}

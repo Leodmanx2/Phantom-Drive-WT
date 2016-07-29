@@ -12,7 +12,7 @@ class Logger final {
 	std::ofstream logFile;
 
 	public:
-	enum LogLevel { INFO, DEBUG, WARNING, ERROR, CRITICAL };
+	enum LogLevel { LOG_INFO, LOG_DEBUG, LOG_WARNING, LOG_ERROR, LOG_CRITICAL };
 
 	Logger();
 	~Logger();

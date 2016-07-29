@@ -1,17 +1,17 @@
 #include "Application.hpp"
 
 Application::Application(int argc, char** argv) {
-	g_logger->write(Logger::INFO, "Initializing virtual file system");
+	g_logger->write(Logger::LOG_INFO, "Initializing virtual file system");
 	if(PHYSFS_init(argv[0]) == 0) {
-		g_logger->write(Logger::CRITICAL, PHYSFS_getLastError());
+		g_logger->write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
 		throw std::runtime_error("Could not initialize virtual file system");
 	}
 
 	std::string assetDir   = PHYSFS_getBaseDir() + std::string("ass");
 	std::string logMessage = "Mounting asset location: " + assetDir;
-	g_logger->write(Logger::INFO, logMessage.c_str());
+	g_logger->write(Logger::LOG_INFO, logMessage.c_str());
 	if(PHYSFS_mount(assetDir.c_str(), "/", 1) == 0) {
-		g_logger->write(Logger::CRITICAL, PHYSFS_getLastError());
+		g_logger->write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
 		throw std::runtime_error("Could not mount asset files");
 	}
 
@@ -22,7 +22,7 @@ Application::Application(int argc, char** argv) {
 		m_renderSystem = new RenderSystem();
 	} catch(const std::exception& exception) {
 		glfwTerminate();
-		g_logger->write(Logger::CRITICAL, exception.what());
+		g_logger->write(Logger::LOG_CRITICAL, exception.what());
 		throw std::runtime_error("Could not initialize rendering system");
 	}
 
@@ -37,7 +37,7 @@ Application::~Application() {
 }
 
 void Application::error_callback(int error, const char* description) {
-	g_logger->write(Logger::ERROR, description);
+	g_logger->write(Logger::LOG_ERROR, description);
 }
 
 /**

@@ -10,7 +10,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		            "Shaders/" + pixelShaderFilename,
 		            "Shaders/" + geometryShaderFilename);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::LOG_ERROR, exception.what());
 
 		std::stringstream message;
 		message << "Could not load shader (" << this << ")";
@@ -154,14 +154,14 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 	try {
 		vertexShader = compileShader(vertexShaderFilename, gl::GL_VERTEX_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load vertex shader");
 	}
 
 	try {
 		pixelShader = compileShader(pixelShaderFilename, gl::GL_FRAGMENT_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load pixel shader");
 	}
 
@@ -170,7 +170,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 			geometryShader =
 			  compileShader(geometryShaderFilename, gl::GL_GEOMETRY_SHADER);
 		} catch(const std::exception& exception) {
-			g_logger->write(Logger::ERROR, exception.what());
+			g_logger->write(Logger::LOG_ERROR, exception.what());
 			throw std::runtime_error("Could not load geometry shader");
 		}
 	}
@@ -181,7 +181,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 		else
 			m_id = linkShaders(vertexShader, pixelShader);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::ERROR, exception.what());
+		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not link shader program");
 	}
 
@@ -225,7 +225,7 @@ unsigned int Shader::compileShader(const std::string& filename,
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
 		delete[] buffer;
-		g_logger->write(Logger::ERROR, PHYSFS_getLastError());
+		g_logger->write(Logger::LOG_ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of shader: ") +
 		                         filename);
 	}
@@ -244,7 +244,7 @@ unsigned int Shader::compileShader(const std::string& filename,
 		std::vector<char> infoLog(maxLength);
 		gl::glGetShaderInfoLog(id, maxLength, &maxLength, &infoLog[0]);
 
-		g_logger->write(Logger::ERROR, infoLog.data());
+		g_logger->write(Logger::LOG_ERROR, infoLog.data());
 
 		gl::glDeleteShader(id);
 		throw std::runtime_error(std::string("Failed to compile shader: ") +
@@ -283,7 +283,7 @@ unsigned int Shader::linkShaders(unsigned int vertexShader,
 		std::vector<gl::GLchar> infoLog(maxLength);
 		gl::glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
 
-		g_logger->write(Logger::ERROR, infoLog.data());
+		g_logger->write(Logger::LOG_ERROR, infoLog.data());
 
 		throw std::runtime_error("Failed to link shader program");
 	}
@@ -321,7 +321,7 @@ unsigned int Shader::linkShaders(unsigned int vertexShader,
 		std::vector<gl::GLchar> infoLog(maxLength);
 		gl::glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
 
-		g_logger->write(Logger::ERROR, infoLog.data());
+		g_logger->write(Logger::LOG_ERROR, infoLog.data());
 
 		throw std::runtime_error("Failed to link shader program");
 	}
