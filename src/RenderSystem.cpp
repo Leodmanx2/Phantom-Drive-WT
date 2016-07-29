@@ -4,6 +4,10 @@ RenderSystem::RenderSystem() {
 	int width  = 640;
 	int height = 480;
 
+#ifdef DEBUG
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	m_window = glfwCreateWindow(width, height, "Hello World!", nullptr, nullptr);
 	if(!m_window) {
 		throw std::runtime_error("Window or OpenGL context could not be created");
