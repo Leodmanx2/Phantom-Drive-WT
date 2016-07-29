@@ -28,7 +28,7 @@ class RenderSystem final {
 
 	bool running();
 
-	void draw(Scene* scene);
+	void draw(Scene& scene);
 	void resizeWindow(unsigned int width, unsigned int height);
 };
 

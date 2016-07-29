@@ -47,7 +47,7 @@ void Application::run() {
 	while(m_renderSystem->running()) {
 		m_scene->simulate();
 		m_scene->update();
-		m_renderSystem->draw(m_scene);
+		m_renderSystem->draw(*m_scene);
 		glfwPollEvents();
 	}
 }
