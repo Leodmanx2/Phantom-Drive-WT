@@ -30,16 +30,9 @@ OBJDIR = $(CURDIR)/obj
 ASSDIR = $(CURDIR)/ass
 BINDIR = $(CURDIR)/bin
 
-OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o \
-Actor.o RenderModel.o Camera.o Logger.o Scene.o \
-PhysicsSimulator.o ActorMotionState.o Shader.o \
-Light.o)
-
-
-ifeq ($(CXX), clang++)
-	CXXFLAGS_CLANG = -Wdeprecated
-	CXXFLAGS_CLANG += -Wdocumentation -Werror=documentation
-endif
+OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o Actor.o \
+RenderModel.o Camera.o Logger.o Scene.o PhysicsSimulator.o ActorMotionState.o \
+Shader.o Light.o)
 
 CXXFLAGS_WARNINGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
                     -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 \
@@ -48,8 +41,11 @@ CXXFLAGS_WARNINGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
                     -Wshadow -Wstrict-overflow=5 -Wswitch-default -Wundef \
                     -Weffc++ -Winline -Wswitch-enum
 
-CXXFLAGS += -std=c++14 $(CXXFLAGS_CLANG) $(CXXFLAGS_WARNINGS) -c -g -D DEBUG
-LDFLAGS += -g
+ifeq ($(CXX), clang++)
+	CXXFLAGS_WARNINGS += -Wdeprecated -Wdocumentation -Werror=documentation
+endif
+
+CXXFLAGS += -std=c++14 $(CXXFLAGS_CLANG) $(CXXFLAGS_WARNINGS) -c
 
 # Certain library names and flags depend on the OS
 ifeq ($(OS), Windows_NT)
@@ -67,7 +63,13 @@ LDLIBS += -lglfw3 -lglbinding -lBulletDynamics -lBulletCollision -lLinearMath
 # Targets
 ################################################################################
 
-all: $(OBJ)
+all: CXXFLAGS += -O2 -march=native
+all: executable
+
+debug: CXXFLAGS += -D DEBUG -g
+debug: executable
+
+executable: $(OBJ)
 	@$(ECHO) Linking $(EXE_NAME)
 	@$(CXX) $(LDFLAGS) -o $(EXE_NAME) $(OBJ) $(LDLIBS)
 
