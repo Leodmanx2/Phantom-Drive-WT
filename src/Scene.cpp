@@ -1,8 +1,5 @@
 #include "Scene.hpp"
 
-//#define LOG_GL
-#include "glerr.hpp"
-
 Scene::Scene() {
 	m_ambience = 0.1f;
 
@@ -68,8 +65,6 @@ void Scene::simulate() { m_physicsSimulator->stepSimulation(); }
  * @param [in] projectionMatrix  Pointer to a 16-element array representing the 3D->2D, world->screen transformation
  */
 void Scene::draw(glm::mat4 projectionMatrix) {
-	glLogErr("Pre-draw check");
-
 	m_activeShader->setAmbience(m_ambience);
 	m_activeShader->setPointLight(0, *m_pointLight);
 	m_activeShader->setSpotLight(0, *m_spotLight);
@@ -83,14 +78,8 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 	glm::vec3 camPos3 = glm::vec3(camPos4.x, camPos4.y, camPos4.z);
 
 	m_activeShader->setViewMatrix(m_activeCamera->getViewMatrix());
-	glLogErr("Uploading view matrix");
-
 	m_activeShader->setEyePosition(camPos3);
-	glLogErr("Uploading camera position");
-
 	m_activeShader->setProjectionMatrix(projectionMatrix);
-	glLogErr("Uploading projection matrix");
 
 	m_actors.at(0)->draw(*m_activeShader);
-	glLogErr("Drawing actors");
 }

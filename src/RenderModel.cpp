@@ -1,8 +1,5 @@
 #include "RenderModel.hpp"
 
-#define LOG_GL
-#include "glerr.hpp"
-
 using namespace gl;
 
 RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
@@ -63,7 +60,6 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	// Send OpenGL our data
 	try {
 		fillBuffers(vertices, indices);
-		glLogErr("Uploading buffer data");
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::ERROR, exception.what());
 		std::stringstream message;
@@ -260,17 +256,12 @@ unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
  */
 void RenderModel::draw(Shader& shader) {
 	shader.setDiffuseMap(m_diffuseMap);
-	glLogErr("Activating diffuse texture (3D)");
 
 	shader.setSpecularMap(m_specularMap);
-	glLogErr("Activating specular texture (3D)");
 
 	gl::glBindVertexArray(m_vertexArray);
-	glLogErr("Binding VAO (3D)");
 
 	gl::glDrawElements(gl::GL_TRIANGLES, m_elementCount, gl::GL_UNSIGNED_INT, 0);
-	glLogErr("Drawing for real (3D)");
 
 	gl::glBindVertexArray(0);
-	glLogErr("Un-binding VAO (3D)");
 }

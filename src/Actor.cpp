@@ -1,8 +1,5 @@
 #include "Actor.hpp"
 
-#define LOG_GL
-#include "glerr.hpp"
-
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
 Actor::Actor(const std::string& actorName)
@@ -97,13 +94,10 @@ void Actor::draw(Shader& shader) {
 	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;
 
 	shader.setModelMatrix(modelMatrix);
-	glLogErr("Uploading model matrix");
 
 	shader.updateNormalMatrix();
-	glLogErr("Uploading normal matrix");
 
 	m_renderModel->draw(shader);
-	glLogErr("drawing render model");
 }
 
 /*

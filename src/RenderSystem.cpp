@@ -1,8 +1,5 @@
 #include "RenderSystem.hpp"
 
-#define LOG_GL
-#include "glerr.hpp"
-
 RenderSystem::RenderSystem() {
 	int width  = 640;
 	int height = 480;
@@ -16,6 +13,17 @@ RenderSystem::RenderSystem() {
 	glfwSwapInterval(1);
 
 	glbinding::Binding::initialize();
+
+	glbinding::setCallbackMaskExcept(glbinding::CallbackMask::After,
+	                                 {"glGetError"});
+	glbinding::setAfterCallback([](const glbinding::FunctionCall& call) {
+		const auto error = gl::glGetError();
+		if(error != gl::GL_NO_ERROR) {
+			std::stringstream ss("OpenGL Error: ");
+			ss << std::hex << error << " after function: " << call.function->name();
+			g_logger->write(Logger::ERROR, ss.str());
+		}
+	});
 
 	m_projectionMatrix =
 	  glm::perspective(45.0f,
@@ -36,13 +44,10 @@ void RenderSystem::draw(Scene& scene) {
 	//glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
 	gl::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
-	glLogErr("Clearing buffers");
 
 	scene.draw(m_projectionMatrix);
-	glLogErr("Drawing scene");
 
 	glfwSwapBuffers(m_window);
-	glLogErr("Swapping buffers");
 }
 
 /**
