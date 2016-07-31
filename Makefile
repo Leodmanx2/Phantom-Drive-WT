@@ -30,7 +30,7 @@ OBJDIR = $(CURDIR)/obj
 ASSDIR = $(CURDIR)/ass
 BINDIR = $(CURDIR)/bin
 
-OBJ = $(addprefix $(OBJDIR)/, main.o Application.o RenderSystem.o Actor.o \
+OBJ = $(addprefix $(OBJDIR)/, main.o Application.o Actor.o \
 RenderModel.o Camera.o Logger.o Scene.o PhysicsSimulator.o ActorMotionState.o \
 Shader.o Light.o)
 

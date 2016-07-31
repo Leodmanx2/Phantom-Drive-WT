@@ -83,3 +83,8 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 
 	m_actors.at(0)->draw(*m_activeShader);
 }
+
+void Scene::processInput(GLFWwindow& window) {
+	if(glfwGetKey(&window, GLFW_KEY_W) == GLFW_PRESS)
+		m_actors.at(0)->translate(1.0f, 0.0f, 0.0f);
+}

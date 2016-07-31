@@ -4,6 +4,7 @@
 #include "Camera.hpp"
 #include "Light.hpp"
 #include "PhysicsSimulator.hpp"
+#include <GLFW/glfw3.h>
 
 class Scene {
 	private:
@@ -33,6 +34,7 @@ class Scene {
 	void update();
 	void simulate();
 	void draw(glm::mat4 projectionMatrix);
+	void processInput(GLFWwindow& window);
 };
 
 #endif
