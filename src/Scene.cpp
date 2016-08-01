@@ -97,4 +97,12 @@ void Scene::processInput(GLFWwindow& window) {
 		m_activeCamera->translate(0.0f, 0.0f, 1.0f);
 	if(glfwGetKey(&window, GLFW_KEY_X) == GLFW_PRESS)
 		m_activeCamera->translate(0.0f, 0.0f, -1.0f);
+
+	static glm::dvec2 lastPos;
+	glm::dvec2        newPos;
+	glfwGetCursorPos(&window, &newPos.x, &newPos.y);
+	m_activeCamera->rotate(0.0f,
+	                       -((newPos.y - lastPos.y) / 128.0f),
+	                       -((newPos.x - lastPos.x) / 128.0f));
+	lastPos = newPos;
 }

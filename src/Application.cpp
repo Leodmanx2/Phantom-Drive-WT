@@ -28,6 +28,7 @@ Application::Application(int argc, char** argv) {
 
 	m_scene = new Scene();
 	glfwSetInputMode(m_window, GLFW_STICKY_KEYS, 1);
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 Application::~Application() {
