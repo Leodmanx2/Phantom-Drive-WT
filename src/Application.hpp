@@ -26,6 +26,7 @@ class Application final {
 
 	void draw(Scene& scene);
 	void resizeWindow(unsigned int width, unsigned int height);
+	void processInput();
 
 	Scene* m_scene; // Temporary variable for dev. purposes
 

@@ -50,8 +50,7 @@ void Application::run() {
 		m_scene->simulate();
 		m_scene->update();
 		draw(*m_scene);
-		glfwPollEvents();
-		m_scene->processInput(*m_window);
+		processInput();
 	}
 }
 
@@ -130,4 +129,13 @@ void Application::resizeWindow(unsigned int width, unsigned int height) {
 	                                100000.0f);
 
 	glfwSetWindowSize(m_window, width, height);
+}
+
+void Application::processInput() {
+	glfwPollEvents();
+
+	if(glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+
+	m_scene->processInput(*m_window);
 }
