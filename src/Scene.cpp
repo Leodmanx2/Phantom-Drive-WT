@@ -50,7 +50,7 @@ Scene::~Scene() {
  *
  * TODO: Need to take time since last cycle as input
  */
-void Scene::update() { m_actors.at(0)->rotate(0.01f, 0.01f, 0.0f); }
+void Scene::update() {}
 
 /**
  * Runs the once-per-cycle physics simulation. Likely to be merged into the default update() method.
@@ -86,5 +86,15 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 
 void Scene::processInput(GLFWwindow& window) {
 	if(glfwGetKey(&window, GLFW_KEY_W) == GLFW_PRESS)
-		m_actors.at(0)->translate(1.0f, 0.0f, 0.0f);
+		m_activeCamera->translate(1.0f, 0.0f, 0.0f);
+	if(glfwGetKey(&window, GLFW_KEY_A) == GLFW_PRESS)
+		m_activeCamera->translate(0.0f, 1.0f, 0.0f);
+	if(glfwGetKey(&window, GLFW_KEY_S) == GLFW_PRESS)
+		m_activeCamera->translate(-1.0f, 0.0f, 0.0f);
+	if(glfwGetKey(&window, GLFW_KEY_D) == GLFW_PRESS)
+		m_activeCamera->translate(0.0f, -1.0f, 0.0f);
+	if(glfwGetKey(&window, GLFW_KEY_Z) == GLFW_PRESS)
+		m_activeCamera->translate(0.0f, 0.0f, 1.0f);
+	if(glfwGetKey(&window, GLFW_KEY_X) == GLFW_PRESS)
+		m_activeCamera->translate(0.0f, 0.0f, -1.0f);
 }
