@@ -111,8 +111,8 @@ void Application::glInit() {
  * @param [in] scene  The scene to be drawn
  */
 void Application::draw(Scene& scene) {
-	//glClearColor( 0.53f, 0.88f, 0.96f, 0.0f );
-	gl::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	gl::glClearColor(0.53f, 0.88f, 0.96f, 0.0f);
+	//gl::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
 
 	scene.draw(m_projectionMatrix);

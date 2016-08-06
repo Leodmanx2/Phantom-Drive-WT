@@ -1,7 +1,7 @@
 #include "Scene.hpp"
 
 Scene::Scene() {
-	m_ambience = 0.1f;
+	m_ambience = 0.2f;
 
 	try {
 		m_actors.emplace_back(std::make_unique<Actor>("Akari"));
@@ -67,20 +67,15 @@ void Scene::simulate(std::chrono::milliseconds duration) {
  * @param [in] projectionMatrix  Pointer to a 16-element array representing the 3D->2D, world->screen transformation
  */
 void Scene::draw(glm::mat4 projectionMatrix) {
+	// TODO: Fix light moving with camera
 	m_activeShader->setAmbience(m_ambience);
 	m_activeShader->setPointLight(0, *m_pointLight);
 	m_activeShader->setSpotLight(0, *m_spotLight);
 	m_activeShader->setDirectionLight(0, *m_directionLight);
 
 	// Send camera position to the GPU.
-	// NOTE: Lighting uses explicit uniform locations. eyePos must be declared at
-	//       location 0 in the shader, and lights from 1-8 (while we use forward
-	//       rendering)
-	glm::vec4 camPos4 = m_activeCamera->getPosition();
-	glm::vec3 camPos3 = glm::vec3(camPos4.x, camPos4.y, camPos4.z);
-
 	m_activeShader->setViewMatrix(m_activeCamera->getViewMatrix());
-	m_activeShader->setEyePosition(camPos3);
+	m_activeShader->setEyePosition(glm::vec3(m_activeCamera->getPosition()));
 	m_activeShader->setProjectionMatrix(projectionMatrix);
 
 	m_actors.at(0)->draw(*m_activeShader);
