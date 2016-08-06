@@ -31,8 +31,8 @@ class Scene {
 	Scene& operator=(const Scene&) = delete;
 	~Scene();
 
-	void update();
-	void simulate();
+	void update(std::chrono::milliseconds duration);
+	void simulate(std::chrono::milliseconds duration);
 	void draw(glm::mat4 projectionMatrix);
 	void processInput(GLFWwindow& window);
 };

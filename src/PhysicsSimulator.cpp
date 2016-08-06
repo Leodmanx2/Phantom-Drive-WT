@@ -52,8 +52,10 @@ void PhysicsSimulator::removeRigidBody(btRigidBody* body) {
 
 /**
  * Called once per cycle in order to advance the simulation
+ *
+ * @param [in] duration   Time in milliseconds since the last simulation step
  */
-void PhysicsSimulator::stepSimulation() {
-	// TODO: All systems need to update based on real time
-	m_world->stepSimulation(1 / 60.0f, 10);
+void PhysicsSimulator::stepSimulation(std::chrono::milliseconds duration) {
+	btScalar timeStep = duration.count() / 1000.0f;
+	m_world->stepSimulation(timeStep);
 }

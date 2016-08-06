@@ -48,16 +48,18 @@ Scene::~Scene() {
 /**
  * Called to perform once-per-cycle processing
  *
- * TODO: Need to take time since last cycle as input
+ * @param [in] duration   Time in milliseconds since the last simulation step
  */
-void Scene::update() {}
+void Scene::update(std::chrono::milliseconds duration) {}
 
 /**
  * Runs the once-per-cycle physics simulation. Likely to be merged into the default update() method.
  *
- * TODO: Needs to take time since last cycle as input
+ * @param [in] duration   Time in milliseconds since the last simulation step
  */
-void Scene::simulate() { m_physicsSimulator->stepSimulation(); }
+void Scene::simulate(std::chrono::milliseconds duration) {
+	m_physicsSimulator->stepSimulation(duration);
+}
 
 /**
  * Draws all render models that are part of the scene using information passed down by the renderer

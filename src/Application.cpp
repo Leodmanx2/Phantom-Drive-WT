@@ -46,11 +46,17 @@ void Application::error_callback(int error, const char* description) {
  * Needs to be called once in order for the application to begin processing
  */
 void Application::run() {
+	std::chrono::time_point<std::chrono::steady_clock> oldTime, newTime;
+	oldTime = newTime = std::chrono::steady_clock::now();
 	while(!glfwWindowShouldClose(m_window)) {
-		m_scene->simulate();
-		m_scene->update();
+		std::chrono::milliseconds timeStep =
+		  std::chrono::duration_cast<std::chrono::milliseconds>(newTime - oldTime);
+		m_scene->simulate(timeStep);
+		m_scene->update(timeStep);
 		draw(*m_scene);
 		processInput();
+		oldTime = newTime;
+		newTime = std::chrono::steady_clock::now();
 	}
 }
 

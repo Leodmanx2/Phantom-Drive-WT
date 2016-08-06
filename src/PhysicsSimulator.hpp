@@ -2,6 +2,7 @@
 #define PHYSICSSYSTEM_H
 
 #include <btBulletDynamicsCommon.h>
+#include <chrono>
 #include <memory>
 
 class PhysicsSimulator final {
@@ -22,7 +23,7 @@ class PhysicsSimulator final {
 
 	void addRigidBody(btRigidBody* body);
 	void removeRigidBody(btRigidBody* body);
-	void stepSimulation();
+	void stepSimulation(std::chrono::milliseconds duration);
 };
 
 #endif
