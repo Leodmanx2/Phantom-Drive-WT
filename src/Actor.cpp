@@ -74,10 +74,11 @@ void Actor::rotate(float roll, float pitch, float yaw) {
  * Called once per cycle. By default does nothing, but can be overriden to
  * progress animations, respond to collisions, etc.
  *
- * TODO: Needs to take time since last cycle as input
  * TODO: Allow user definition via scripting
+ * 
+ * @param [in] duration   Time in milliseconds since the last update
  */
-// void Actor::update() {}
+// void Actor::update(std::chrono::milliseconds duration) {}
 
 /* Draws the actor's render model to the active frame buffer
  *

@@ -55,7 +55,7 @@ void Scene::update(std::chrono::milliseconds duration) {}
 /**
  * Runs the once-per-cycle physics simulation. Likely to be merged into the default update() method.
  *
- * @param [in] duration   Time in milliseconds since the last simulation step
+ * @param [in] duration   Time in milliseconds since the last update
  */
 void Scene::simulate(std::chrono::milliseconds duration) {
 	m_physicsSimulator->stepSimulation(duration);
