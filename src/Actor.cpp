@@ -2,12 +2,13 @@
 
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
+const glm::vec4 Actor::canonicalForward = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+const glm::vec4 Actor::canonicalUp      = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+const glm::vec4 Actor::canonicalLeft    = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+
 Actor::Actor(const std::string& actorName)
   : m_orientation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
   , m_position(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f))
-  , m_forward(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f))
-  , m_up(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f))
-  , m_left(glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f))
   , name(actorName) {
 	if(name.compare("") != 0) {
 		// TODO: Review construction of Actor without model
@@ -42,9 +43,15 @@ Actor::~Actor() {
  * @param [in] altitude   Number of units along the actor's up/down axis to translate by
  */
 void Actor::translate(float longitude, float latitude, float altitude) {
-	glm::vec4 longVec = m_forward * longitude;
-	glm::vec4 latVec  = m_left * latitude;
-	glm::vec4 altVec  = m_up * altitude;
+	glm::mat4 orientationMatrix = glm::mat4_cast(m_orientation);
+
+	glm::vec4 forward = orientationMatrix * canonicalForward;
+	glm::vec4 up      = orientationMatrix * canonicalUp;
+	glm::vec4 left    = orientationMatrix * canonicalLeft;
+
+	glm::vec4 longVec = forward * longitude;
+	glm::vec4 latVec  = left * latitude;
+	glm::vec4 altVec  = up * altitude;
 
 	m_position += longVec + latVec + altVec;
 }
@@ -59,15 +66,6 @@ void Actor::translate(float longitude, float latitude, float altitude) {
 void Actor::rotate(float roll, float pitch, float yaw) {
 	glm::quat rotationQuat(glm::vec3(pitch, yaw, roll));
 	m_orientation *= rotationQuat;
-
-	glm::vec4 canonicalForward(0.0f, 0.0f, -1.0f, 0.0f);
-	glm::vec4 canonicalUp(0.0f, 1.0f, 0.0f, 0.0f);
-	glm::vec4 canonicalLeft(-1.0f, 0.0f, 0.0f, 0.0f);
-
-	glm::mat4 orientationMatrix = glm::mat4_cast(m_orientation);
-	m_forward                   = orientationMatrix * canonicalForward;
-	m_up                        = orientationMatrix * canonicalUp;
-	m_left                      = orientationMatrix * canonicalLeft;
 }
 
 /**
@@ -75,7 +73,7 @@ void Actor::rotate(float roll, float pitch, float yaw) {
  * progress animations, respond to collisions, etc.
  *
  * TODO: Allow user definition via scripting
- * 
+ *
  * @param [in] duration   Time in milliseconds since the last update
  */
 // void Actor::update(std::chrono::milliseconds duration) {}

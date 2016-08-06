@@ -19,11 +19,12 @@ class Actor {
 	static std::map<std::string, std::shared_ptr<RenderModel>> s_modelDictionary;
 
 	protected:
+	static const glm::vec4 canonicalForward;
+	static const glm::vec4 canonicalUp;
+	static const glm::vec4 canonicalLeft;
+
 	glm::quat m_orientation;
 	glm::vec4 m_position;
-	glm::vec4 m_forward;
-	glm::vec4 m_up;
-	glm::vec4 m_left;
 
 	std::shared_ptr<RenderModel> m_renderModel;
 
