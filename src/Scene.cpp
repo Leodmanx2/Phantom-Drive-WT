@@ -98,6 +98,11 @@ void Scene::processInput(GLFWwindow& window) {
 	static glm::dvec2 lastPos;
 	glm::dvec2        newPos;
 	glfwGetCursorPos(&window, &newPos.x, &newPos.y);
+	static bool firstGet = true;
+	if(firstGet) {
+		lastPos  = newPos;
+		firstGet = false;
+	}
 	m_activeCamera->rotate(0.0f,
 	                       -((newPos.y - lastPos.y) / 128.0f),
 	                       -((newPos.x - lastPos.x) / 128.0f));
