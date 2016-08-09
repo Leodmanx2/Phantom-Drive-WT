@@ -37,22 +37,22 @@ class RenderModel final {
 
 	protected:
 	// GPU Resources
-	unsigned int m_diffuseMap;
-	unsigned int m_specularMap;
+	gl::GLuint m_diffuseMap;
+	gl::GLuint m_specularMap;
 
-	unsigned int m_vertexArray;
+	gl::GLuint m_vertexArray;
 
-	unsigned int m_vertexBuffer;
-	unsigned int m_indexBuffer;
+	gl::GLuint m_vertexBuffer;
+	gl::GLuint m_indexBuffer;
 
 	// Setup functions
 	void fillBuffers(VertexList& vertices, IndexList& indices);
 
 	void vaoSetup();
 
-	unsigned int loadTextureToGPU(const std::string& filename,
-	                              int*               baseWidth,
-	                              int*               baseHeight);
+	gl::GLuint loadTextureToGPU(const std::string& filename,
+	                            int*               baseWidth,
+	                            int*               baseHeight);
 
 	public:
 	// Geometry shader is optional

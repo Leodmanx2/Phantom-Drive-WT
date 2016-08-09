@@ -46,21 +46,21 @@ class Shader {
 	private:
 	bool m_active;
 
-	unsigned int m_id;
+	gl::GLuint m_id;
 
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_viewMatrix;
 
-	int m_modelUniform;
-	int m_viewUniform;
-	int m_normalUniform;
-	int m_projectionUniform;
+	gl::GLint m_modelUniform;
+	gl::GLint m_viewUniform;
+	gl::GLint m_normalUniform;
+	gl::GLint m_projectionUniform;
 
-	int m_eyePositionUniform;
+	gl::GLint m_eyePositionUniform;
 
-	int m_diffuseUniform;
-	int m_specularUniform;
-	int m_ambienceUniform;
+	gl::GLint m_diffuseUniform;
+	gl::GLint m_specularUniform;
+	gl::GLint m_ambienceUniform;
 
 	std::array<PointLightUniform, 8>     m_pointLightUniforms;
 	std::array<SpotLightUniform, 8>      m_spotLightUniforms;
@@ -70,13 +70,13 @@ class Shader {
 	                 const std::string& pixelShaderFilename,
 	                 const std::string& geometryShaderFilename);
 
-	unsigned int compileShader(const std::string& filename, gl::GLenum type);
+	gl::GLuint compileShader(const std::string& filename, gl::GLenum type);
 
-	unsigned int linkShaders(unsigned int vertexShader,
-	                         unsigned int pixelShader,
-	                         unsigned int geometryShader);
+	gl::GLuint linkShaders(gl::GLuint vertexShader,
+	                       gl::GLuint pixelShader,
+	                       gl::GLuint geometryShader);
 
-	unsigned int linkShaders(unsigned int vertexShader, unsigned int pixelShader);
+	gl::GLuint linkShaders(gl::GLuint vertexShader, gl::GLuint pixelShader);
 
 	public:
 	Shader(const std::string& vertexShaderFilename,
@@ -99,8 +99,8 @@ class Shader {
 
 	void setEyePosition(glm::vec3 position);
 
-	void setDiffuseMap(unsigned int id);
-	void setSpecularMap(unsigned int id);
+	void setDiffuseMap(gl::GLuint id);
+	void setSpecularMap(gl::GLuint id);
 
 	void setAmbience(float ambience);
 

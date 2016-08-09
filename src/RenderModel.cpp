@@ -150,9 +150,9 @@ void RenderModel::vaoSetup() {
  *
  * @return OpenGL id referencing the texture object in GPU memory
  */
-unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
-                                           int*               baseWidth,
-                                           int*               baseHeight) {
+gl::GLuint RenderModel::loadTextureToGPU(const std::string& filename,
+                                         int*               baseWidth,
+                                         int*               baseHeight) {
 	// Use PhysFS to read texture file into memory
 	if(filename.compare("") == 0 || !PHYSFS_exists(filename.c_str()))
 		throw std::runtime_error(std::string("Could not find texture: ") +
@@ -199,7 +199,7 @@ unsigned int RenderModel::loadTextureToGPU(const std::string& filename,
 	*baseHeight = texture.dimensions().y;
 
 	// Reserve memory on the GPU for texture and describe its layout
-	unsigned int textureID;
+	gl::GLuint textureID;
 	gl::glGenTextures(1, &textureID);
 
 	gl::glBindTexture(target, textureID);

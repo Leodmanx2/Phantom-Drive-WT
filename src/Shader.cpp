@@ -20,7 +20,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 
 	bind();
 
-	int positionAttrib = gl::glGetAttribLocation(m_id, "position");
+	gl::GLint positionAttrib = gl::glGetAttribLocation(m_id, "position");
 	if(positionAttrib != 0) {
 		std::stringstream message;
 		message << "Shader position attribute not at 0. Position obtained: "
@@ -28,7 +28,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		throw std::logic_error(message.str());
 	}
 
-	int normalAttrib = gl::glGetAttribLocation(m_id, "normal");
+	gl::GLint normalAttrib = gl::glGetAttribLocation(m_id, "normal");
 	if(normalAttrib != 1) {
 		std::stringstream message;
 		message << "Shader normal attribute not at 1. Position obtained: "
@@ -36,7 +36,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		throw std::logic_error(message.str());
 	}
 
-	int texCoordAttrib = gl::glGetAttribLocation(m_id, "texCoord");
+	gl::GLint texCoordAttrib = gl::glGetAttribLocation(m_id, "texCoord");
 	if(texCoordAttrib != 2) {
 		std::stringstream message;
 		message << "Shader texCoord attribute not at 2. Position obtained: "
@@ -147,9 +147,9 @@ Shader::~Shader() { gl::glDeleteProgram(m_id); }
 void Shader::loadShaders(const std::string& vertexShaderFilename,
                          const std::string& pixelShaderFilename,
                          const std::string& geometryShaderFilename) {
-	unsigned int vertexShader;
-	unsigned int pixelShader;
-	unsigned int geometryShader;
+	gl::GLuint vertexShader;
+	gl::GLuint pixelShader;
+	gl::GLuint geometryShader;
 
 	try {
 		vertexShader = compileShader(vertexShaderFilename, gl::GL_VERTEX_SHADER);
@@ -199,8 +199,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
  *
  * @return OpenGL id referencing the compiled shader object
  */
-unsigned int Shader::compileShader(const std::string& filename,
-                                   gl::GLenum         type) {
+gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
 	if(!PHYSFS_exists(filename.c_str())) {
 		throw std::runtime_error(std::string("Could not find shader: ") + filename);
 	}
@@ -230,7 +229,7 @@ unsigned int Shader::compileShader(const std::string& filename,
 		                         filename);
 	}
 
-	unsigned int id = glCreateShader(type);
+	gl::GLuint id = glCreateShader(type);
 
 	gl::glShaderSource(id, 1, &buffer, &fileSize);
 	delete[] buffer;
@@ -264,10 +263,10 @@ unsigned int Shader::compileShader(const std::string& filename,
  *
  * @return OpenGL id referencing the linked shader program
  */
-unsigned int Shader::linkShaders(unsigned int vertexShader,
-                                 unsigned int pixelShader,
-                                 unsigned int geometryShader) {
-	unsigned int id = gl::glCreateProgram();
+gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
+                               gl::GLuint pixelShader,
+                               gl::GLuint geometryShader) {
+	gl::GLuint id = gl::glCreateProgram();
 
 	gl::glAttachShader(id, vertexShader);
 	gl::glAttachShader(id, pixelShader);
@@ -275,10 +274,10 @@ unsigned int Shader::linkShaders(unsigned int vertexShader,
 
 	gl::glLinkProgram(id);
 
-	int isLinked;
+	gl::GLint isLinked;
 	gl::glGetProgramiv(id, gl::GL_LINK_STATUS, &isLinked);
 	if(static_cast<gl::GLboolean>(isLinked) == gl::GL_FALSE) {
-		int maxLength = 0;
+		gl::GLint maxLength = 0;
 		gl::glGetProgramiv(id, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<gl::GLchar> infoLog(maxLength);
 		gl::glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
@@ -304,19 +303,19 @@ unsigned int Shader::linkShaders(unsigned int vertexShader,
  *
  * @return OpenGL id referencing the linked shader program
  */
-unsigned int Shader::linkShaders(unsigned int vertexShader,
-                                 unsigned int pixelShader) {
-	unsigned int id = gl::glCreateProgram();
+gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
+                               gl::GLuint pixelShader) {
+	gl::GLuint id = gl::glCreateProgram();
 
 	gl::glAttachShader(id, vertexShader);
 	gl::glAttachShader(id, pixelShader);
 
 	gl::glLinkProgram(id);
 
-	int isLinked;
+	gl::GLint isLinked;
 	gl::glGetProgramiv(id, gl::GL_LINK_STATUS, &isLinked);
 	if(static_cast<gl::GLboolean>(isLinked) == gl::GL_FALSE) {
-		int maxLength = 0;
+		gl::GLint maxLength = 0;
 		gl::glGetProgramiv(id, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<gl::GLchar> infoLog(maxLength);
 		gl::glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
@@ -378,13 +377,13 @@ void Shader::setEyePosition(glm::vec3 position) {
 	gl::glUniform3fv(m_eyePositionUniform, 1, glm::value_ptr(position));
 }
 
-void Shader::setDiffuseMap(unsigned int id) {
+void Shader::setDiffuseMap(gl::GLuint id) {
 	gl::glUniform1i(m_diffuseUniform, 0);
 	gl::glActiveTexture(gl::GL_TEXTURE0);
 	gl::glBindTexture(gl::GL_TEXTURE_2D, id);
 }
 
-void Shader::setSpecularMap(unsigned int id) {
+void Shader::setSpecularMap(gl::GLuint id) {
 	gl::glUniform1i(m_specularUniform, 1);
 	gl::glActiveTexture(gl::GL_TEXTURE1);
 	gl::glBindTexture(gl::GL_TEXTURE_2D, id);
