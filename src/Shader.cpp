@@ -238,16 +238,15 @@ gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
 	gl::GLint isCompiled;
 	gl::glGetShaderiv(id, gl::GL_COMPILE_STATUS, &isCompiled);
 	if(static_cast<gl::GLboolean>(isCompiled) == gl::GL_FALSE) {
-		int maxLength;
+		gl::GLint maxLength;
 		gl::glGetShaderiv(id, gl::GL_INFO_LOG_LENGTH, &maxLength);
-		std::vector<char> infoLog(maxLength);
-		gl::glGetShaderInfoLog(id, maxLength, &maxLength, &infoLog[0]);
-
-		g_logger->write(Logger::LOG_ERROR, infoLog.data());
+		std::vector<gl::GLchar> infoLog(maxLength);
+		gl::glGetShaderInfoLog(id, maxLength, &maxLength, infoLog.data());
+		const std::string message(infoLog.data(), infoLog.size());
 
 		gl::glDeleteShader(id);
-		throw std::runtime_error(std::string("Failed to compile shader: ") +
-		                         filename);
+		throw std::runtime_error(std::string("Failed to compile shader ") +
+		                         filename + " with message: " + message);
 	}
 
 	return id;
@@ -280,11 +279,15 @@ gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
 		gl::GLint maxLength = 0;
 		gl::glGetProgramiv(id, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<gl::GLchar> infoLog(maxLength);
-		gl::glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
+		gl::glGetProgramInfoLog(id, maxLength, &maxLength, infoLog.data());
+		const std::string message(infoLog.data(), infoLog.size());
 
-		g_logger->write(Logger::LOG_ERROR, infoLog.data());
+		gl::glDetachShader(id, vertexShader);
+		gl::glDetachShader(id, pixelShader);
+		gl::glDetachShader(id, geometryShader);
 
-		throw std::runtime_error("Failed to link shader program");
+		throw std::runtime_error(
+		  std::string("Failed to link shader program with message") + message);
 	}
 
 	gl::glDetachShader(id, vertexShader);
@@ -318,11 +321,14 @@ gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
 		gl::GLint maxLength = 0;
 		gl::glGetProgramiv(id, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<gl::GLchar> infoLog(maxLength);
-		gl::glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
+		gl::glGetProgramInfoLog(id, maxLength, &maxLength, infoLog.data());
+		const std::string message(infoLog.data(), infoLog.size());
 
-		g_logger->write(Logger::LOG_ERROR, infoLog.data());
+		gl::glDetachShader(id, vertexShader);
+		gl::glDetachShader(id, pixelShader);
 
-		throw std::runtime_error("Failed to link shader program");
+		throw std::runtime_error("Failed to link shader program with message: " +
+		                         message);
 	}
 
 	gl::glDetachShader(id, vertexShader);

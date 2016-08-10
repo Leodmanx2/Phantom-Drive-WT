@@ -21,8 +21,12 @@ class Application final {
 	GLFWwindow* m_window;
 	glm::mat4   m_projectionMatrix;
 
-	void glInit();
-	void renderInit();
+	static const int default_width  = 640;
+	static const int default_height = 480;
+
+	void initFilesystem(int argc, char** argv);
+	void initGraphics();
+	void initIO();
 
 	void draw(Scene& scene);
 	void resizeWindow(unsigned int width, unsigned int height);
