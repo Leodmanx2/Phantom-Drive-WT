@@ -69,7 +69,6 @@ void Scene::simulate(std::chrono::milliseconds duration) {
  * @param [in] projectionMatrix  Pointer to a 16-element array representing the 3D->2D, world->screen transformation
  */
 void Scene::draw(glm::mat4 projectionMatrix) {
-	// TODO: Fix light moving with camera
 	m_activeShader->setAmbience(m_ambience);
 	m_activeShader->setPointLight(0, *m_pointLight);
 	m_activeShader->setSpotLight(0, *m_spotLight);
