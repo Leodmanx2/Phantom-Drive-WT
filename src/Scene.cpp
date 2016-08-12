@@ -50,7 +50,9 @@ Scene::~Scene() {
  *
  * @param [in] duration   Time in milliseconds since the last simulation step
  */
-void Scene::update(std::chrono::milliseconds duration) {}
+void Scene::update(std::chrono::milliseconds duration) {
+	m_actors.at(0)->rotate(0.0f, 0.01f, 0.01f);
+}
 
 /**
  * Runs the once-per-cycle physics simulation. Likely to be merged into the default update() method.

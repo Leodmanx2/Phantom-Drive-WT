@@ -65,15 +65,17 @@ out vec4 out_color;
 // ----------------------------------------------------------------------------
 
 vec3 pointLight(PointLight light) {
+	vec3 lightPos = (view * vec4(light.position, 1.0)).xyz;
+
 	vec3 normal = normalize(frag_normal);
-	vec3 toLight = normalize(light.position - frag_position);
+	vec3 toLight = normalize(lightPos - frag_position);
 	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
 
 	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
 	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
 	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
 
-	float distanceToLight = abs(distance(light.position, frag_position));
+	float distanceToLight = abs(distance(lightPos, frag_position));
 	float falloff = 1.0 / (pow(light.radius, 2) * 0.05);
 	float attenuation = 1.0 / (1.0 + falloff * pow(distanceToLight, 2));
 
@@ -96,10 +98,13 @@ vec3 pointLight(PointLight light) {
 }
 
 vec3 spotLight(SpotLight light) {
-	vec3 toLight = normalize(light.position - frag_position);
+	vec3 lightPos = (view * vec4(light.position, 1.0)).xyz;
+	vec3 lightDir = (view * vec4(light.position + light.direction, 1.0)).xyz - lightPos;
 
-	float angle = degrees(acos(dot(-toLight, normalize(light.direction))));
-	if(angle > light.angle) return vec3(0);
+	vec3 toLight = normalize(lightPos - frag_position);
+
+	float angle = degrees(acos(dot(-toLight, normalize(lightDir))));
+	//if(angle > light.angle) return vec3(0);
 
 	vec3 normal = normalize(frag_normal);
 	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
@@ -108,7 +113,7 @@ vec3 spotLight(SpotLight light) {
 	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
 	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
 
-	float distanceToLight = abs(distance(light.position, frag_position));
+	float distanceToLight = abs(distance(lightPos, frag_position));
 	float falloff = 1.0 / (pow(light.radius, 2) * 0.05);
 	float attenuation = 1.0 / (1.0 + falloff * pow(distanceToLight, 2));
 
@@ -131,8 +136,10 @@ vec3 spotLight(SpotLight light) {
 }
 
 vec3 directionLight(DirectionLight light) {
+	vec3 lightDir = (view * vec4(light.direction, 0.0)).xyz;
+
 	vec3 normal = normalize(frag_normal);
-	vec3 toLight = normalize(-light.direction);
+	vec3 toLight = normalize(-lightDir);
 	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
 
 	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
@@ -162,7 +169,6 @@ vec3 directionLight(DirectionLight light) {
 void main() {
 	// TODO: Some of the code in the helper functions should be moved into main to
 	//       prevent extraneous calculations
-
 
 	vec3 color = vec3(0);
 
