@@ -104,7 +104,7 @@ vec3 spotLight(SpotLight light) {
 	vec3 toLight = normalize(lightPos - frag_position);
 
 	float angle = degrees(acos(dot(-toLight, normalize(lightDir))));
-	//if(angle > light.angle) return vec3(0);
+	if(angle > light.angle) return vec3(0);
 
 	vec3 normal = normalize(frag_normal);
 	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
