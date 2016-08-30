@@ -1,6 +1,7 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
+#include "InputModel.hpp"
 #include "Logger.hpp"
 #include "RenderModel.hpp"
 #include "Shader.hpp"
@@ -21,6 +22,7 @@ class Actor {
 
 	protected:
 	SpatialModel                 m_spatialModel;
+	InputModel                   m_inputModel;
 	std::shared_ptr<RenderModel> m_renderModel;
 
 	public:
@@ -36,8 +38,7 @@ class Actor {
 
 	const std::string name;
 
-	virtual void translate(float longitude, float latitude, float altitude);
-	virtual void rotate(float roll, float pitch, float yaw);
+	void processInput(GLFWwindow& window);
 	virtual void draw(Shader& shader);
 };
 

@@ -3,22 +3,24 @@
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
 Actor::Actor(const std::string& actorName) : name(actorName) {
-	if(name.compare("") != 0) {
-		// TODO: Review construction of Actor without model
-		try {
-			// TODO: Model name neds to be read from Actor description file
-			// For the time being, we're assuming it's the same as the Actor's name.
+	assert(actorName.compare("") != 0);
+	try {
+		// TODO: Model name neds to be read from Actor description file
+		// For the time being, we're assuming it's the same as the Actor's name.
 
-			// Construct model if it has not been constructed yet
-			if(s_modelDictionary.count(name) == 0) {
-				s_modelDictionary.emplace(name, std::make_shared<RenderModel>(name));
-			}
-			m_renderModel = s_modelDictionary.find(name)->second;
-		} catch(const std::exception& exception) {
-			g_logger->write(Logger::LOG_ERROR, exception.what());
-			throw std::runtime_error("Failed to load RenderModel");
+		// Construct model if it has not been constructed yet
+		if(s_modelDictionary.count(name) == 0) {
+			s_modelDictionary.emplace(name, std::make_shared<RenderModel>(name));
 		}
+		m_renderModel = s_modelDictionary.find(name)->second;
+	} catch(const std::exception& exception) {
+		g_logger->write(Logger::LOG_ERROR, exception.what());
+		throw std::runtime_error("Failed to load RenderModel");
 	}
+
+	// Development only!
+	m_inputModel.bind(GLFW_KEY_W,
+	                  [&]() { m_spatialModel.rotate(0.01f, 0.0f, 0.0f); });
 }
 
 Actor::~Actor() {
@@ -55,10 +57,4 @@ void Actor::draw(Shader& shader) {
 	m_renderModel->draw(shader);
 }
 
-void Actor::translate(float longitude, float latitude, float altitude) {
-	m_spatialModel.translate(longitude, latitude, altitude);
-}
-
-void Actor::rotate(float roll, float pitch, float yaw) {
-	m_spatialModel.rotate(roll, pitch, yaw);
-}
+void Actor::processInput(GLFWwindow& window) { m_inputModel.update(window); }

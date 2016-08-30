@@ -126,7 +126,6 @@ void Application::run() {
 	while(!glfwWindowShouldClose(m_window)) {
 		std::chrono::milliseconds timeStep =
 		  std::chrono::duration_cast<std::chrono::milliseconds>(newTime - oldTime);
-		m_scene->simulate(timeStep);
 		m_scene->update(timeStep);
 		draw(*m_scene);
 		processInput();

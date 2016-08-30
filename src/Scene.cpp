@@ -10,10 +10,7 @@ Scene::Scene() {
 		throw std::runtime_error("Failed to load Actor");
 	}
 
-	m_physicsSimulator = new PhysicsSimulator();
-
 	m_activeCamera = new Camera();
-	m_activeCamera->translate(-10.0f, 0.0f, 0.0f);
 
 	m_activeShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 
@@ -41,7 +38,6 @@ Scene::~Scene() {
 	delete m_directionLight;
 
 	delete m_activeCamera;
-	delete m_physicsSimulator;
 	delete m_activeShader;
 }
 
@@ -50,18 +46,7 @@ Scene::~Scene() {
  *
  * @param [in] duration   Time in milliseconds since the last simulation step
  */
-void Scene::update(std::chrono::milliseconds duration) {
-	m_actors.at(0)->rotate(0.0f, 0.01f, 0.01f);
-}
-
-/**
- * Runs the once-per-cycle physics simulation. Likely to be merged into the default update() method.
- *
- * @param [in] duration   Time in milliseconds since the last update
- */
-void Scene::simulate(std::chrono::milliseconds duration) {
-	m_physicsSimulator->stepSimulation(duration);
-}
+void Scene::update(std::chrono::milliseconds duration) {}
 
 /**
  * Draws all render models that are part of the scene using information passed down by the renderer
@@ -83,6 +68,7 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 }
 
 void Scene::processInput(GLFWwindow& window) {
+	/*
 	if(glfwGetKey(&window, GLFW_KEY_W) == GLFW_PRESS)
 		m_activeCamera->translate(1.0f, 0.0f, 0.0f);
 	if(glfwGetKey(&window, GLFW_KEY_A) == GLFW_PRESS)
@@ -108,4 +94,9 @@ void Scene::processInput(GLFWwindow& window) {
 	                       -((newPos.y - lastPos.y) / 128.0f),
 	                       -((newPos.x - lastPos.x) / 128.0f));
 	lastPos = newPos;
+	*/
+
+	for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
+		(*it)->processInput(window);
+	}
 }

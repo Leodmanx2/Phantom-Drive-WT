@@ -6,7 +6,6 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Logger.hpp"
-#include "PhysicsSimulator.hpp"
 #include "Scene.hpp"
 #include <GLFW/glfw3.h>
 #include <functional>

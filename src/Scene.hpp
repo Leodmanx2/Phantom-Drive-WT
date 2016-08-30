@@ -1,18 +1,18 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#define GLFW_INCLUDE_NONE
+
 #include "Actor.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
-#include "PhysicsSimulator.hpp"
 #include "Shader.hpp"
 #include <GLFW/glfw3.h>
+#include <chrono>
 #include <vector>
 
 class Scene {
 	private:
-	PhysicsSimulator* m_physicsSimulator;
-
 	Shader* m_activeShader;
 
 	Camera* m_activeCamera;

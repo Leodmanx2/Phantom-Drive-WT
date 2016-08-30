@@ -14,9 +14,6 @@ class Camera {
 	Camera();
 	glm::vec4 getPosition();
 	glm::mat4 getViewMatrix();
-
-	void translate(float longitude, float latitude, float altitude);
-	void rotate(float roll, float pitch, float yaw);
 };
 
 #endif

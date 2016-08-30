@@ -16,11 +16,3 @@ glm::mat4 Camera::getViewMatrix() {
 
 	return m_viewMatrix;
 }
-
-void Camera::translate(float longitude, float latitude, float altitude) {
-	m_spatialModel.translate(longitude, latitude, altitude);
-}
-
-void Camera::rotate(float roll, float pitch, float yaw) {
-	m_spatialModel.rotate(roll, pitch, yaw);
-}
