@@ -3,8 +3,10 @@
 
 #include "InputModel.hpp"
 #include "SpatialModel.hpp"
+#include "logger.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <sstream>
 
 class Camera {
 	private:
