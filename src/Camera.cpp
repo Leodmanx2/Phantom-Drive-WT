@@ -1,6 +1,41 @@
 #include "Camera.hpp"
 
-Camera::Camera() {}
+Camera::Camera() {
+	// TODO: Should be defined dynamically
+	m_inputModel.bind(GLFW_KEY_W,
+	                  [&]() { m_spatialModel.translate(1.0f, 0.0f, 0.0f); });
+
+	m_inputModel.bind(GLFW_KEY_A,
+	                  [&]() { m_spatialModel.translate(0.0f, 1.0f, 0.0f); });
+
+	m_inputModel.bind(GLFW_KEY_S,
+	                  [&]() { m_spatialModel.translate(-1.0f, 0.0f, 0.0f); });
+
+	m_inputModel.bind(GLFW_KEY_D,
+	                  [&]() { m_spatialModel.translate(0.0f, -1.0f, 0.0f); });
+
+	m_inputModel.bind(GLFW_KEY_Z,
+	                  [&]() { m_spatialModel.translate(0.0f, 0.0f, 1.0f); });
+
+	m_inputModel.bind(GLFW_KEY_X,
+	                  [&]() { m_spatialModel.translate(0.0f, 0.0f, -1.0f); });
+}
+
+// TODO: Bind mouse movement
+/*
+static glm::dvec2 lastPos;
+glm::dvec2        newPos;
+glfwGetCursorPos(&window, &newPos.x, &newPos.y);
+static bool firstGet = true;
+if(firstGet) {
+	lastPos  = newPos;
+	firstGet = false;
+}
+m_activeCamera->rotate(0.0f,
+                       -((newPos.y - lastPos.y) / 128.0f),
+                       -((newPos.x - lastPos.x) / 128.0f));
+lastPos = newPos;
+*/
 
 glm::vec4 Camera::getPosition() { return m_spatialModel.position(); }
 
@@ -16,3 +51,5 @@ glm::mat4 Camera::getViewMatrix() {
 
 	return m_viewMatrix;
 }
+
+void Camera::processInput(GLFWwindow& window) { m_inputModel.update(window); }

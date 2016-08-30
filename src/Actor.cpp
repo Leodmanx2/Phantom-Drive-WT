@@ -17,10 +17,6 @@ Actor::Actor(const std::string& actorName) : name(actorName) {
 		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Failed to load RenderModel");
 	}
-
-	// Development only!
-	m_inputModel.bind(GLFW_KEY_W,
-	                  [&]() { m_spatialModel.rotate(0.01f, 0.0f, 0.0f); });
 }
 
 Actor::~Actor() {

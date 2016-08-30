@@ -68,35 +68,8 @@ void Scene::draw(glm::mat4 projectionMatrix) {
 }
 
 void Scene::processInput(GLFWwindow& window) {
-	/*
-	if(glfwGetKey(&window, GLFW_KEY_W) == GLFW_PRESS)
-		m_activeCamera->translate(1.0f, 0.0f, 0.0f);
-	if(glfwGetKey(&window, GLFW_KEY_A) == GLFW_PRESS)
-		m_activeCamera->translate(0.0f, 1.0f, 0.0f);
-	if(glfwGetKey(&window, GLFW_KEY_S) == GLFW_PRESS)
-		m_activeCamera->translate(-1.0f, 0.0f, 0.0f);
-	if(glfwGetKey(&window, GLFW_KEY_D) == GLFW_PRESS)
-		m_activeCamera->translate(0.0f, -1.0f, 0.0f);
-	if(glfwGetKey(&window, GLFW_KEY_Z) == GLFW_PRESS)
-		m_activeCamera->translate(0.0f, 0.0f, 1.0f);
-	if(glfwGetKey(&window, GLFW_KEY_X) == GLFW_PRESS)
-		m_activeCamera->translate(0.0f, 0.0f, -1.0f);
-
-	static glm::dvec2 lastPos;
-	glm::dvec2        newPos;
-	glfwGetCursorPos(&window, &newPos.x, &newPos.y);
-	static bool firstGet = true;
-	if(firstGet) {
-		lastPos  = newPos;
-		firstGet = false;
-	}
-	m_activeCamera->rotate(0.0f,
-	                       -((newPos.y - lastPos.y) / 128.0f),
-	                       -((newPos.x - lastPos.x) / 128.0f));
-	lastPos = newPos;
-	*/
-
 	for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
 		(*it)->processInput(window);
 	}
+	m_activeCamera->processInput(window);
 }
