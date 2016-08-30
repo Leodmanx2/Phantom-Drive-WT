@@ -7,7 +7,7 @@
 
 class Camera {
 	private:
-	SpatialModel m_position;
+	SpatialModel m_spatialModel;
 	glm::mat4    m_viewMatrix;
 
 	public:

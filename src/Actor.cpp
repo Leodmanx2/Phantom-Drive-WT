@@ -46,7 +46,7 @@ Actor::~Actor() {
 void Actor::draw(Shader& shader) {
 	if(m_renderModel == nullptr) return;
 
-	glm::mat4 modelMatrix = m_position.matrix();
+	glm::mat4 modelMatrix = m_spatialModel.matrix();
 
 	shader.setModelMatrix(modelMatrix);
 
@@ -56,9 +56,9 @@ void Actor::draw(Shader& shader) {
 }
 
 void Actor::translate(float longitude, float latitude, float altitude) {
-	m_position.translate(longitude, latitude, altitude);
+	m_spatialModel.translate(longitude, latitude, altitude);
 }
 
 void Actor::rotate(float roll, float pitch, float yaw) {
-	m_position.rotate(roll, pitch, yaw);
+	m_spatialModel.rotate(roll, pitch, yaw);
 }

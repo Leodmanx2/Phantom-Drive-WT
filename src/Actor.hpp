@@ -20,7 +20,7 @@ class Actor {
 	static std::map<std::string, std::shared_ptr<RenderModel>> s_modelDictionary;
 
 	protected:
-	SpatialModel                 m_position;
+	SpatialModel                 m_spatialModel;
 	std::shared_ptr<RenderModel> m_renderModel;
 
 	public:
