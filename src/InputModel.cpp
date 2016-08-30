@@ -21,11 +21,13 @@ void InputModel::update(GLFWwindow& window) {
 		if(glfwGetKey(&window, pair.first) == GLFW_PRESS) pair.second();
 
 	// Process mouse position
-	glfwGetCursorPos(&window, &m_newMousePos.x, &m_newMousePos.y);
-	if(m_firstMousePoll) {
-		m_oldMousePos    = m_newMousePos;
-		m_firstMousePoll = false;
+	if(m_mouseBinding) {
+		glfwGetCursorPos(&window, &m_newMousePos.x, &m_newMousePos.y);
+		if(m_firstMousePoll) {
+			m_oldMousePos    = m_newMousePos;
+			m_firstMousePoll = false;
+		}
+		m_mouseBinding(m_oldMousePos, m_newMousePos);
+		m_oldMousePos = m_newMousePos;
 	}
-	if(m_mouseBinding) m_mouseBinding(m_oldMousePos, m_newMousePos);
-	m_oldMousePos = m_newMousePos;
 }
