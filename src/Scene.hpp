@@ -1,10 +1,13 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "Actor.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
 #include "PhysicsSimulator.hpp"
+#include "Shader.hpp"
 #include <GLFW/glfw3.h>
+#include <vector>
 
 class Scene {
 	private:

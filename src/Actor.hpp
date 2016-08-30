@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include "RenderModel.hpp"
 #include "Shader.hpp"
+#include "SpatialModel.hpp"
 #include <btBulletDynamicsCommon.h>
 #include <glbinding/gl/gl.h>
 #include <glm/glm.hpp>
@@ -19,13 +20,7 @@ class Actor {
 	static std::map<std::string, std::shared_ptr<RenderModel>> s_modelDictionary;
 
 	protected:
-	static const glm::vec4 canonicalForward;
-	static const glm::vec4 canonicalUp;
-	static const glm::vec4 canonicalLeft;
-
-	glm::quat m_orientation;
-	glm::vec4 m_position;
-
+	SpatialModel                 m_position;
 	std::shared_ptr<RenderModel> m_renderModel;
 
 	public:
@@ -43,10 +38,6 @@ class Actor {
 
 	virtual void translate(float longitude, float latitude, float altitude);
 	virtual void rotate(float roll, float pitch, float yaw);
-
-	virtual void setOrientation(float deg, float x, float y, float z);
-	virtual void setPosition(float x, float y, float z);
-
 	virtual void draw(Shader& shader);
 };
 

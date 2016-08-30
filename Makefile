@@ -31,8 +31,8 @@ ASSDIR = $(CURDIR)/ass
 BINDIR = $(CURDIR)/bin
 
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o Actor.o \
-RenderModel.o Camera.o Logger.o Scene.o PhysicsSimulator.o ActorMotionState.o \
-Shader.o Light.o)
+RenderModel.o Camera.o Logger.o Scene.o PhysicsSimulator.o \
+Shader.o Light.o SpatialModel.o)
 
 CXXFLAGS_WARNINGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
                     -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 \
