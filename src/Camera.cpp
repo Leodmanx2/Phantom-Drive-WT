@@ -24,10 +24,6 @@ Camera::Camera() {
 		m_spatialModel.rotate(0.0f,
 		                      -((newPos.y - lastPos.y) / 128.0f),
 		                      -((newPos.x - lastPos.x) / 128.0f));
-		std::stringstream message;
-		message << "Mouse moved: " << lastPos.x << "," << lastPos.y << " -> "
-		        << newPos.x << "," << newPos.y;
-		g_logger->write(Logger::LOG_DEBUG, message.str());
 	});
 }
 
