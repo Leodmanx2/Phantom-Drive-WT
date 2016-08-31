@@ -8,6 +8,7 @@
 #include "Logger.hpp"
 #include "Scene.hpp"
 #include <GLFW/glfw3.h>
+#include <SWI-cpp.h>
 #include <functional>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>

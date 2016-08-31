@@ -4,6 +4,7 @@
 #include "InputModel.hpp"
 #include "SpatialModel.hpp"
 #include "logger.hpp"
+#include <SWI-cpp.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <sstream>

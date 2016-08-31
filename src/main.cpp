@@ -6,6 +6,7 @@ int main(int argc, char* argv[]) {
 	g_logger->write(Logger::LOG_INFO, "Starting program");
 
 	try {
+		PlEngine    engine(argc, argv);
 		Application app(argc, argv);
 		app.run();
 	} catch(const std::exception& exception) {
