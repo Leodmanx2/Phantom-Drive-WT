@@ -22,10 +22,7 @@ PREDICATE(pd_bindKey, 2) {
 		InputModel* model = static_cast<InputModel*>(static_cast<void*>(modelTerm));
 		int         key   = static_cast<long>(A1);
 		const char* handle = static_cast<char*>(A2);
-		model->bindKey(key, [=]() {
-			std::cout << handle << "\n";
-			PlCall(handle);
-		});
+		model->bindKey(key, [=]() { PlCall(handle); });
 	} catch(const PlException& exception) {
 		std::cerr << static_cast<char*>(exception) << std::endl;
 	}
@@ -43,22 +40,7 @@ Camera::Camera() {
 		std::cerr << static_cast<char*>(exception) << std::endl;
 	}
 
-	// TODO: Should be defined dynamically
-	m_inputModel.bindKey(GLFW_KEY_A,
-	                     [&]() { m_spatialModel.translate(0.0f, 1.0f, 0.0f); });
-
-	m_inputModel.bindKey(GLFW_KEY_S,
-	                     [&]() { m_spatialModel.translate(-1.0f, 0.0f, 0.0f); });
-
-	m_inputModel.bindKey(GLFW_KEY_D,
-	                     [&]() { m_spatialModel.translate(0.0f, -1.0f, 0.0f); });
-
-	m_inputModel.bindKey(GLFW_KEY_Z,
-	                     [&]() { m_spatialModel.translate(0.0f, 0.0f, 1.0f); });
-
-	m_inputModel.bindKey(GLFW_KEY_X,
-	                     [&]() { m_spatialModel.translate(0.0f, 0.0f, -1.0f); });
-
+	// TODO: Define dynamically
 	m_inputModel.bindMouse([&](glm::dvec2 lastPos, glm::dvec2 newPos) {
 		m_spatialModel.rotate(0.0f,
 		                      -((newPos.y - lastPos.y) / 128.0f),
