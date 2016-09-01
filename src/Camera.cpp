@@ -15,20 +15,35 @@ PREDICATE(pd_translate, 3) {
 	return true;
 }
 
+PREDICATE(pd_bindKey, 2) {
+	try {
+		PlTerm modelTerm;
+		PlCall("b_getval", PlTermv("pd_input", modelTerm));
+		InputModel* model = static_cast<InputModel*>(static_cast<void*>(modelTerm));
+		int         key   = static_cast<long>(A1);
+		const char* handle = static_cast<char*>(A2);
+		model->bindKey(key, [=]() {
+			std::cout << handle << "\n";
+			PlCall(handle);
+		});
+	} catch(const PlException& exception) {
+		std::cerr << static_cast<char*>(exception) << std::endl;
+	}
+	return true;
+}
+
 Camera::Camera() {
 	try {
+		// TODO: Consult with file in memory
 		PlCall("consult", PlTerm("keys"));
-		PlCall("b_setval", PlTermv("pd_spatial", &m_spatialModel));
-		PlCall("process", PlTerm(static_cast<long>(87)));
+		PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
+		PlCall("bindKeys");
+		PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
 	} catch(const PlException& exception) {
 		std::cerr << static_cast<char*>(exception) << std::endl;
 	}
 
 	// TODO: Should be defined dynamically
-	m_inputModel.bindKey(GLFW_KEY_W, [&]() {
-		PlCall("process", PlTerm(static_cast<long>(GLFW_KEY_W)));
-	});
-
 	m_inputModel.bindKey(GLFW_KEY_A,
 	                     [&]() { m_spatialModel.translate(0.0f, 1.0f, 0.0f); });
 
@@ -66,4 +81,10 @@ glm::mat4 Camera::getViewMatrix() {
 	return m_viewMatrix;
 }
 
-void Camera::processInput(GLFWwindow& window) { m_inputModel.update(window); }
+void Camera::processInput(GLFWwindow& window) {
+	PlCall("b_setval", PlTermv("pd_spatial", &m_spatialModel));
+	PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
+	m_inputModel.update(window);
+	PlCall("b_setval", PlTermv("pd_spatial", static_cast<long>(NULL)));
+	PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
+}

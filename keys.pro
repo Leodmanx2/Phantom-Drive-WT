@@ -1,1 +1,1 @@
-process(Key) :- Key is 87, pd_translate(1.0, 0.0, 0.0).
+bindKeys() :- pd_bindKey(87, "pd_translate(1, 0, 0).").
