@@ -14,6 +14,20 @@ PREDICATE(pd_bindKey, 2) {
 	return true;
 }
 
+PREDICATE0(bindMouse) {
+	try {
+		PlTerm modelTerm;
+		PlCall("b_getval", PlTermv("pd_input", modelTerm));
+		InputModel* model = static_cast<InputModel*>(static_cast<void*>(modelTerm));
+		model->bindMouse([](glm::dvec2 lastPos, glm::dvec2 newPos) {
+			PlCall("mouseHandle", PlTermv(lastPos.x, lastPos.y, newPos.x, newPos.y));
+		});
+	} catch(const PlException& exception) {
+		std::cerr << static_cast<char*>(exception) << std::endl;
+	}
+	return true;
+}
+
 InputModel::InputModel() : m_firstMousePoll(true) {}
 
 // TODO: Handle multiple keys in a binding

@@ -6,17 +6,11 @@ Camera::Camera() {
 		PlCall("consult", PlTerm("keys"));
 		PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
 		PlCall("bindKeys");
+		PlCall("bindMouse");
 		PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
 	} catch(const PlException& exception) {
 		std::cerr << static_cast<char*>(exception) << std::endl;
 	}
-
-	// TODO: Define dynamically
-	m_inputModel.bindMouse([&](glm::dvec2 lastPos, glm::dvec2 newPos) {
-		m_spatialModel.rotate(0.0f,
-		                      -((newPos.y - lastPos.y) / 128.0f),
-		                      -((newPos.x - lastPos.x) / 128.0f));
-	});
 }
 
 glm::vec4 Camera::getPosition() { return m_spatialModel.position(); }
