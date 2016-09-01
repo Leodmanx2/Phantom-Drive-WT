@@ -1,5 +1,20 @@
 #include "SpatialModel.hpp"
 
+PREDICATE(pd_translate, 3) {
+	try {
+		PlTerm modelTerm;
+		PlCall("b_getval", PlTermv("pd_spatial", modelTerm));
+		SpatialModel* model =
+		  static_cast<SpatialModel*>(static_cast<void*>(modelTerm));
+		model->translate(static_cast<double>(A1),
+		                 static_cast<double>(A2),
+		                 static_cast<double>(A3));
+	} catch(const PlException& exception) {
+		std::cerr << static_cast<char*>(exception) << std::endl;
+	}
+	return true;
+}
+
 const glm::vec4 SpatialModel::canonicalForward =
   glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 const glm::vec4 SpatialModel::canonicalUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);

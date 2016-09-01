@@ -1,6 +1,18 @@
 #include "InputModel.hpp"
 
-#include <glm/glm.hpp>
+PREDICATE(pd_bindKey, 2) {
+	try {
+		PlTerm modelTerm;
+		PlCall("b_getval", PlTermv("pd_input", modelTerm));
+		InputModel* model = static_cast<InputModel*>(static_cast<void*>(modelTerm));
+		int         key   = static_cast<long>(A1);
+		const char* handle = static_cast<char*>(A2);
+		model->bindKey(key, [=]() { PlCall(handle); });
+	} catch(const PlException& exception) {
+		std::cerr << static_cast<char*>(exception) << std::endl;
+	}
+	return true;
+}
 
 InputModel::InputModel() : m_firstMousePoll(true) {}
 

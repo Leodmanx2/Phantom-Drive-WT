@@ -1,34 +1,5 @@
 #include "Camera.hpp"
 
-PREDICATE(pd_translate, 3) {
-	try {
-		PlTerm modelTerm;
-		PlCall("b_getval", PlTermv("pd_spatial", modelTerm));
-		SpatialModel* model =
-		  static_cast<SpatialModel*>(static_cast<void*>(modelTerm));
-		model->translate(static_cast<double>(A1),
-		                 static_cast<double>(A2),
-		                 static_cast<double>(A3));
-	} catch(const PlException& exception) {
-		std::cerr << static_cast<char*>(exception) << std::endl;
-	}
-	return true;
-}
-
-PREDICATE(pd_bindKey, 2) {
-	try {
-		PlTerm modelTerm;
-		PlCall("b_getval", PlTermv("pd_input", modelTerm));
-		InputModel* model = static_cast<InputModel*>(static_cast<void*>(modelTerm));
-		int         key   = static_cast<long>(A1);
-		const char* handle = static_cast<char*>(A2);
-		model->bindKey(key, [=]() { PlCall(handle); });
-	} catch(const PlException& exception) {
-		std::cerr << static_cast<char*>(exception) << std::endl;
-	}
-	return true;
-}
-
 Camera::Camera() {
 	try {
 		// TODO: Consult with file in memory
