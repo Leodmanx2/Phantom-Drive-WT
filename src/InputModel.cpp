@@ -9,7 +9,7 @@ PREDICATE(pd_bindKey, 2) {
 		const char* handle = static_cast<char*>(A2);
 		model->bindKey(key, [=]() { PlCall(handle); });
 	} catch(const PlException& exception) {
-		std::cerr << static_cast<char*>(exception) << std::endl;
+		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
 	return true;
 }
@@ -23,7 +23,7 @@ PREDICATE0(bindMouse) {
 			PlCall("mouseHandle", PlTermv(lastPos.x, lastPos.y, newPos.x, newPos.y));
 		});
 	} catch(const PlException& exception) {
-		std::cerr << static_cast<char*>(exception) << std::endl;
+		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
 	return true;
 }

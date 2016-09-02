@@ -9,7 +9,7 @@ Camera::Camera() {
 		PlCall("bindMouse");
 		PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
 	} catch(const PlException& exception) {
-		std::cerr << static_cast<char*>(exception) << std::endl;
+		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
 }
 
