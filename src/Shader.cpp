@@ -218,12 +218,11 @@ gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
 
 	int fileSize = static_cast<int>(fileSizeLong);
 
-	// TODO: Avoid manual memory management mid-function
-	char* buffer    = new char[fileSize];
-	int   bytesRead = PHYSFS_read(shaderFile, buffer, 1, fileSize);
+	std::vector<char> buffer;
+	buffer.reserve(fileSize);
+	int bytesRead = PHYSFS_read(shaderFile, buffer.data(), 1, fileSize);
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
-		delete[] buffer;
 		g_logger->write(Logger::LOG_ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of shader: ") +
 		                         filename);
@@ -231,8 +230,8 @@ gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
 
 	gl::GLuint id = glCreateShader(type);
 
-	gl::glShaderSource(id, 1, &buffer, &fileSize);
-	delete[] buffer;
+	char* bufferList[] = {buffer.data()};
+	gl::glShaderSource(id, 1, bufferList, &fileSize);
 	gl::glCompileShader(id);
 
 	gl::GLint isCompiled;

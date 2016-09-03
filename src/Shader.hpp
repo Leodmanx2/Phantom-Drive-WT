@@ -13,6 +13,7 @@
 #include <physfs.h>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
 
 class Shader {
 	const std::string SHADER_DIR = "Shaders/";
