@@ -50,9 +50,7 @@ class RenderModel final {
 
 	void vaoSetup();
 
-	gl::GLuint loadTextureToGPU(const std::string& filename,
-	                            int*               baseWidth,
-	                            int*               baseHeight);
+	gl::GLuint loadTextureToGPU(const std::string& filename);
 
 	public:
 	// Geometry shader is optional

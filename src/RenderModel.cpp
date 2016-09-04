@@ -5,19 +5,15 @@ using namespace gl;
 RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	// Load sprite
 	// TODO: We'll want to refactor a good deal of our file/texture loading
-	int baseWidth, baseHeight;
 	try {
-		m_diffuseMap = loadTextureToGPU(
-		  MODEL_DIR + modelName + "/diffuse.dds", &baseWidth, &baseHeight);
+		m_diffuseMap = loadTextureToGPU(MODEL_DIR + modelName + "/diffuse.dds");
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D diffuse map");
 	}
 
-	int baseWidth2, baseHeight2;
 	try {
-		m_specularMap = loadTextureToGPU(
-		  MODEL_DIR + modelName + "/specular.dds", &baseWidth2, &baseHeight2);
+		m_specularMap = loadTextureToGPU(MODEL_DIR + modelName + "/specular.dds");
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load RenderModel3D specular map");
@@ -136,14 +132,10 @@ void RenderModel::vaoSetup() {
  * Parses a texture file into an OpenGL texture object.
  *
  * @param [in] filename     Relative path to the texture file in the mounted asset directory
- * @param [out] baseWidth   The width of the standard-detail image. Used as a hack to size render models.
- * @param [out] baseHeight  The height of the standard-detail image. Used as a hack to size render models.
  *
  * @return OpenGL id referencing the texture object in GPU memory
  */
-gl::GLuint RenderModel::loadTextureToGPU(const std::string& filename,
-                                         int*               baseWidth,
-                                         int*               baseHeight) {
+gl::GLuint RenderModel::loadTextureToGPU(const std::string& filename) {
 	std::string buffer = readFile(filename);
 
 	// Create a GLI texture from the data read in by PhysFS
@@ -158,12 +150,6 @@ gl::GLuint RenderModel::loadTextureToGPU(const std::string& filename,
 	if(texture.empty()) {
 		throw std::runtime_error(filename + std::string(" is not a valid texture"));
 	}
-
-	// We currently need to write these out in order to size
-	// 2d render models. This should be written out in the
-	// near future.
-	*baseWidth  = texture.dimensions().x;
-	*baseHeight = texture.dimensions().y;
 
 	// Reserve memory on the GPU for texture and describe its layout
 	gl::GLuint textureID;
