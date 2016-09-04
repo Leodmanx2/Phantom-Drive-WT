@@ -144,34 +144,10 @@ void RenderModel::vaoSetup() {
 gl::GLuint RenderModel::loadTextureToGPU(const std::string& filename,
                                          int*               baseWidth,
                                          int*               baseHeight) {
-	// Use PhysFS to read texture file into memory
-	if(filename.compare("") == 0 || !PHYSFS_exists(filename.c_str()))
-		throw std::runtime_error(std::string("Could not find texture: ") +
-		                         filename);
-
-	PHYSFS_File* file = PHYSFS_openRead(filename.c_str());
-	if(!file)
-		throw std::runtime_error(std::string("Could not open texture: ") +
-		                         filename);
-
-	PHYSFS_sint64 fileSize = PHYSFS_fileLength(file);
-	if(fileSize == -1)
-		throw std::runtime_error(
-		  std::string("Could not determine size of texture: ") + filename);
-
-	char* buffer    = new char[fileSize];
-	int   bytesRead = PHYSFS_read(file, buffer, 1, fileSize);
-	PHYSFS_close(file);
-	if(bytesRead < fileSize || bytesRead == -1) {
-		delete[] buffer;
-		g_logger->write(Logger::LOG_ERROR, PHYSFS_getLastError());
-		throw std::runtime_error(std::string("Could not read all of texture: ") +
-		                         filename);
-	}
+	std::string buffer = readFile(filename);
 
 	// Create a GLI texture from the data read in by PhysFS
-	gli::texture texture = gli::load(buffer, fileSize);
-	delete[] buffer;
+	gli::texture          texture = gli::load(buffer.data(), buffer.size());
 	gli::gl               gl;
 	const gli::gl::format format = gl.translate(texture.format());
 	gl::GLenum target = static_cast<gl::GLenum>(gl.translate(texture.target()));
