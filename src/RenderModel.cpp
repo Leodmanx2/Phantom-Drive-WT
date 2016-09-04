@@ -27,9 +27,8 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	VertexList         vertices;
 	IndexList          indices;
 	std::string        modelFilename = MODEL_DIR + modelName + "/model.mdl";
-	std::vector<char>  buffer        = readFile(modelFilename);
-	std::string        fileString(buffer.begin(), buffer.end());
-	std::istringstream fileStream(fileString, std::istringstream::binary);
+	std::string        buffer        = readFile(modelFilename);
+	std::istringstream fileStream(buffer, std::istringstream::binary);
 	PMDL::File         fileData = PMDL::File::parse(fileStream);
 
 	for(PMDL::Vertex fileVert : fileData.body.vertices) {

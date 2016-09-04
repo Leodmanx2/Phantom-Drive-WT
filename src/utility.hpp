@@ -8,6 +8,6 @@
 #include <string>
 #include <vector>
 
-std::vector<char> readFile(const std::string& filename);
+std::string readFile(const std::string& filename);
 
 #endif

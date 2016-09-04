@@ -200,12 +200,12 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
  * @return OpenGL id referencing the compiled shader object
  */
 gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
-	std::vector<char> buffer = readFile(filename);
+	std::string buffer = readFile(filename);
 
 	gl::GLuint id = glCreateShader(type);
 
-	char* bufferList[]       = {buffer.data()};
-	int   bufferLengthList[] = {static_cast<int>(buffer.size())};
+	const char* bufferList[]       = {buffer.data()};
+	int         bufferLengthList[] = {static_cast<int>(buffer.size())};
 	gl::glShaderSource(id, 1, bufferList, bufferLengthList);
 	gl::glCompileShader(id);
 

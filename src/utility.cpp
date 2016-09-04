@@ -1,6 +1,6 @@
 #include "utility.hpp"
 
-std::vector<char> readFile(const std::string& filename) {
+std::string readFile(const std::string& filename) {
 	if(!PHYSFS_exists(filename.c_str())) {
 		throw std::runtime_error(std::string("Could not find file: ") + filename);
 	}
@@ -19,9 +19,10 @@ std::vector<char> readFile(const std::string& filename) {
 
 	int fileSize = static_cast<int>(fileSizeLong);
 
-	std::vector<char> buffer;
+	std::string buffer;
 	buffer.resize(fileSize);
-	int bytesRead = PHYSFS_read(shaderFile, buffer.data(), 1, fileSize);
+	int bytesRead =
+	  PHYSFS_read(shaderFile, const_cast<char*>(buffer.data()), 1, fileSize);
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
 		g_logger->write(Logger::LOG_ERROR, PHYSFS_getLastError());
