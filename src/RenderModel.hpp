@@ -35,7 +35,6 @@ class RenderModel final {
 	using VertexList = std::vector<Vertex>;
 	using IndexList  = std::vector<unsigned int>;
 
-	protected:
 	// GPU Resources
 	gl::GLuint m_diffuseMap;
 	gl::GLuint m_specularMap;
@@ -47,13 +46,12 @@ class RenderModel final {
 
 	// Setup functions
 	void fillBuffers(VertexList& vertices, IndexList& indices);
-
 	void vaoSetup();
+	void loadGeometry();
 
-	gl::GLuint loadTextureToGPU(const std::string& filename);
+	static gl::GLuint loadTexture(const std::string& filename);
 
 	public:
-	// Geometry shader is optional
 	explicit RenderModel(const std::string& modelFilename);
 	~RenderModel();
 

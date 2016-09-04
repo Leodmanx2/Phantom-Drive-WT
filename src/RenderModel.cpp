@@ -1,32 +1,32 @@
 #include "RenderModel.hpp"
 
-using namespace gl;
-
 RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
-	// Load sprite
-	// TODO: We'll want to refactor a good deal of our file/texture loading
 	try {
-		m_diffuseMap = loadTextureToGPU(MODEL_DIR + modelName + "/diffuse.dds");
+		m_diffuseMap  = loadTexture(MODEL_DIR + name + "/diffuse.dds");
+		m_specularMap = loadTexture(MODEL_DIR + name + "/specular.dds");
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::LOG_ERROR, exception.what());
-		throw std::runtime_error("Could not load RenderModel3D diffuse map");
+		throw std::runtime_error("Could not load model textures");
 	}
 
 	try {
-		m_specularMap = loadTextureToGPU(MODEL_DIR + modelName + "/specular.dds");
+		loadGeometry();
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::LOG_ERROR, exception.what());
-		throw std::runtime_error("Could not load RenderModel3D specular map");
+		throw std::runtime_error("Could not load model geometry");
 	}
+}
 
+void RenderModel::loadGeometry() {
 	// Prepare buffer data
 	VertexList         vertices;
 	IndexList          indices;
-	std::string        modelFilename = MODEL_DIR + modelName + "/model.mdl";
+	std::string        modelFilename = MODEL_DIR + name + "/model.mdl";
 	std::string        buffer        = readFile(modelFilename);
 	std::istringstream fileStream(buffer, std::istringstream::binary);
 	PMDL::File         fileData = PMDL::File::parse(fileStream);
 
+	// Load model vertices into local buffer
 	for(PMDL::Vertex fileVert : fileData.body.vertices) {
 		glm::vec3 pos(
 		  fileVert.position.x, fileVert.position.y, fileVert.position.z);
@@ -39,6 +39,7 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 		vertices.push_back(vert);
 	}
 
+	// Load model indices into local buffer
 	for(PMDL::Index fileInd : fileData.body.indices) {
 		indices.push_back(fileInd);
 	}
@@ -135,7 +136,7 @@ void RenderModel::vaoSetup() {
  *
  * @return OpenGL id referencing the texture object in GPU memory
  */
-gl::GLuint RenderModel::loadTextureToGPU(const std::string& filename) {
+gl::GLuint RenderModel::loadTexture(const std::string& filename) {
 	std::string buffer = readFile(filename);
 
 	// Create a GLI texture from the data read in by PhysFS
