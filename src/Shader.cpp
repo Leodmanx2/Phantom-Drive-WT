@@ -200,38 +200,13 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
  * @return OpenGL id referencing the compiled shader object
  */
 gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
-	if(!PHYSFS_exists(filename.c_str())) {
-		throw std::runtime_error(std::string("Could not find shader: ") + filename);
-	}
-
-	PHYSFS_File* shaderFile = PHYSFS_openRead(filename.c_str());
-	if(!shaderFile) {
-		throw std::runtime_error(std::string("Could not open shader: ") + filename);
-	}
-
-	PHYSFS_sint64 fileSizeLong = PHYSFS_fileLength(shaderFile);
-	if(fileSizeLong == -1)
-		throw std::runtime_error(
-		  std::string("Could not determine size of shader: ") + filename);
-	if(fileSizeLong > std::numeric_limits<int>::max())
-		throw std::runtime_error(std::string("Shader too large: ") + filename);
-
-	int fileSize = static_cast<int>(fileSizeLong);
-
-	std::vector<char> buffer;
-	buffer.reserve(fileSize);
-	int bytesRead = PHYSFS_read(shaderFile, buffer.data(), 1, fileSize);
-	PHYSFS_close(shaderFile);
-	if(bytesRead < fileSize || bytesRead == -1) {
-		g_logger->write(Logger::LOG_ERROR, PHYSFS_getLastError());
-		throw std::runtime_error(std::string("Could not read all of shader: ") +
-		                         filename);
-	}
+	std::vector<char> buffer = readFile(filename);
 
 	gl::GLuint id = glCreateShader(type);
 
-	char* bufferList[] = {buffer.data()};
-	gl::glShaderSource(id, 1, bufferList, &fileSize);
+	char* bufferList[]       = {buffer.data()};
+	int   bufferLengthList[] = {static_cast<int>(buffer.size())};
+	gl::glShaderSource(id, 1, bufferList, bufferLengthList);
 	gl::glCompileShader(id);
 
 	gl::GLint isCompiled;

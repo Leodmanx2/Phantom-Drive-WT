@@ -3,6 +3,7 @@
 
 #include "Light.hpp"
 #include "Logger.hpp"
+#include "utility.hpp"
 #include <array>
 #include <cassert>
 #include <glbinding/gl/gl.h>

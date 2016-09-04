@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 
+#define WRITE(MSG) g_logger->write(Logger::LOG_DEBUG, MSG);
+
 class Logger final {
 	private:
 	std::string   timestamp();

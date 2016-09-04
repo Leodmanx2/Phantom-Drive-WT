@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include "Shader.hpp"
 #include "pmdl.hpp"
+#include "utility.hpp"
 #include <fstream>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
@@ -12,7 +13,6 @@
 #include <iostream>
 #include <limits>
 #include <memory>
-#include <physfs.h>
 #include <sstream>
 #include <stdexcept>
 #include <vector>

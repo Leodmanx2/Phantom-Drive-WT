@@ -24,21 +24,13 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	}
 
 	// Prepare buffer data
-	VertexList  vertices;
-	IndexList   indices;
-	std::string modelFilename = MODEL_DIR + modelName + "/model.mdl";
-	if(!PHYSFS_exists(modelFilename.c_str())) {
-		throw std::runtime_error("Could not find model file");
-	}
-	PHYSFS_file*  file       = PHYSFS_openRead(modelFilename.c_str());
-	PHYSFS_sint64 fileSize   = PHYSFS_fileLength(file);
-	char*         fileBuffer = new char[fileSize];
-	PHYSFS_read(file, fileBuffer, 1, fileSize);
-	PHYSFS_close(file);
-	std::string        fileString(fileBuffer, fileSize);
+	VertexList         vertices;
+	IndexList          indices;
+	std::string        modelFilename = MODEL_DIR + modelName + "/model.mdl";
+	std::vector<char>  buffer        = readFile(modelFilename);
+	std::string        fileString(buffer.begin(), buffer.end());
 	std::istringstream fileStream(fileString, std::istringstream::binary);
 	PMDL::File         fileData = PMDL::File::parse(fileStream);
-	delete[] fileBuffer;
 
 	for(PMDL::Vertex fileVert : fileData.body.vertices) {
 		glm::vec3 pos(
