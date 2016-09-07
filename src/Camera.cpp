@@ -3,7 +3,8 @@
 Camera::Camera() {
 	try {
 		// TODO: Consult with file in memory
-		PlCall("consult", PlTerm("keys"));
+		//PlCall("consult", PlTerm("keys"));
+		PlCall("pd_consult", PlTermv("camIOHandle", "keys.pro"));
 		PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
 		PlCall("bindKeys");
 		PlCall("bindMouse");

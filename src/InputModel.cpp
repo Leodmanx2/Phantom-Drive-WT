@@ -28,6 +28,30 @@ PREDICATE0(bindMouse) {
 	return true;
 }
 
+PREDICATE(pd_consult, 2) {
+	try {
+		std::string fileID(A1);
+		std::string fileName(A2);
+
+		PlTerm plHandle;
+
+		// Write memory file
+		PlCall("new_memory_file", plHandle);
+		PlTerm plOutStream;
+		PlCall("open_memory_file", PlTermv(plHandle, "write", plOutStream));
+		std::string fileContents = readFile(fileName);
+		PlCall("write", PlTermv(plOutStream, fileContents.c_str()));
+		PlCall("close", plOutStream);
+
+		// Read memory file
+		PlCall("consult_memory", PlTermv(A2, plHandle));
+	} catch(const PlException& exception) {
+		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+	}
+
+	return true;
+}
+
 InputModel::InputModel() : m_firstMousePoll(true) {}
 
 // TODO: Handle multiple keys in a binding

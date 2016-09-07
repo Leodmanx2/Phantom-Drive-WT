@@ -4,6 +4,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Logger.hpp"
+#include "utility.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
 #include <cassert>
@@ -11,6 +12,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <vector>
 
 class InputModel {
