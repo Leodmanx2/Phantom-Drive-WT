@@ -1,4 +1,4 @@
-% TODO: Move into asset directory
+% TODO: Move into input schema directory
 
 % TODO: Avoid input schema conflicts
 %

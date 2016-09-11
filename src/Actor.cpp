@@ -5,7 +5,7 @@ std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 Actor::Actor(const std::string& actorName) : name(actorName) {
 	assert(actorName.compare("") != 0);
 	try {
-		// TODO: Model name neds to be read from Actor description file
+		// TODO: Model name needs to be read from Actor description file
 		// For the time being, we're assuming it's the same as the Actor's name.
 
 		// Construct model if it has not been constructed yet

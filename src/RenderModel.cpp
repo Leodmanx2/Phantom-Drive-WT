@@ -123,8 +123,6 @@ void RenderModel::vaoSetup() {
 	  reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
 	gl::glEnableVertexAttribArray(texCoordAttribPosition);
 
-	// TODO: Everything related to animations
-
 	// Clean up
 	gl::glBindVertexArray(0);
 }
