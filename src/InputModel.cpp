@@ -52,6 +52,31 @@ PREDICATE(pd_consult, 2) {
 	return true;
 }
 
+/*
+PREDICATE(consult_memory, 2) {
+	try {
+		PlTerm Stream;
+		PlCall("open_memory_file", PlTermv(A2, "read", Stream));
+
+		PlCompound streamOption("stream", Stream);
+		PlTerm     options;
+		PlTail     list(options);
+		list.append(streamOption);
+		PlCall("load_files", PlTermv(A1, options));
+
+		// options looks like [stream(Stream)|Tail]
+		// Tail is uninstantiated and results in an exception being thrown
+		// options needs to look like [stream(Stream)]
+
+		PlCall("close", Stream);
+	} catch(const PlException& exception) {
+		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+	}
+
+	return true;
+}
+*/
+
 InputModel::InputModel() : m_firstMousePoll(true) {}
 
 // TODO: Handle multiple keys in a binding

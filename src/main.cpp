@@ -6,8 +6,8 @@ int main(int argc, char* argv[]) {
 	g_logger->write(Logger::LOG_INFO, "Starting program");
 
 	try {
-		char*    plArgv[] = {argv[0]};
-		PlEngine engine(1, plArgv);
+		const char* plArgv[] = {argv[0], "--quiet"};
+		PlEngine    engine(2, const_cast<char**>(plArgv));
 		PlCall("consult", PlTerm("core"));
 
 		Application app(argc, argv);
