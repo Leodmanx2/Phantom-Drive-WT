@@ -8,7 +8,6 @@ int main(int argc, char* argv[]) {
 	try {
 		const char* plArgv[] = {argv[0], "--quiet"};
 		PlEngine    engine(2, const_cast<char**>(plArgv));
-		PlCall("consult", PlTerm("core"));
 
 		Application app(argc, argv);
 		app.run();

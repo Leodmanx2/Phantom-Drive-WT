@@ -52,7 +52,6 @@ PREDICATE(pd_consult, 2) {
 	return true;
 }
 
-/*
 PREDICATE(consult_memory, 2) {
 	try {
 		PlTerm Stream;
@@ -62,6 +61,7 @@ PREDICATE(consult_memory, 2) {
 		PlTerm     options;
 		PlTail     list(options);
 		list.append(streamOption);
+		list.close();
 		PlCall("load_files", PlTermv(A1, options));
 
 		// options looks like [stream(Stream)|Tail]
@@ -75,7 +75,6 @@ PREDICATE(consult_memory, 2) {
 
 	return true;
 }
-*/
 
 InputModel::InputModel() : m_firstMousePoll(true) {}
 
