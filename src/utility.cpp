@@ -1,5 +1,23 @@
 #include "utility.hpp"
 
+// pd_consult takes a filename as argument, opens that file, and consults it.
+PREDICATE(pd_consult, 1) {
+	std::string fileContents = readFile(static_cast<char*>(A1));
+	PlTerm      Stream;
+
+	PlCall("open_string", PlTermv(fileContents.c_str(), Stream));
+
+	PlCompound streamOption("stream", Stream);
+	PlTerm     options;
+	PlTail     list(options);
+	list.append(streamOption);
+	list.close();
+	PlCall("load_files", PlTermv(A1, options));
+
+	PlCall("close", Stream);
+	return true;
+}
+
 std::string readFile(const std::string& filename) {
 	if(!PHYSFS_exists(filename.c_str())) {
 		throw std::runtime_error(std::string("Could not find file: ") + filename);
