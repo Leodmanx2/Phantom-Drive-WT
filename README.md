@@ -26,4 +26,4 @@ Dependencies
 Hardware Requirements
 ---------------------
 
-OpenGL 3.3 compatible GPU.
+*   OpenGL 3.3 compatible GPU
