@@ -34,7 +34,6 @@ PREDICATE(pd_bindMouse, 1) {
 InputModel::InputModel() : m_firstMousePoll(true) {}
 
 // TODO: Handle multiple keys in a binding
-// TODO: Handle multiple functions in a binding
 void InputModel::bindKey(int key, std::function<void()> callback) {
 	assert(m_keyBindings.count(key) == 0);
 	m_keyBindings.emplace(key, callback);
