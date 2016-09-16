@@ -2,10 +2,10 @@
 
 Camera::Camera() {
 	try {
-		PlCall("pd_consult", PlTerm("keys.pro"));
+		PlCall("pd_consult", PlTerm("camera.pro"));
 		PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
-		PlCall("bindKeys");
-		PlCall("bindMouse");
+		PlCall("camera", "bindKeys", NULL);
+		PlCall("pd_bindMouse", PlTerm("camera"));
 		PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
 	} catch(const PlException& exception) {
 		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));

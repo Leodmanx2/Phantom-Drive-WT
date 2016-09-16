@@ -1,12 +1,6 @@
 % TODO: Move into input schema directory
 
-% TODO: Avoid input schema conflicts
-%
-% Things are currently fine, but as soon as another schema is added these
-% goals will overlap.
-%
-% One idea is simply to rename them for each schema and parse the appropriate
-% schema name from the Actor description file
+:- module(camera, [bindKeys/0, mouseHandle/4]).
 
 bindKeys :-
 pd_bindKey(87, "pd_translate(1, 0, 0)."), % W

@@ -14,13 +14,16 @@ PREDICATE(pd_bindKey, 2) {
 	return true;
 }
 
-PREDICATE0(bindMouse) {
+PREDICATE(pd_bindMouse, 1) {
 	try {
 		PlTerm modelTerm;
 		PlCall("b_getval", PlTermv("pd_input", modelTerm));
 		InputModel* model = static_cast<InputModel*>(static_cast<void*>(modelTerm));
-		model->bindMouse([](glm::dvec2 lastPos, glm::dvec2 newPos) {
-			PlCall("mouseHandle", PlTermv(lastPos.x, lastPos.y, newPos.x, newPos.y));
+		const char* module = static_cast<char*>(A1);
+		model->bindMouse([=](glm::dvec2 lastPos, glm::dvec2 newPos) {
+			PlCall(module,
+			       "mouseHandle",
+			       PlTermv(lastPos.x, lastPos.y, newPos.x, newPos.y));
 		});
 	} catch(const PlException& exception) {
 		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
