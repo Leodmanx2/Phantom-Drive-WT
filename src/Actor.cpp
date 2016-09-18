@@ -2,7 +2,8 @@
 
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
-Actor::Actor(const std::string& actorName) : m_desc(actorName) {
+Actor::Actor(const std::string& actorName)
+  : m_desc(actorName), m_inputModel(m_desc.inputModel) {
 	if(m_desc.renderModel.compare("") != 0) {
 		try {
 			// Construct model if it has not been constructed yet
@@ -15,21 +16,6 @@ Actor::Actor(const std::string& actorName) : m_desc(actorName) {
 		} catch(const std::exception& exception) {
 			g_logger->write(Logger::LOG_ERROR, exception.what());
 			throw std::runtime_error("Failed to load RenderModel");
-		}
-	}
-
-	// Consult input schema file and create bindings
-	if(m_desc.inputModel.compare("") != 0) {
-		try {
-			const std::string inputSchemaName = m_desc.inputModel + ".pro";
-			std::string       keyPred         = m_desc.inputModel + "_bindKeys";
-			PlCall("pd_consult", PlTerm(inputSchemaName.c_str()));
-			PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
-			PlCall(keyPred.c_str(), NULL);
-			PlCall("pd_bindMouse", PlTerm((&m_desc.inputModel)->c_str()));
-			PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
-		} catch(const PlException& exception) {
-			g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
 		}
 	}
 }

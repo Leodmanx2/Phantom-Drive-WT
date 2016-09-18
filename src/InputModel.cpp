@@ -34,7 +34,19 @@ PREDICATE(pd_bindMouse, 1) {
 	return true;
 }
 
-InputModel::InputModel() : m_firstMousePoll(true) {}
+InputModel::InputModel(const std::string& schemaName) : m_firstMousePoll(true) {
+	try {
+		std::string fileName = SCHEMA_DIR + schemaName + ".pro";
+		std::string keyPred  = schemaName + "_bindKeys";
+		PlCall("pd_consult", PlTerm(fileName.c_str()));
+		PlCall("b_setval", PlTermv("pd_input", this));
+		PlCall(keyPred.c_str());
+		PlCall("pd_bindMouse", PlTerm(schemaName.c_str()));
+		PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
+	} catch(const PlException& exception) {
+		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+	}
+}
 
 // TODO: Handle multiple keys in a binding
 void InputModel::bindKey(int key, std::function<void()> callback) {

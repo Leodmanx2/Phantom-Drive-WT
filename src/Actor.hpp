@@ -20,7 +20,7 @@ struct ActorDescription final {
 	std::string renderModel;
 	std::string inputModel;
 
-	ActorDescription(const std::string& actorName);
+	explicit ActorDescription(const std::string& actorName);
 };
 
 class Actor {
@@ -30,11 +30,11 @@ class Actor {
 	static std::map<std::string, std::shared_ptr<RenderModel>> s_modelDictionary;
 
 	protected:
+	ActorDescription m_desc;
+
 	SpatialModel                 m_spatialModel;
 	InputModel                   m_inputModel;
 	std::shared_ptr<RenderModel> m_renderModel;
-
-	ActorDescription m_desc;
 
 	public:
 	explicit Actor(const std::string& name);

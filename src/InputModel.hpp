@@ -16,6 +16,8 @@
 #include <vector>
 
 class InputModel {
+	const std::string SCHEMA_DIR = "Controls/";
+
 	private:
 	std::map<int, std::function<void()>> m_keyBindings;
 	std::function<void(glm::dvec2 lastPos, glm::dvec2 newPos)> m_mouseBinding;
@@ -25,7 +27,7 @@ class InputModel {
 	bool       m_firstMousePoll;
 
 	public:
-	InputModel();
+	explicit InputModel(const std::string& schemaName);
 
 	void bindKey(int key, std::function<void()> callback);
 	void bindMouse(std::function<void(glm::dvec2, glm::dvec2)> callback);

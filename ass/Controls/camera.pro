@@ -1,6 +1,4 @@
-% TODO: Move into input schema directory
-
-camera_bindKeys :-
+camera_bindKeys() :-
 pd_bindKey(87, "pd_translate(1, 0, 0)."), % W
 pd_bindKey(65, "pd_translate(0, 1, 0)."), % A
 pd_bindKey(83, "pd_translate(-1, 0, 0)."), % S

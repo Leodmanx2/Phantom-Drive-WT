@@ -1,16 +1,6 @@
 #include "Camera.hpp"
 
-Camera::Camera() {
-	try {
-		PlCall("pd_consult", PlTerm("camera.pro"));
-		PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
-		PlCall("camera_bindKeys", NULL);
-		PlCall("pd_bindMouse", PlTerm("camera"));
-		PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
-	} catch(const PlException& exception) {
-		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
-	}
-}
+Camera::Camera() : m_inputModel("camera") {}
 
 glm::vec4 Camera::getPosition() { return m_spatialModel.position(); }
 
