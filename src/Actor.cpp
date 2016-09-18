@@ -3,17 +3,19 @@
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
 Actor::Actor(const std::string& actorName) : m_desc(actorName) {
-	assert(actorName.compare("") != 0);
-	try {
-		// Construct model if it has not been constructed yet
-		if(s_modelDictionary.count(m_desc.renderModel) == 0) {
-			s_modelDictionary.emplace(
-			  m_desc.renderModel, std::make_shared<RenderModel>(m_desc.renderModel));
+	if(m_desc.renderModel.compare("") != 0) {
+		try {
+			// Construct model if it has not been constructed yet
+			if(s_modelDictionary.count(m_desc.renderModel) == 0) {
+				s_modelDictionary.emplace(
+				  m_desc.renderModel,
+				  std::make_shared<RenderModel>(m_desc.renderModel));
+			}
+			m_renderModel = s_modelDictionary.find(m_desc.renderModel)->second;
+		} catch(const std::exception& exception) {
+			g_logger->write(Logger::LOG_ERROR, exception.what());
+			throw std::runtime_error("Failed to load RenderModel");
 		}
-		m_renderModel = s_modelDictionary.find(m_desc.renderModel)->second;
-	} catch(const std::exception& exception) {
-		g_logger->write(Logger::LOG_ERROR, exception.what());
-		throw std::runtime_error("Failed to load RenderModel");
 	}
 
 	// Consult input schema file and create bindings
@@ -76,6 +78,7 @@ void Actor::processInput(GLFWwindow& window) {
 }
 
 ActorDescription::ActorDescription(const std::string& actorName) {
+	assert(actorName.compare("") != 0);
 	std::string        contents = readFile(ACTOR_DIR + actorName + ".actr");
 	std::istringstream ss(contents);
 	std::getline(ss, renderModel);
