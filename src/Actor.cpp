@@ -2,27 +2,41 @@
 
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
-Actor::Actor(const std::string& actorName) : name(actorName) {
+Actor::Actor(const std::string& actorName) : m_desc(actorName) {
 	assert(actorName.compare("") != 0);
 	try {
-		// TODO: Model name needs to be read from Actor description file
-		// For the time being, we're assuming it's the same as the Actor's name.
-
 		// Construct model if it has not been constructed yet
-		if(s_modelDictionary.count(name) == 0) {
-			s_modelDictionary.emplace(name, std::make_shared<RenderModel>(name));
+		if(s_modelDictionary.count(m_desc.renderModel) == 0) {
+			s_modelDictionary.emplace(
+			  m_desc.renderModel, std::make_shared<RenderModel>(m_desc.renderModel));
 		}
-		m_renderModel = s_modelDictionary.find(name)->second;
+		m_renderModel = s_modelDictionary.find(m_desc.renderModel)->second;
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Failed to load RenderModel");
+	}
+
+	// Consult input schema file and create bindings
+	if(m_desc.inputModel.compare("") != 0) {
+		try {
+			const std::string inputSchemaName = m_desc.inputModel + ".pro";
+			std::string       keyPred         = m_desc.inputModel + "_bindKeys";
+			PlCall("pd_consult", PlTerm(inputSchemaName.c_str()));
+			PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
+			PlCall(keyPred.c_str(), NULL);
+			PlCall("pd_bindMouse", PlTerm((&m_desc.inputModel)->c_str()));
+			PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
+		} catch(const PlException& exception) {
+			g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+		}
 	}
 }
 
 Actor::~Actor() {
 	// Remove model from dictionary if no Actor is using it
-	if(name.compare("") != 0 && s_modelDictionary.find(name)->second.unique()) {
-		s_modelDictionary.erase(name);
+	if(m_desc.renderModel.compare("") != 0 &&
+	   s_modelDictionary.find(m_desc.renderModel)->second.unique()) {
+		s_modelDictionary.erase(m_desc.renderModel);
 	}
 }
 
@@ -53,4 +67,17 @@ void Actor::draw(Shader& shader) {
 	m_renderModel->draw(shader);
 }
 
-void Actor::processInput(GLFWwindow& window) { m_inputModel.update(window); }
+void Actor::processInput(GLFWwindow& window) {
+	PlCall("b_setval", PlTermv("pd_spatial", &m_spatialModel));
+	PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
+	m_inputModel.update(window);
+	PlCall("b_setval", PlTermv("pd_spatial", static_cast<long>(NULL)));
+	PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
+}
+
+ActorDescription::ActorDescription(const std::string& actorName) {
+	std::string        contents = readFile(ACTOR_DIR + actorName + ".actr");
+	std::istringstream ss(contents);
+	std::getline(ss, renderModel);
+	std::getline(ss, inputModel);
+}

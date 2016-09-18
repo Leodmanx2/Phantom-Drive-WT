@@ -14,6 +14,15 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
 
+struct ActorDescription final {
+	const std::string ACTOR_DIR = "Actors/";
+
+	std::string renderModel;
+	std::string inputModel;
+
+	ActorDescription(const std::string& actorName);
+};
+
 class Actor {
 	// We maintain a dictionary of already-constructed render models so that if
 	// we need to make a new Actor with one of them, we don't have to
@@ -25,6 +34,8 @@ class Actor {
 	InputModel                   m_inputModel;
 	std::shared_ptr<RenderModel> m_renderModel;
 
+	ActorDescription m_desc;
+
 	public:
 	explicit Actor(const std::string& name);
 
@@ -35,8 +46,6 @@ class Actor {
 	Actor& operator=(Actor&& original) = default;
 
 	virtual ~Actor();
-
-	const std::string name;
 
 	void processInput(GLFWwindow& window);
 	virtual void draw(Shader& shader);

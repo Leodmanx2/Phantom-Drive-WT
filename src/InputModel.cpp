@@ -1,5 +1,7 @@
 #include "InputModel.hpp"
 
+// Takes the upper-case ASCII key code as the first argument and the
+// callback as the second.
 PREDICATE(pd_bindKey, 2) {
 	try {
 		PlTerm modelTerm;
@@ -14,15 +16,16 @@ PREDICATE(pd_bindKey, 2) {
 	return true;
 }
 
+// Takes the schema identifier as argument
 PREDICATE(pd_bindMouse, 1) {
 	try {
 		PlTerm modelTerm;
 		PlCall("b_getval", PlTermv("pd_input", modelTerm));
 		InputModel* model = static_cast<InputModel*>(static_cast<void*>(modelTerm));
-		const char* module = static_cast<char*>(A1);
+		const char* schema    = static_cast<char*>(A1);
+		std::string mousePred = std::string(schema) + "_mouseHandle";
 		model->bindMouse([=](glm::dvec2 lastPos, glm::dvec2 newPos) {
-			PlCall(module,
-			       "mouseHandle",
+			PlCall(mousePred.c_str(),
 			       PlTermv(lastPos.x, lastPos.y, newPos.x, newPos.y));
 		});
 	} catch(const PlException& exception) {
