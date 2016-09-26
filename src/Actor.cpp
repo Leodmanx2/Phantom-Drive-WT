@@ -63,7 +63,7 @@ void Actor::processInput(GLFWwindow& window) {
 	PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
 }
 
-ActorDescription::ActorDescription(const std::string& actorName) {
+Actor::ActorDescription::ActorDescription(const std::string& actorName) {
 	assert(actorName.compare("") != 0);
 	std::string        contents = readFile(ACTOR_DIR + actorName + ".actr");
 	std::istringstream ss(contents);

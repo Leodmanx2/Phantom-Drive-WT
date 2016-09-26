@@ -14,16 +14,16 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
 
-struct ActorDescription final {
-	const std::string ACTOR_DIR = "Actors/";
-
-	std::string renderModel;
-	std::string inputModel;
-
-	explicit ActorDescription(const std::string& actorName);
-};
-
 class Actor {
+	struct ActorDescription final {
+		const std::string ACTOR_DIR = "Actors/";
+
+		std::string renderModel;
+		std::string inputModel;
+
+		explicit ActorDescription(const std::string& actorName);
+	};
+
 	// We maintain a dictionary of already-constructed render models so that if
 	// we need to make a new Actor with one of them, we don't have to
 	// reconstruct it.
