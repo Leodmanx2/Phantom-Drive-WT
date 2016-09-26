@@ -14,7 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
 
-class Actor {
+class Actor final {
 	struct ActorDescription final {
 		const std::string ACTOR_DIR = "Actors/";
 
@@ -45,7 +45,7 @@ class Actor {
 	Actor(Actor&& original) = default;
 	Actor& operator=(Actor&& original) = default;
 
-	virtual ~Actor();
+	~Actor();
 
 	void processInput(GLFWwindow& window);
 	virtual void draw(Shader& shader);

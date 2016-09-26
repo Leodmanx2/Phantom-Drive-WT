@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <vector>
 
-class Shader {
+class Shader final {
 	const std::string SHADER_DIR = "Shaders/";
 
 	struct PointLightUniform {
@@ -85,7 +85,7 @@ class Shader {
 	       const std::string& pixelShaderFilename,
 	       const std::string& geometryShaderFilename = "");
 
-	virtual ~Shader();
+	~Shader();
 
 	void bind();
 	void unbind();
