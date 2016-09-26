@@ -48,7 +48,7 @@ class Actor final {
 	~Actor();
 
 	void processInput(GLFWwindow& window);
-	virtual void draw(Shader& shader);
+	void draw(Shader& shader);
 };
 
 #endif
