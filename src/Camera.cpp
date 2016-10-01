@@ -18,9 +18,9 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 void Camera::processInput(GLFWwindow& window) {
-	PlCall("b_setval", PlTermv("pd_spatial", &m_spatialModel));
-	PlCall("b_setval", PlTermv("pd_input", &m_inputModel));
+	SpatialModel::activeModel = &m_spatialModel;
+	InputModel::activeModel   = &m_inputModel;
 	m_inputModel.update(window);
-	PlCall("b_setval", PlTermv("pd_spatial", static_cast<long>(NULL)));
-	PlCall("b_setval", PlTermv("pd_input", static_cast<long>(NULL)));
+	SpatialModel::activeModel = nullptr;
+	InputModel::activeModel   = nullptr;
 }

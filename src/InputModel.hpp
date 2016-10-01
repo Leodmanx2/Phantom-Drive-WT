@@ -29,6 +29,8 @@ class InputModel {
 	public:
 	explicit InputModel(const std::string& schemaName);
 
+	static InputModel* activeModel;
+
 	void bindKey(int key, std::function<void()> callback);
 	void bindMouse(std::function<void(glm::dvec2, glm::dvec2)> callback);
 	void update(GLFWwindow& window);

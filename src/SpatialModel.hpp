@@ -20,6 +20,8 @@ class SpatialModel final {
 
 	SpatialModel();
 
+	static SpatialModel* activeModel;
+
 	void translate(float longitude, float latitude, float altitude);
 	void rotate(float roll, float pitch, float yaw);
 

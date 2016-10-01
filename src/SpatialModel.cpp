@@ -1,14 +1,12 @@
 #include "SpatialModel.hpp"
 
+SpatialModel* SpatialModel::activeModel = nullptr;
+
 PREDICATE(pd_translate, 3) {
 	try {
-		PlTerm modelTerm;
-		PlCall("b_getval", PlTermv("pd_spatial", modelTerm));
-		SpatialModel* model =
-		  static_cast<SpatialModel*>(static_cast<void*>(modelTerm));
-		model->translate(static_cast<double>(A1),
-		                 static_cast<double>(A2),
-		                 static_cast<double>(A3));
+		SpatialModel::activeModel->translate(static_cast<double>(A1),
+		                                     static_cast<double>(A2),
+		                                     static_cast<double>(A3));
 	} catch(const PlException& exception) {
 		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
@@ -17,13 +15,9 @@ PREDICATE(pd_translate, 3) {
 
 PREDICATE(pd_rotate, 3) {
 	try {
-		PlTerm modelTerm;
-		PlCall("b_getval", PlTermv("pd_spatial", modelTerm));
-		SpatialModel* model =
-		  static_cast<SpatialModel*>(static_cast<void*>(modelTerm));
-		model->rotate(static_cast<double>(A1),
-		              static_cast<double>(A2),
-		              static_cast<double>(A3));
+		SpatialModel::activeModel->rotate(static_cast<double>(A1),
+		                                  static_cast<double>(A2),
+		                                  static_cast<double>(A3));
 	} catch(const PlException& exception) {
 		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
