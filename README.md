@@ -22,6 +22,8 @@ Dependencies
 *   [GLM](http://glm.g-truc.net/)
 *   [GLI 0.7.0.0+](http://gli.g-truc.net/)
 *   [SWI-Prolog](http://www.swi-prolog.org/)
+*   Phantom Drive (WT) Format Libraries
+    *   [PMDL](https://bitbucket.org/leodmanx2/pmdl)
 
 Hardware Requirements
 ---------------------
