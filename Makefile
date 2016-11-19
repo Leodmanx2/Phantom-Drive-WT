@@ -56,7 +56,7 @@ else
 	LDLIBS = -lGL -lGLU -lphysfs
 	EXE_NAME = $(PROJECT_NAME)
 endif
-LDLIBS += -lglfw3 -lglbinding -lBulletDynamics -lBulletCollision -lLinearMath -lswipl
+LDLIBS += -lglfw3 -lglbinding -lBulletDynamics -lBulletCollision -lLinearMath -lswipl -lpmdl
 
 
 ################################################################################
