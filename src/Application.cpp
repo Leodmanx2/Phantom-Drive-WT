@@ -23,7 +23,7 @@ Application::~Application() {
 //  Subsystem initialization helper functions
 // ---------------------------------------------------------------------------
 
-void Application::initFilesystem(int argc, char** argv) {
+void Application::initFilesystem(int, char** argv) {
 	g_logger->write(Logger::LOG_INFO, "Initializing virtual file system");
 	if(PHYSFS_init(argv[0]) == 0) {
 		g_logger->write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
@@ -100,7 +100,7 @@ void Application::initIO() {
 //  Internal utility functions
 // ---------------------------------------------------------------------------
 
-void Application::error_callback(int error, const char* description) {
+void Application::error_callback(int, const char* description) {
 	g_logger->write(Logger::LOG_ERROR, description);
 }
 
