@@ -1,3 +1,6 @@
+:- multifile schema_key_binding/3.
+:- multifile schema_handleMouse/5.
+
 schema_key_binding(camera, 87, "pd_translate(1, 0, 0).").  % W
 schema_key_binding(camera, 65, "pd_translate(0, 1, 0).").  % A
 schema_key_binding(camera, 83, "pd_translate(-1, 0, 0)."). % S

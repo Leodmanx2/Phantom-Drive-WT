@@ -1,4 +1,6 @@
-akari_bindKeys :-
-pd_bindKey(82, "pd_translate(1, 0, 0)."). % R
+:- multifile schema_key_binding/3.
+:- multifile schema_handleMouse/5.
 
-akari_mouseHandle(_, _, _, _).
+schema_key_binding(akari, 82, "pd_translate(1, 0, 0)."). % R
+
+schema_handleMouse(akari, _, _, _, _).
