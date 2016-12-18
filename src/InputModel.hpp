@@ -19,20 +19,16 @@ class InputModel {
 	const std::string SCHEMA_DIR = "Controls/";
 
 	private:
-	std::map<int, std::function<void()>> m_keyBindings;
-	std::function<void(glm::dvec2 lastPos, glm::dvec2 newPos)> m_mouseBinding;
-
-	glm::dvec2 m_oldMousePos;
-	glm::dvec2 m_newMousePos;
-	bool       m_firstMousePoll;
+	glm::dvec2  m_oldMousePos;
+	glm::dvec2  m_newMousePos;
+	bool        m_firstMousePoll;
+	std::string m_schema;
 
 	public:
 	explicit InputModel(const std::string& schemaName);
 
 	static InputModel* activeModel;
 
-	void bindKey(int key, std::function<void()> callback);
-	void bindMouse(std::function<void(glm::dvec2, glm::dvec2)> callback);
 	void update(GLFWwindow& window);
 };
 
