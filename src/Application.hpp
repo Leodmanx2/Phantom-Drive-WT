@@ -20,6 +20,10 @@ class Application final {
 	private:
 	GLFWwindow* m_window;
 	glm::mat4   m_projectionMatrix;
+	gl::GLuint  m_frameBuffer;
+	gl::GLuint  colorAttachment;
+	gl::GLuint  selectionAttachment;
+	gl::GLuint  depthStencilAttachment;
 
 	static const int default_width  = 640;
 	static const int default_height = 480;

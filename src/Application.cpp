@@ -51,6 +51,7 @@ void Application::initGraphics() {
 	m_window = glfwCreateWindow(
 	  default_width, default_height, "Hello World!", nullptr, nullptr);
 	if(!m_window) {
+		PHYSFS_deinit();
 		glfwTerminate();
 		throw std::runtime_error("Window or OpenGL context could not be created");
 	}
@@ -75,6 +76,47 @@ void Application::initGraphics() {
 	std::stringstream version;
 	version << "OpenGl context version: " << gl::glGetString(gl::GL_VERSION);
 	g_logger->write(Logger::LOG_INFO, version.str());
+
+	// Build custom framebuffer
+	// TODO: Delete these structures when the application stops
+	gl::glGenFramebuffers(1, &m_frameBuffer);
+	gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, m_frameBuffer);
+
+	gl::glGenRenderbuffers(1, &colorAttachment);
+	gl::glBindRenderbuffer(gl::GL_RENDERBUFFER, colorAttachment);
+	gl::glRenderbufferStorage(
+	  gl::GL_RENDERBUFFER, gl::GL_RGBA32F, default_width, default_height);
+	gl::glFramebufferRenderbuffer(gl::GL_FRAMEBUFFER,
+	                              gl::GL_COLOR_ATTACHMENT0,
+	                              gl::GL_RENDERBUFFER,
+	                              colorAttachment);
+
+	gl::glGenRenderbuffers(1, &selectionAttachment);
+	gl::glBindRenderbuffer(gl::GL_RENDERBUFFER, selectionAttachment);
+	gl::glRenderbufferStorage(
+	  gl::GL_RENDERBUFFER, gl::GL_R32UI, default_width, default_height);
+	gl::glFramebufferRenderbuffer(gl::GL_FRAMEBUFFER,
+	                              gl::GL_COLOR_ATTACHMENT1,
+	                              gl::GL_RENDERBUFFER,
+	                              selectionAttachment);
+
+	gl::glGenRenderbuffers(1, &depthStencilAttachment);
+	gl::glBindRenderbuffer(gl::GL_RENDERBUFFER, depthStencilAttachment);
+	gl::glRenderbufferStorage(gl::GL_RENDERBUFFER,
+	                          gl::GL_DEPTH24_STENCIL8,
+	                          default_width,
+	                          default_height);
+	gl::glFramebufferRenderbuffer(gl::GL_FRAMEBUFFER,
+	                              gl::GL_DEPTH_STENCIL_ATTACHMENT,
+	                              gl::GL_RENDERBUFFER,
+	                              depthStencilAttachment);
+
+	gl::GLenum stat = gl::glCheckFramebufferStatus(gl::GL_FRAMEBUFFER);
+	if(stat != gl::GL_FRAMEBUFFER_COMPLETE) {
+		PHYSFS_deinit();
+		glfwTerminate();
+		throw std::runtime_error("Could not build framebuffer");
+	}
 
 	// Enable v-sync
 	glfwSwapInterval(1);
@@ -143,7 +185,29 @@ void Application::draw(Scene& scene) {
 	//gl::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
 
+	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, m_frameBuffer);
+	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+	gl::GLenum drawBuffers[2] = {gl::GL_COLOR_ATTACHMENT0,
+	                             gl::GL_COLOR_ATTACHMENT1};
+	gl::glDrawBuffers(2, drawBuffers);
 	scene.draw(m_projectionMatrix);
+
+	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, m_frameBuffer);
+	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, 0);
+	// TODO: Size framebuffer to window
+	gl::glBlitFramebuffer(0,
+	                      0,
+	                      default_width,
+	                      default_height,
+	                      0,
+	                      0,
+	                      default_width,
+	                      default_height,
+	                      gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
+	                        gl::GL_STENCIL_BUFFER_BIT,
+	                      gl::GL_NEAREST);
+
+	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, 0);
 
 	glfwSwapBuffers(m_window);
 }
