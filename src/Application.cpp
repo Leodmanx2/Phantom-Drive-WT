@@ -14,6 +14,10 @@ Application::Application(int argc, char** argv) {
 
 Application::~Application() {
 	delete m_scene;
+	gl::glDeleteFramebuffers(1, &m_frameBuffer);
+	gl::glDeleteRenderbuffers(1, &colorAttachment);
+	gl::glDeleteRenderbuffers(1, &selectionAttachment);
+	gl::glDeleteRenderbuffers(1, &depthStencilAttachment);
 	glfwDestroyWindow(m_window);
 	glfwTerminate();
 	PHYSFS_deinit();
@@ -115,6 +119,10 @@ void Application::initGraphics() {
 	if(stat != gl::GL_FRAMEBUFFER_COMPLETE) {
 		PHYSFS_deinit();
 		glfwTerminate();
+		gl::glDeleteFramebuffers(1, &m_frameBuffer);
+		gl::glDeleteRenderbuffers(1, &colorAttachment);
+		gl::glDeleteRenderbuffers(1, &selectionAttachment);
+		gl::glDeleteRenderbuffers(1, &depthStencilAttachment);
 		throw std::runtime_error("Could not build framebuffer");
 	}
 
