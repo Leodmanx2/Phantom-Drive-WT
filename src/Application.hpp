@@ -6,11 +6,11 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Logger.hpp"
+#include "Renderer.hpp"
 #include "Scene.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
 #include <functional>
-#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <physfs.h>
 #include <sstream>
@@ -18,22 +18,16 @@
 
 class Application final {
 	private:
-	GLFWwindow* m_window;
-	glm::mat4   m_projectionMatrix;
-	gl::GLuint  m_frameBuffer;
-	gl::GLuint  colorAttachment;
-	gl::GLuint  selectionAttachment;
-	gl::GLuint  depthStencilAttachment;
-
 	static const int default_width  = 640;
 	static const int default_height = 480;
+
+	GLFWwindow* m_window;
+	Renderer*   m_renderer;
 
 	void initFilesystem(int argc, char** argv);
 	void initGraphics();
 	void initIO();
 
-	void draw(Scene& scene);
-	void resizeWindow(unsigned int width, unsigned int height);
 	void processInput();
 
 	Scene* m_scene; // Temporary variable for dev. purposes
@@ -45,6 +39,7 @@ class Application final {
 	Application(const Application&) = delete;
 	Application& operator=(const Application&) = delete;
 	~Application();
+
 	void run();
 };
 
