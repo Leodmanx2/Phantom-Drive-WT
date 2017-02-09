@@ -61,7 +61,7 @@ in vec2 frag_texCoord;
 // ----------------------------------------------------------------------------
 
 layout(location = 0) out vec4 out_color;
-layout(location = 1) out vec3 out_id;
+layout(location = 1) out int out_id;
 
 // ----------------------------------------------------------------------------
 //  Helper functions
@@ -193,5 +193,5 @@ void main() {
 	color += ambience * texture2D(diffuseMap, frag_texCoord).rgb;
 
 	out_color = vec4(color, 1.0);
-	out_id = vec3(ID/256.0, 0, 0);
+	out_id = ID;
 }

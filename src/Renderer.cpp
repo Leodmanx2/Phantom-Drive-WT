@@ -23,7 +23,7 @@ void Renderer::init(int width, int height) {
 	  &m_colorAttachment, gl::GL_RGBA32F, gl::GL_COLOR_ATTACHMENT0);
 
 	makeRenderBuffer(
-	  &m_selectionAttachment, gl::GL_RGBA32F, gl::GL_COLOR_ATTACHMENT1);
+	  &m_selectionAttachment, gl::GL_R32UI, gl::GL_COLOR_ATTACHMENT1);
 
 	makeRenderBuffer(&m_depthStencilAttachment,
 	                 gl::GL_DEPTH24_STENCIL8,
@@ -65,12 +65,16 @@ void Renderer::draw(Scene& scene) {
 	}
 
 	// Clear the default framebuffer
-	gl::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+	gl::glClearColor(0.53f, 0.88f, 0.96f, 0.0f);
+	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
+	            gl::GL_STENCIL_BUFFER_BIT);
 
 	// Clear and draw to the custom framebuffer
 	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, m_frameBuffer);
-	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
+	            gl::GL_STENCIL_BUFFER_BIT);
+	int color = 0;
+	gl::glClearBufferiv(gl::GL_COLOR, 1, &color);
 	gl::GLenum drawBuffers[2] = {gl::GL_COLOR_ATTACHMENT0,
 	                             gl::GL_COLOR_ATTACHMENT1};
 	gl::glDrawBuffers(2, drawBuffers);
@@ -97,13 +101,18 @@ void Renderer::draw(Scene& scene) {
 	glfwSwapBuffers(m_window);
 
 	// ---- Selection testing --
+	// TODO: This is for testing only. Remove.
 	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, m_frameBuffer);
 	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, m_frameBuffer);
-	float grabBuf[3];
+	uint32_t selectedID;
 	gl::glReadBuffer(gl::GL_COLOR_ATTACHMENT1);
-	gl::glReadPixels(
-	  m_width / 2, m_height / 2, 1, 1, gl::GL_RGB, gl::GL_FLOAT, &grabBuf[0]);
-	int selectedID = grabBuf[0] * 256;
+	gl::glReadPixels(m_width / 2,
+	                 m_height / 2,
+	                 1,
+	                 1,
+	                 gl::GL_RED_INTEGER,
+	                 gl::GL_UNSIGNED_INT,
+	                 &selectedID);
 	gl::glReadBuffer(gl::GL_COLOR_ATTACHMENT0);
 	std::cout << selectedID << "\n";
 	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, 0);
