@@ -4,6 +4,7 @@ std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
 Actor::Actor(const std::string& actorName, std::uint32_t objectID)
   : m_desc(actorName), m_inputModel(m_desc.inputModel), m_id(objectID) {
+	assert(objectID != 0);
 	if(m_desc.renderModel.compare("") != 0) {
 		try {
 			// Construct model if it has not been constructed yet
