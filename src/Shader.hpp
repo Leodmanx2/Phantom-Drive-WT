@@ -68,6 +68,8 @@ class Shader final {
 	std::array<SpotLightUniform, 8>      m_spotLightUniforms;
 	std::array<DirectionLightUniform, 8> m_directionLightUniforms;
 
+	gl::GLint m_objectIDUniform;
+
 	void loadShaders(const std::string& vertexShaderFilename,
 	                 const std::string& pixelShaderFilename,
 	                 const std::string& geometryShaderFilename);
@@ -109,6 +111,8 @@ class Shader final {
 	void setPointLight(int index, PointLight& light);
 	void setSpotLight(int index, SpotLight& light);
 	void setDirectionLight(int index, DirectionLight& light);
+
+	void setObjectID(int objectID);
 };
 
 #endif

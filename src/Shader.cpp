@@ -53,6 +53,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 	m_specularUniform    = gl::glGetUniformLocation(m_id, "specularMap");
 	m_ambienceUniform    = gl::glGetUniformLocation(m_id, "ambience");
 	m_eyePositionUniform = gl::glGetUniformLocation(m_id, "eyePos");
+	m_objectIDUniform    = gl::glGetUniformLocation(m_id, "ID");
 
 	for(size_t i = 0; i < m_pointLightUniforms.size(); ++i) {
 		PointLightUniform& light = m_pointLightUniforms.at(i);
@@ -404,4 +405,8 @@ void Shader::setDirectionLight(int index, DirectionLight& light) {
 	gl::glUniform3fv(m_directionLightUniforms[index].direction,
 	                 1,
 	                 glm::value_ptr(light.direction));
+}
+
+void Shader::setObjectID(int objectID) {
+	gl::glUniform1i(m_objectIDUniform, objectID);
 }

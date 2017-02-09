@@ -4,7 +4,7 @@ Scene::Scene() {
 	m_ambience = 0.2f;
 
 	try {
-		m_actors.emplace_back(std::make_unique<Actor>("Akari"));
+		m_actors.emplace_back(std::make_unique<Actor>("Akari", 222));
 	} catch(const std::exception& exception) {
 		g_logger->write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Failed to load Actor");

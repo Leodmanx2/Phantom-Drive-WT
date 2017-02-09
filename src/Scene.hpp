@@ -28,6 +28,8 @@ class Scene {
 
 	float m_ambience; // How bright the scene is on average
 
+	std::uint32_t m_highestID;
+
 	public:
 	Scene();
 	Scene(const Scene&) = delete;

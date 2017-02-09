@@ -2,8 +2,8 @@
 
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
-Actor::Actor(const std::string& actorName)
-  : m_desc(actorName), m_inputModel(m_desc.inputModel) {
+Actor::Actor(const std::string& actorName, std::uint32_t objectID)
+  : m_desc(actorName), m_inputModel(m_desc.inputModel), m_id(objectID) {
 	if(m_desc.renderModel.compare("") != 0) {
 		try {
 			// Construct model if it has not been constructed yet
@@ -47,10 +47,10 @@ void Actor::draw(Shader& shader) {
 	if(m_renderModel == nullptr) return;
 
 	glm::mat4 modelMatrix = m_spatialModel.matrix();
-
 	shader.setModelMatrix(modelMatrix);
-
 	shader.updateNormalMatrix();
+
+	shader.setObjectID(m_id);
 
 	m_renderModel->draw(shader);
 }

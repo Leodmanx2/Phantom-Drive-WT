@@ -16,6 +16,8 @@ uniform sampler2D specularMap;
 
 uniform float ambience;
 
+uniform int ID;
+
 struct PointLight {
 	vec3 position;
 	vec3 color;
@@ -191,5 +193,5 @@ void main() {
 	color += ambience * texture2D(diffuseMap, frag_texCoord).rgb;
 
 	out_color = vec4(color, 1.0);
-	out_id = 0;
+	out_id = ID;
 }
