@@ -6,6 +6,7 @@
 #include "Actor.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
+#include "Renderer.hpp"
 #include "Shader.hpp"
 #include <GLFW/glfw3.h>
 #include <chrono>
@@ -38,7 +39,7 @@ class Scene {
 
 	void update(std::chrono::milliseconds duration);
 	void simulate(std::chrono::milliseconds duration);
-	void draw(glm::mat4 projectionMatrix);
+	void draw();
 	void processInput(GLFWwindow& window);
 };
 

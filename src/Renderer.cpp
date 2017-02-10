@@ -1,6 +1,9 @@
 #include "Renderer.hpp"
 
-Renderer::Renderer(GLFWwindow* window) : m_window(window) {
+Renderer g_renderer{};
+
+void Renderer::setWindow(GLFWwindow* window) {
+	m_window = window;
 	int width, height;
 	glfwGetFramebufferSize(m_window, &width, &height);
 	init(width, height);
@@ -9,12 +12,6 @@ Renderer::Renderer(GLFWwindow* window) : m_window(window) {
 void Renderer::init(int width, int height) {
 	m_width  = width;
 	m_height = height;
-
-	m_projectionMatrix =
-	  glm::perspective(45.0f,
-	                   static_cast<float>(m_width) / static_cast<float>(m_height),
-	                   0.1f,
-	                   10000.0f);
 
 	gl::glGenFramebuffers(1, &m_frameBuffer);
 	gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, m_frameBuffer);
@@ -55,7 +52,7 @@ void Renderer::clean() {
 	gl::glDeleteRenderbuffers(1, &m_depthStencilAttachment);
 }
 
-void Renderer::draw(Scene& scene) {
+void Renderer::clear() {
 	// Resize buffers if glfw-controlled default buffer size changes
 	int width, height;
 	glfwGetFramebufferSize(m_window, &width, &height);
@@ -69,17 +66,21 @@ void Renderer::draw(Scene& scene) {
 	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
 	            gl::GL_STENCIL_BUFFER_BIT);
 
-	// Clear and draw to the custom framebuffer
+	// Clear custom buffer
 	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, m_frameBuffer);
 	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
 	            gl::GL_STENCIL_BUFFER_BIT);
 	int color = 0;
 	gl::glClearBufferiv(gl::GL_COLOR, 1, &color);
+}
+
+void Renderer::startNormalPass() {
 	gl::GLenum drawBuffers[2] = {gl::GL_COLOR_ATTACHMENT0,
 	                             gl::GL_COLOR_ATTACHMENT1};
 	gl::glDrawBuffers(2, drawBuffers);
-	scene.draw(m_projectionMatrix);
+}
 
+void Renderer::finishNormalPass() {
 	// Copy framebuffer output to default framebuffer
 	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, m_frameBuffer);
 	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, 0);
@@ -97,17 +98,14 @@ void Renderer::draw(Scene& scene) {
 	// Clean up
 	// The draw buffer has already been reset.
 	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, 0);
+}
 
-	glfwSwapBuffers(m_window);
-
-	// ---- Selection testing --
-	// TODO: This is for testing only. Remove.
+int Renderer::pick(int frameCoordX, int frameCoordY) {
 	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, m_frameBuffer);
-	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, m_frameBuffer);
-	uint32_t selectedID;
 	gl::glReadBuffer(gl::GL_COLOR_ATTACHMENT1);
-	gl::glReadPixels(m_width / 2,
-	                 m_height / 2,
+	std::uint32_t selectedID;
+	gl::glReadPixels(frameCoordX,
+	                 frameCoordY,
 	                 1,
 	                 1,
 	                 gl::GL_RED_INTEGER,
@@ -116,6 +114,9 @@ void Renderer::draw(Scene& scene) {
 	gl::glReadBuffer(gl::GL_COLOR_ATTACHMENT0);
 	std::cout << selectedID << "\n";
 	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, 0);
-	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, 0);
-	// ----
+	return selectedID;
 }
+
+int Renderer::width() const { return m_width; }
+
+int Renderer::height() const { return m_height; }

@@ -9,13 +9,12 @@ Application::Application(int argc, char** argv) {
 	initGraphics();
 	initIO();
 
-	m_renderer = new Renderer(m_window);
-	m_scene    = new Scene();
+	g_renderer.setWindow(m_window);
+	m_scene = new Scene();
 }
 
 Application::~Application() {
 	delete m_scene;
-	delete m_renderer;
 	glfwDestroyWindow(m_window);
 	glfwTerminate();
 	PHYSFS_deinit();
@@ -110,6 +109,14 @@ void Application::processInput() {
 	m_scene->processInput(*m_window);
 }
 
+void Application::draw() {
+	g_renderer.clear();
+	g_renderer.startNormalPass();
+	m_scene->draw();
+	g_renderer.finishNormalPass();
+	glfwSwapBuffers(m_window);
+}
+
 // ---------------------------------------------------------------------------
 //  Public-facing functions
 // ---------------------------------------------------------------------------
@@ -124,7 +131,7 @@ void Application::run() {
 		std::chrono::milliseconds timeStep =
 		  std::chrono::duration_cast<std::chrono::milliseconds>(newTime - oldTime);
 		m_scene->update(timeStep);
-		m_renderer->draw(*m_scene);
+		draw();
 		processInput();
 		oldTime = newTime;
 		newTime = std::chrono::steady_clock::now();

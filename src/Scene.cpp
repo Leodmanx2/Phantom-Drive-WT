@@ -41,19 +41,19 @@ Scene::~Scene() {
 	delete m_activeShader;
 }
 
-/**
- * Called to perform once-per-cycle processing
- *
- * @param [in] duration   Time in milliseconds since the last simulation step
- */
 void Scene::update(std::chrono::milliseconds duration) {}
 
-/**
- * Draws all render models that are part of the scene using information passed down by the renderer
- *
- * @param [in] projectionMatrix  Pointer to a 16-element array representing the 3D->2D, world->screen transformation
- */
-void Scene::draw(glm::mat4 projectionMatrix) {
+void Scene::draw() {
+	// It takes a little extra computation to do this every frame instead of in
+	// the renderer, but it allows for configuration of things such as the FOV
+	// as part of the scene or camera.
+	glm::mat4 projectionMatrix =
+	  glm::perspective(45.0f,
+	                   static_cast<float>(g_renderer.width()) /
+	                     static_cast<float>(g_renderer.height()),
+	                   0.1f,
+	                   10000.0f);
+
 	m_activeShader->setAmbience(m_ambience);
 	m_activeShader->setPointLight(0, *m_pointLight);
 	m_activeShader->setSpotLight(0, *m_spotLight);
