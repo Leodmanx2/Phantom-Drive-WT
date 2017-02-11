@@ -10,7 +10,7 @@ Application::Application(int argc, char** argv) {
 	initIO();
 
 	g_renderer.setWindow(m_window);
-	m_scene = new Scene();
+	m_scene = new EditorScene("DevScene");
 }
 
 Application::~Application() {

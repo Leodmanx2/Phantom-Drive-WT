@@ -2,9 +2,8 @@
 
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
-Actor::Actor(const std::string& actorName, std::uint32_t objectID)
-  : m_desc(actorName), m_inputModel(m_desc.inputModel), m_id(objectID) {
-	assert(objectID != 0);
+Actor::Actor(const std::string& actorName)
+  : m_desc(actorName), m_inputModel(m_desc.inputModel) {
 	if(m_desc.renderModel.compare("") != 0) {
 		try {
 			// Construct model if it has not been constructed yet
@@ -51,8 +50,6 @@ void Actor::draw(Shader& shader) {
 	shader.setModelMatrix(modelMatrix);
 	shader.updateNormalMatrix();
 
-	shader.setObjectID(m_id);
-
 	m_renderModel->draw(shader);
 }
 
@@ -66,6 +63,7 @@ void Actor::processInput(GLFWwindow& window) {
 
 Actor::ActorDescription::ActorDescription(const std::string& actorName) {
 	assert(actorName.compare("") != 0);
+	// TODO: Actor file error checking
 	std::string        contents = readFile(ACTOR_DIR + actorName + ".actr");
 	std::istringstream ss(contents);
 	std::getline(ss, renderModel);

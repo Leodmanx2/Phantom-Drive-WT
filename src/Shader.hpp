@@ -41,10 +41,6 @@ class Shader final {
 		int intensity;
 	};
 
-	// Disable copying
-	Shader(const Shader&) = delete;
-	Shader& operator=(const Shader&) = delete;
-
 	private:
 	bool m_active;
 
@@ -86,6 +82,14 @@ class Shader final {
 	Shader(const std::string& vertexShaderFilename,
 	       const std::string& pixelShaderFilename,
 	       const std::string& geometryShaderFilename = "");
+
+	// Disable copying
+	Shader(const Shader&) = delete;
+	Shader& operator=(const Shader&) = delete;
+
+	// Enable moving
+	Shader(Shader&&) = default;
+	Shader& operator=(Shader&&) = default;
 
 	~Shader();
 

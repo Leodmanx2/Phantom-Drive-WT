@@ -9,38 +9,36 @@
 #include "Renderer.hpp"
 #include "Shader.hpp"
 #include <GLFW/glfw3.h>
+#include <array>
 #include <chrono>
 #include <vector>
 
 class Scene {
-	private:
-	Shader* m_activeShader;
+	protected:
+	std::vector<Shader> m_shaders;
 
-	Camera* m_activeCamera;
+	std::vector<Camera> m_cameras;
 
-	std::vector<std::unique_ptr<Actor>> m_actors;
+	std::map<std::uint32_t, std::unique_ptr<Actor>> m_actors;
 
-	// TODO: Remove specific actors, etc. These are for development purposes only.
-	// Scene should not have details of specific scenes. Scenes must be built
-	// from external descriptions, just like Shader and RenderModel.
-	PointLight*     m_pointLight;
-	SpotLight*      m_spotLight;
-	DirectionLight* m_directionLight;
+	std::array<std::unique_ptr<PointLight>, 8>     m_pointLights;
+	std::array<std::unique_ptr<SpotLight>, 8>      m_spotLights;
+	std::array<std::unique_ptr<DirectionLight>, 2> m_directionLights;
 
 	float m_ambience; // How bright the scene is on average
 
 	std::uint32_t m_highestID;
 
 	public:
-	Scene();
+	explicit Scene(const std::string& name);
 	Scene(const Scene&) = delete;
 	Scene& operator=(const Scene&) = delete;
-	~Scene();
+	virtual ~Scene();
 
-	void update(std::chrono::milliseconds duration);
-	void simulate(std::chrono::milliseconds duration);
-	void draw();
-	void processInput(GLFWwindow& window);
+	virtual void update(std::chrono::milliseconds duration);
+	virtual void simulate(std::chrono::milliseconds duration);
+	virtual void draw();
+	virtual void processInput(GLFWwindow& window);
 };
 
 #endif

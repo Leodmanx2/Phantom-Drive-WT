@@ -5,6 +5,7 @@
 #include <glbinding/gl/gl.h>
 #define GLFW_INCLUDE_NONE
 
+#include "EditorScene.hpp"
 #include "Logger.hpp"
 #include "Renderer.hpp"
 #include "Scene.hpp"

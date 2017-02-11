@@ -36,10 +36,8 @@ class Actor final {
 	InputModel                   m_inputModel;
 	std::shared_ptr<RenderModel> m_renderModel;
 
-	std::uint32_t m_id;
-
 	public:
-	explicit Actor(const std::string& name, std::uint32_t objectID);
+	explicit Actor(const std::string& name);
 
 	Actor(const Actor& original) = default;
 	Actor& operator=(const Actor& original) = default;
