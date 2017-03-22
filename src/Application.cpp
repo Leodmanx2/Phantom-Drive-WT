@@ -14,6 +14,9 @@ Application::Application(int argc, char** argv) {
 }
 
 Application::~Application() {
+	// TODO: Release Renderer's resources first.
+	// Thanks for giving me problems with your shared, global state, OpenGL.
+	// Again.
 	delete m_scene;
 	glfwDestroyWindow(m_window);
 	glfwTerminate();
