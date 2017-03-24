@@ -74,6 +74,8 @@ EditorScene::EditorScene(const std::string& name)
 	} catch(const std::exception& exception) {
 		g_logger.write(Logger::LOG_ERROR, exception.what());
 	}
+
+	m_ambience = 0.2f;
 }
 
 EditorScene::~EditorScene() {
