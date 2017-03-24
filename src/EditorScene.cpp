@@ -33,8 +33,6 @@ PREDICATE(pd_move_by, 3) { return false; }
 
 PREDICATE(pd_move_to, 3) { return false; }
 
-PREDICATE(pd_rotate, 3) { return false; }
-
 PREDICATE0(pd_add_light) { return false; }
 
 PREDICATE(pd_select_light, 1) { return false; }
@@ -93,7 +91,7 @@ void EditorScene::simulate(std::chrono::milliseconds) {}
 // Similarly, we don't want the Actors processing any input.
 // Input processing is limited to editor and camera input.
 void EditorScene::processInput(GLFWwindow& window) {
-	m_inputModel.update(window);
+	//m_inputModel.update(window);
 	m_editorCamera.processInput(window);
 
 	// Process command queue
