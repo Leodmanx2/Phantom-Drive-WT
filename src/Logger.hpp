@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-#define WRITE(MSG) g_logger->write(Logger::LOG_DEBUG, MSG);
+#define WRITE(MSG) g_logger.write(Logger::LOG_DEBUG, MSG);
 
 class Logger final {
 	private:
@@ -22,6 +22,6 @@ class Logger final {
 	void write(LogLevel level, const std::string& msg);
 };
 
-extern Logger* g_logger;
+extern Logger g_logger;
 
 #endif

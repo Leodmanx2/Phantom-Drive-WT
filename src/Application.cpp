@@ -28,18 +28,18 @@ Application::~Application() {
 // ---------------------------------------------------------------------------
 
 void Application::initFilesystem(int, char** argv) {
-	g_logger->write(Logger::LOG_INFO, "Initializing virtual file system");
+	g_logger.write(Logger::LOG_INFO, "Initializing virtual file system");
 	if(PHYSFS_init(argv[0]) == 0) {
-		g_logger->write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
+		g_logger.write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
 		throw std::runtime_error("Could not initialize virtual file system");
 	}
 
 	const std::string assetDir   = PHYSFS_getBaseDir() + std::string("ass");
 	const std::string logMessage = "Mounting asset location: " + assetDir;
-	g_logger->write(Logger::LOG_INFO, logMessage.c_str());
+	g_logger.write(Logger::LOG_INFO, logMessage.c_str());
 	if(PHYSFS_mount(assetDir.c_str(), "/", 1) == 0) {
 		PHYSFS_deinit();
-		g_logger->write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
+		g_logger.write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
 		throw std::runtime_error("Could not mount asset location");
 	}
 }
@@ -71,7 +71,7 @@ void Application::initGraphics() {
 		if(error != gl::GL_NO_ERROR) {
 			std::stringstream ss("OpenGL Error: ");
 			ss << std::hex << error << " after function: " << call.function->name();
-			g_logger->write(Logger::LOG_DEBUG, ss.str());
+			g_logger.write(Logger::LOG_DEBUG, ss.str());
 		}
 	});
 #endif
@@ -79,7 +79,7 @@ void Application::initGraphics() {
 	// Log loaded OpenGl version
 	std::stringstream version;
 	version << "OpenGl context version: " << gl::glGetString(gl::GL_VERSION);
-	g_logger->write(Logger::LOG_INFO, version.str());
+	g_logger.write(Logger::LOG_INFO, version.str());
 
 	// Enable v-sync
 	glfwSwapInterval(1);
@@ -100,7 +100,7 @@ void Application::initIO() {
 // ---------------------------------------------------------------------------
 
 void Application::error_callback(int, const char* description) {
-	g_logger->write(Logger::LOG_ERROR, description);
+	g_logger.write(Logger::LOG_ERROR, description);
 }
 
 void Application::processInput() {

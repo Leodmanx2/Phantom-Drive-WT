@@ -46,4 +46,4 @@ void Logger::write(LogLevel level, const std::string& msg) {
 	logFile << msg << std::endl;
 }
 
-Logger* g_logger = new Logger();
+Logger g_logger;

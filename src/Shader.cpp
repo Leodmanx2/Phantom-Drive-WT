@@ -1,5 +1,9 @@
 #include "Shader.hpp"
 
+// TODO: Fix everything in Shader.
+// Of particular importance is checking whether the shader is bound before setting anything.
+// Failing to do so will inevitably result sending data to one shader using another's values.
+
 Shader::Shader(const std::string& vertexShaderFilename,
                const std::string& pixelShaderFilename,
                const std::string& geometryShaderFilename)
@@ -10,7 +14,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		            "Shaders/" + pixelShaderFilename,
 		            "Shaders/" + geometryShaderFilename);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LOG_ERROR, exception.what());
 
 		std::stringstream message;
 		message << "Could not load shader (" << this << ")";
@@ -155,14 +159,14 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 	try {
 		vertexShader = compileShader(vertexShaderFilename, gl::GL_VERTEX_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load vertex shader");
 	}
 
 	try {
 		pixelShader = compileShader(pixelShaderFilename, gl::GL_FRAGMENT_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load pixel shader");
 	}
 
@@ -171,7 +175,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 			geometryShader =
 			  compileShader(geometryShaderFilename, gl::GL_GEOMETRY_SHADER);
 		} catch(const std::exception& exception) {
-			g_logger->write(Logger::LOG_ERROR, exception.what());
+			g_logger.write(Logger::LOG_ERROR, exception.what());
 			throw std::runtime_error("Could not load geometry shader");
 		}
 	}
@@ -182,7 +186,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 		else
 			m_id = linkShaders(vertexShader, pixelShader);
 	} catch(const std::exception& exception) {
-		g_logger->write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not link shader program");
 	}
 

@@ -12,6 +12,7 @@ class EditorScene final : public Scene {
 	private:
 	InputModel m_inputModel;
 	Camera     m_editorCamera;
+	Shader*    m_defaultShader;
 
 	std::queue<std::string> m_commands;
 	std::mutex              m_mutex;

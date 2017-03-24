@@ -43,7 +43,7 @@ std::string readFile(const std::string& filename) {
 	  PHYSFS_read(shaderFile, const_cast<char*>(buffer.data()), 1, fileSize);
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
-		g_logger->write(Logger::LOG_ERROR, PHYSFS_getLastError());
+		g_logger.write(Logger::LOG_ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of file: ") +
 		                         filename);
 	}

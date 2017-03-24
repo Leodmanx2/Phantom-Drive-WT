@@ -8,7 +8,7 @@ PREDICATE(pd_translate, 3) {
 		                                     static_cast<double>(A2),
 		                                     static_cast<double>(A3));
 	} catch(const PlException& exception) {
-		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+		g_logger.write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
 	return true;
 }
@@ -19,7 +19,7 @@ PREDICATE(pd_rotate, 3) {
 		                                  static_cast<double>(A2),
 		                                  static_cast<double>(A3));
 	} catch(const PlException& exception) {
-		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+		g_logger.write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
 	return true;
 }

@@ -29,4 +29,4 @@ command(pd_remove_light) --> "light", whites, "remove", whites.
 command(pd_edit_light) --> "light", whites, "edit", whites.
 command(pd_load_assets) --> "load", whites, "assets", whites.
 
-do_command(Line) :- atom_codes(Line, Codes), write(Line), nl, write(Codes), nl, phrase(command(Command), Codes).
+do_command(Line) :- atom_codes(Line, Codes), phrase(command(Command), Codes), Command.

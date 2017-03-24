@@ -10,7 +10,7 @@ InputModel::InputModel(const std::string& schemaName)
 		std::string fileName = SCHEMA_DIR + schemaName + ".pro";
 		PlCall("pd_consult", PlTerm(fileName.c_str()));
 	} catch(const PlException& exception) {
-		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+		g_logger.write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
 }
 
@@ -49,6 +49,6 @@ void InputModel::update(GLFWwindow& window) {
 		        m_newMousePos.y});
 		m_oldMousePos = m_newMousePos;
 	} catch(const PlException& exception) {
-		g_logger->write(Logger::LOG_ERROR, static_cast<char*>(exception));
+		g_logger.write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
 }
