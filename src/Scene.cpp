@@ -20,20 +20,30 @@ void Scene::draw() {
 	                     static_cast<float>(g_renderer.height()),
 	                   0.1f,
 	                   10000.0f);
+	for(auto actor = m_actors.begin(); actor != m_actors.end(); ++actor) {
+		for(auto shader = m_shaders.begin(); shader != m_shaders.end(); ++shader) {
+			shader->setAmbience(m_ambience);
+			for(size_t i = 0; i < m_pointLights.size(); ++i) {
+				shader->setPointLight(i, *m_pointLights.at(i));
+			}
+			for(size_t i = 0; i < m_spotLights.size(); ++i) {
+				shader->setSpotLight(i, *m_spotLights.at(i));
+			}
+			for(size_t i = 0; i < m_directionLights.size(); ++i) {
+				shader->setDirectionLight(i, *m_directionLights.at(i));
+			}
 
-	m_shaders.at(0).setAmbience(m_ambience);
-	m_shaders.at(0).setPointLight(0, *m_pointLights.at(0));
-	m_shaders.at(0).setSpotLight(0, *m_spotLights.at(0));
-	m_shaders.at(0).setDirectionLight(0, *m_directionLights.at(0));
+			// Send camera position to the GPU.
+			for(auto camera : m_cameras) {
+				shader->setViewMatrix(camera.getViewMatrix());
+				shader->setEyePosition(glm::vec3(camera.getPosition()));
+			}
 
-	// Send camera position to the GPU.
-	m_shaders.at(0).setViewMatrix(m_cameras.at(0).getViewMatrix());
-	m_shaders.at(0).setEyePosition(glm::vec3(m_cameras.at(0).getPosition()));
-	m_shaders.at(0).setProjectionMatrix(projectionMatrix);
-
-	for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
-		m_shaders.at(0).setObjectID(it->first);
-		it->second->draw(m_shaders.at(0));
+			shader->setProjectionMatrix(projectionMatrix);
+			shader->setObjectID(actor->first);
+			actor->second->draw(
+			  *shader); // TODO: Draw actor with appropriate shader, not one for each shader.
+		}
 	}
 }
 
@@ -41,5 +51,5 @@ void Scene::processInput(GLFWwindow& window) {
 	for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
 		it->second->processInput(window);
 	}
-	m_cameras.at(0).processInput(window);
+	for(auto camera : m_cameras) { camera.processInput(window); }
 }

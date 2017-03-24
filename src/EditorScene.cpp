@@ -7,7 +7,7 @@ EditorScene* EditorScene::activeScene = nullptr;
 // ---------------------------------------------------------------------------
 // TODO: Move to appropriate modules
 
-PREDICATE0(pd_save) { return false; }
+/*PREDICATE0(pd_save) { return false; }
 
 PREDICATE(pd_saveas, 1) { return false; }
 
@@ -35,20 +35,37 @@ PREDICATE0(pd_remove_light) { return false; }
 
 PREDICATE0(pd_edit_light) { return false; }
 
-PREDICATE0(pd_load_assets) { return false; }
+PREDICATE0(pd_load_assets) { return false; }*/
 
 // ---------------------------------------------------------------------------
 //  Scene Overrides
 // ---------------------------------------------------------------------------
 
-// TODO: Implement simple dev console
-
 EditorScene::EditorScene(const std::string& name)
-  : Scene(name), m_inputModel("SceneEdit") {
-	//TODO: Editor mode scene loading
+  : Scene(name)
+  , m_inputModel("SceneEdit")
+  , m_runConsole(true)
+  , m_consoleThread([this]() {
+	  while(m_runConsole) {
+		  std::string command;
+		  std::getline(std::cin, command);
+		  if(command.at(command.size() - 1) == '\r')
+			  command.resize(command.size() - 1);
+		  m_mutex.lock();
+		  m_commands.emplace(command);
+		  m_mutex.unlock();
+	  }
+	}) {
+	// TODO: Editor mode scene loading
 	// The scene will load normally first.
 	// If the scene file can't be found, we create a new one.
 	// If the scene file is corrupt, we give up.
+}
+
+EditorScene::~EditorScene() {
+	m_runConsole = false;
+	std::cout << "Press ENTER to quit.\n";
+	m_consoleThread.join();
 }
 
 // The editor works with the initial moment of a scene.
@@ -61,6 +78,14 @@ void EditorScene::simulate(std::chrono::milliseconds) {}
 void EditorScene::processInput(GLFWwindow& window) {
 	m_inputModel.update(window);
 	m_editorCamera.processInput(window);
+
+	// Process command queue
+	std::lock_guard<std::mutex> lock(m_mutex);
+	while(!m_commands.empty()) {
+		std::string command = m_commands.front();
+		std::cout << PlCall("do_command", {{command.c_str()}}) << "\n";
+		m_commands.pop();
+	}
 }
 
 // The scene should draw as per usual, though.
