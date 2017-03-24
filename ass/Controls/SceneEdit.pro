@@ -13,10 +13,6 @@
 % Console Input
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-pd_save().
-pd_saveas(_).
-pd_exit().
-
 command(pd_save) --> "save", whites.
 command(pd_saveas(Name)) --> "save", whites, "as", white, whites, string(Name), whites.
 command(pd_exit) --> "exit", whites.
