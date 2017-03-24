@@ -70,8 +70,7 @@ EditorScene::EditorScene(const std::string& name)
 	// If the scene file can't be found, we create a new one.
 	// If the scene file is corrupt, we give up.
 	try {
-		m_defaultShader =
-		  new Shader("textured.vert.glsl", "textured.frag.glsl", "");
+		m_defaultShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	} catch(const std::exception& exception) {
 		g_logger.write(Logger::LOG_ERROR, exception.what());
 	}
@@ -123,10 +122,8 @@ void EditorScene::draw() {
 		m_defaultShader->setAmbience(m_ambience);
 
 		// Send camera position to the GPU.
-		for(auto camera : m_cameras) {
-			m_defaultShader->setViewMatrix(camera.getViewMatrix());
-			m_defaultShader->setEyePosition(glm::vec3(camera.getPosition()));
-		}
+		m_defaultShader->setViewMatrix(m_editorCamera.getViewMatrix());
+		m_defaultShader->setEyePosition(glm::vec3(m_editorCamera.getPosition()));
 
 		m_defaultShader->setProjectionMatrix(projectionMatrix);
 		m_defaultShader->setObjectID(actor->first);
