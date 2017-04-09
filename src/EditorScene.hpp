@@ -33,7 +33,9 @@ class EditorScene final : public Scene {
 	void processInput(GLFWwindow& window);
 
 	void addActor(const std::string& name);
+	void removeActor(int id);
 	void setSelected(int id);
+	int getSelected();
 };
 
 #endif

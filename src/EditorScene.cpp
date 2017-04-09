@@ -43,7 +43,11 @@ PREDICATE0(pd_deselect) {
 	return true;
 }
 
-PREDICATE0(pd_remove_actor) { return false; }
+PREDICATE0(pd_remove_actor) {
+	int selected = EditorScene::activeScene->getSelected();
+	EditorScene::activeScene->removeActor(selected);
+	return true;
+}
 
 PREDICATE(pd_move_by, 3) { return false; }
 
@@ -161,4 +165,8 @@ void EditorScene::addActor(const std::string& name) {
 	}
 }
 
+void EditorScene::removeActor(int id) { m_actors.erase(id); }
+
 void EditorScene::setSelected(int id) { m_selected = id; }
+
+int EditorScene::getSelected() { return m_selected; }
