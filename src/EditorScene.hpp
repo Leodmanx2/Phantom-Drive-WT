@@ -20,6 +20,8 @@ class EditorScene final : public Scene {
 	bool        m_runConsole;
 	std::thread m_consoleThread;
 
+	int m_selected;
+
 	public:
 	static EditorScene* activeScene;
 	explicit EditorScene(const std::string& name);
@@ -31,6 +33,7 @@ class EditorScene final : public Scene {
 	void processInput(GLFWwindow& window);
 
 	void addActor(const std::string& name);
+	void setSelected(int id);
 };
 
 #endif

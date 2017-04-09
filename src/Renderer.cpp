@@ -112,7 +112,6 @@ int Renderer::pick(int frameCoordX, int frameCoordY) {
 	                 gl::GL_UNSIGNED_INT,
 	                 &selectedID);
 	gl::glReadBuffer(gl::GL_COLOR_ATTACHMENT0);
-	std::cout << selectedID << "\n";
 	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, 0);
 	return selectedID;
 }

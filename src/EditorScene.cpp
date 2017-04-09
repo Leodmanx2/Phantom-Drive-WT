@@ -23,9 +23,25 @@ PREDICATE(pd_add_actor, 1) {
 	return true;
 }
 
-PREDICATE(pd_select, 2) { return false; }
+PREDICATE0(pd_select) {
+	int selected =
+	  g_renderer.pick(g_renderer.width() / 2, g_renderer.height() / 2);
+	std::cout << selected << "\n";
+	EditorScene::activeScene->setSelected(selected);
+	return true;
+}
 
-PREDICATE0(pd_deselect) { return false; }
+PREDICATE(pd_select, 3) {
+	int x = static_cast<int>(A1);
+	int y = static_cast<int>(A2);
+	A3    = g_renderer.pick(x, y);
+	return true;
+}
+
+PREDICATE0(pd_deselect) {
+	EditorScene::activeScene->setSelected(0);
+	return true;
+}
 
 PREDICATE0(pd_remove_actor) { return false; }
 
@@ -144,3 +160,5 @@ void EditorScene::addActor(const std::string& name) {
 		throw std::runtime_error("Failed to load Actor");
 	}
 }
+
+void EditorScene::setSelected(int id) { m_selected = id; }
