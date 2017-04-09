@@ -44,14 +44,28 @@ PREDICATE0(pd_deselect) {
 }
 
 PREDICATE0(pd_remove_actor) {
-	int selected = EditorScene::activeScene->getSelected();
+	int selected = EditorScene::activeScene->getSelectedID();
 	EditorScene::activeScene->removeActor(selected);
 	return true;
 }
 
-PREDICATE(pd_move_by, 3) { return false; }
+PREDICATE(pd_move_by, 3) {
+	double longitude = static_cast<double>(A1);
+	double latitude  = static_cast<double>(A2);
+	double altitude  = static_cast<double>(A3);
+	auto   actor     = EditorScene::activeScene->getSelectedActor();
+	actor->translate(longitude, latitude, altitude);
+	return true;
+}
 
-PREDICATE(pd_move_to, 3) { return false; }
+PREDICATE(pd_move_to, 3) {
+	double x     = static_cast<double>(A1);
+	double y     = static_cast<double>(A2);
+	double z     = static_cast<double>(A3);
+	auto   actor = EditorScene::activeScene->getSelectedActor();
+	actor->setPosition(x, y, z);
+	return true;
+}
 
 PREDICATE0(pd_add_light) { return false; }
 
@@ -71,6 +85,7 @@ EditorScene::EditorScene(const std::string& name)
   : Scene(name)
   , m_inputModel("SceneEdit")
   , m_mutex()
+  , m_selected(0)
   , m_runConsole(true)
   , m_consoleThread([&]() {
 	  while(m_runConsole) {
@@ -169,4 +184,8 @@ void EditorScene::removeActor(int id) { m_actors.erase(id); }
 
 void EditorScene::setSelected(int id) { m_selected = id; }
 
-int EditorScene::getSelected() { return m_selected; }
+int EditorScene::getSelectedID() { return m_selected; }
+
+Actor* EditorScene::getSelectedActor() {
+	return m_actors.find(m_selected)->second.get();
+}

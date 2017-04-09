@@ -48,6 +48,23 @@ class Actor final {
 
 	void processInput(GLFWwindow& window);
 	void draw(Shader& shader);
+
+	// Forwarding functions
+	inline void translate(float longitude, float latitude, float altitude) {
+		m_spatialModel.translate(longitude, latitude, altitude);
+	}
+
+	inline void rotate(float roll, float pitch, float yaw) {
+		m_spatialModel.rotate(roll, pitch, yaw);
+	}
+
+	inline void setOrientation(float deg, float x, float y, float z) {
+		m_spatialModel.setOrientation(deg, x, y, z);
+	}
+
+	inline void setPosition(float x, float y, float z) {
+		m_spatialModel.setPosition(x, y, z);
+	}
 };
 
 #endif

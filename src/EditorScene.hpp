@@ -17,10 +17,10 @@ class EditorScene final : public Scene {
 	std::queue<std::string> m_commands;
 	std::mutex              m_mutex;
 
+	int m_selected;
+
 	bool        m_runConsole;
 	std::thread m_consoleThread;
-
-	int m_selected;
 
 	public:
 	static EditorScene* activeScene;
@@ -35,7 +35,8 @@ class EditorScene final : public Scene {
 	void addActor(const std::string& name);
 	void removeActor(int id);
 	void setSelected(int id);
-	int getSelected();
+	int    getSelectedID();
+	Actor* getSelectedActor();
 };
 
 #endif
