@@ -149,7 +149,6 @@ void EditorScene::simulate(std::chrono::milliseconds) {}
 // Similarly, we don't want the Actors processing any input.
 // Input processing is limited to editor and camera input.
 void EditorScene::processInput(GLFWwindow& window) {
-	//m_inputModel.update(window);
 	m_editorCamera.processInput(window);
 
 	// Process command queue
@@ -163,6 +162,9 @@ void EditorScene::processInput(GLFWwindow& window) {
 		          << "\n";
 		m_commands.pop();
 	}
+
+	m_inputModel.update(window);
+
 	EditorScene::activeScene = nullptr;
 }
 

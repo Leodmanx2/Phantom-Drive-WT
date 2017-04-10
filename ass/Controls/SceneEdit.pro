@@ -9,6 +9,20 @@
 
 % TODO: Handle movement commands including null case
 
+schema_key_binding('SceneEdit', 71, "pd_select.").  % G
+
+schema_key_binding('SceneEdit', 263, "pd_move_by(0,-1,0).").  % Left Arrow
+schema_key_binding('SceneEdit', 265, "pd_move_by(0,0,1).").  % Up Arrow
+schema_key_binding('SceneEdit', 262, "pd_move_by(0,1,0).").  % Right Arrow
+schema_key_binding('SceneEdit', 264, "pd_move_by(0,0,-1).").  % Down Arrow
+
+schema_key_binding('SceneEdit', 93, "pd_rotate_by(1,0,0).").  % ]
+schema_key_binding('SceneEdit', 39, "pd_rotate_by(0,1,0).").  % '
+schema_key_binding('SceneEdit', 47, "pd_rotate_by(0,0,1).").  % /
+schema_key_binding('SceneEdit', 91, "pd_rotate_by(-1,0,0).").  % [
+schema_key_binding('SceneEdit', 59, "pd_rotate_by(0,-1,0).").  % ;
+schema_key_binding('SceneEdit', 46, "pd_rotate_by(0,0,-1).").  % .
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Console Input
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

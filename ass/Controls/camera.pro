@@ -9,6 +9,6 @@ schema_key_binding(camera, 67, "pd_translate(0, 0, -1)."). % C
 schema_key_binding(camera, 32, "pd_translate(0, 0, 1).").  % Space
 
 schema_handleMouse(camera, X1, Y1, X2, Y2) :- Roll is 0.0,
-                                              Pitch is -((Y2 - Y1) / 128.0),
-                                              Yaw is -((X2 - X1) / 128.0),
+                                              Pitch is -((Y2 - Y1) / 2.0),
+                                              Yaw is -((X2 - X1) / 2.0),
                                               pd_rotate(Roll, Pitch, Yaw).

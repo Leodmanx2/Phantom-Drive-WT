@@ -31,7 +31,7 @@ const glm::vec4 SpatialModel::canonicalLeft =
   glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 
 SpatialModel::SpatialModel()
-  : m_orientation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
+  : m_orientation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f))
   , m_position(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {}
 
 /**
