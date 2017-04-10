@@ -5,7 +5,7 @@ EditorScene* EditorScene::activeScene = nullptr;
 // ---------------------------------------------------------------------------
 //  Prolog Interface to Scene Editing Commands
 // ---------------------------------------------------------------------------
-// TODO: Move to appropriate modules
+// TODO: Rename to indicate editor-specificity
 
 PREDICATE0(pd_save) { return false; }
 
