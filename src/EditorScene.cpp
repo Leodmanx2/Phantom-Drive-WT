@@ -54,6 +54,7 @@ PREDICATE(pd_move_by, 3) {
 	double latitude  = static_cast<double>(A2);
 	double altitude  = static_cast<double>(A3);
 	auto   actor     = EditorScene::activeScene->getSelectedActor();
+	if(!actor) return false;
 	actor->translate(longitude, latitude, altitude);
 	return true;
 }
@@ -63,7 +64,29 @@ PREDICATE(pd_move_to, 3) {
 	double y     = static_cast<double>(A2);
 	double z     = static_cast<double>(A3);
 	auto   actor = EditorScene::activeScene->getSelectedActor();
+	if(!actor) return false;
 	actor->setPosition(x, y, z);
+	return true;
+}
+
+PREDICATE(pd_rotate_by, 3) {
+	double roll  = static_cast<double>(A1);
+	double pitch = static_cast<double>(A2);
+	double yaw   = static_cast<double>(A3);
+	auto   actor = EditorScene::activeScene->getSelectedActor();
+	if(!actor) return false;
+	actor->rotate(roll, pitch, yaw);
+	return true;
+}
+
+PREDICATE(pd_rotate_to, 3) {
+	double roll  = glm::radians(static_cast<double>(A1));
+	double pitch = glm::radians(static_cast<double>(A2));
+	double yaw   = glm::radians(static_cast<double>(A3));
+	auto   actor = EditorScene::activeScene->getSelectedActor();
+	if(!actor) return false;
+	glm::quat quat = glm::quat(glm::vec3(pitch, yaw, roll));
+	actor->setOrientation(quat.w, quat.x, quat.y, quat.z);
 	return true;
 }
 
@@ -187,5 +210,7 @@ void EditorScene::setSelected(int id) { m_selected = id; }
 int EditorScene::getSelectedID() { return m_selected; }
 
 Actor* EditorScene::getSelectedActor() {
-	return m_actors.find(m_selected)->second.get();
+	auto it = m_actors.find(m_selected);
+	if(it != m_actors.end()) return it->second.get();
+	return nullptr;
 }

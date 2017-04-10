@@ -63,20 +63,23 @@ void SpatialModel::translate(float longitude, float latitude, float altitude) {
  * @param [in] yaw    Number of degrees around the up/dawn axis to rotate by
  */
 void SpatialModel::rotate(float roll, float pitch, float yaw) {
-	glm::quat rotationQuat(glm::vec3(pitch, yaw, roll));
+	float     rollRad  = glm::radians(roll);
+	float     pitchRad = glm::radians(pitch);
+	float     yawRad   = glm::radians(yaw);
+	glm::quat rotationQuat(glm::vec3(pitchRad, yawRad, rollRad));
 	m_orientation *= rotationQuat;
 }
 
 /*
  * Directly sets the actor's orientation, overriding any previous values.
  *
- * @param [in] deg  Number of degrees to rotate about the axis specified by paramaters x, y, and z
+ * @param [in] rad  Number of radians to rotate about the axis specified by paramaters x, y, and z
  * @param [in] x    x component of the 3D axis about which the actor will be rotated
  * @param [in] y    y component of the 3D axis about which the actor will be rotated
  * @param [in] z    z component of the 3D axis about which the actor will be rotated
  */
-void SpatialModel::setOrientation(float deg, float x, float y, float z) {
-	m_orientation = glm::quat(deg, x, y, z);
+void SpatialModel::setOrientation(float rad, float x, float y, float z) {
+	m_orientation = glm::quat(rad, x, y, z);
 }
 
 /*
