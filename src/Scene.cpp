@@ -1,7 +1,7 @@
 #include "Scene.hpp"
 
 Scene::Scene(const std::string& name) {
-	// TODO: Lead scene from file
+	// TODO: Load scene from file
 }
 
 Scene::~Scene() {}
@@ -16,8 +16,8 @@ void Scene::draw() {
 	// as part of the scene or camera.
 	glm::mat4 projectionMatrix =
 	  glm::perspective(45.0f,
-	                   static_cast<float>(g_renderer.width()) /
-	                     static_cast<float>(g_renderer.height()),
+	                   static_cast<float>(Renderer::width()) /
+	                     static_cast<float>(Renderer::height()),
 	                   0.1f,
 	                   10000.0f);
 	for(auto actor = m_actors.begin(); actor != m_actors.end(); ++actor) {

@@ -24,8 +24,7 @@ PREDICATE(pd_add_actor, 1) {
 }
 
 PREDICATE0(pd_select) {
-	int selected =
-	  g_renderer.pick(g_renderer.width() / 2, g_renderer.height() / 2);
+	int selected = Renderer::pick(Renderer::width() / 2, Renderer::height() / 2);
 	std::cout << selected << "\n";
 	EditorScene::activeScene->setSelected(selected);
 	return true;
@@ -34,7 +33,7 @@ PREDICATE0(pd_select) {
 PREDICATE(pd_select, 3) {
 	int x = static_cast<int>(A1);
 	int y = static_cast<int>(A2);
-	A3    = g_renderer.pick(x, y);
+	A3    = Renderer::pick(x, y);
 	return true;
 }
 
@@ -174,8 +173,8 @@ void EditorScene::processInput(GLFWwindow& window) {
 void EditorScene::draw() {
 	glm::mat4 projectionMatrix =
 	  glm::perspective(45.0f,
-	                   static_cast<float>(g_renderer.width()) /
-	                     static_cast<float>(g_renderer.height()),
+	                   static_cast<float>(Renderer::width()) /
+	                     static_cast<float>(Renderer::height()),
 	                   0.1f,
 	                   10000.0f);
 	for(auto actor = m_actors.begin(); actor != m_actors.end(); ++actor) {

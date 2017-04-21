@@ -9,6 +9,7 @@
 #include "Logger.hpp"
 #include "Renderer.hpp"
 #include "Scene.hpp"
+#include "Window.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
 #include <functional>
@@ -19,24 +20,15 @@
 
 class Application final {
 	private:
-	static const int default_width  = 640;
-	static const int default_height = 480;
-
-	// One OpenGL context, one renderer.
-	// But mostly it's to facilitate the use of tools like pick().
-
-	GLFWwindow* m_window;
+	std::shared_ptr<Window> m_window;
+	Renderer                m_renderer;
 
 	void initFilesystem(int argc, char** argv);
-	void initGraphics();
-	void initIO();
 
 	void processInput();
 	void draw();
 
 	Scene* m_scene; // Temporary variable for dev. purposes
-
-	static void error_callback(int error, const char* description);
 
 	public:
 	Application(int argc, char** argv);
