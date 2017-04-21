@@ -22,9 +22,7 @@ Actor::Actor(const std::string& actorName)
 
 Actor::~Actor() {
 	// Remove model from dictionary if no Actor is using it
-	// TODO: Model is not being deleted until the program exits
-	//       I've been trying to figure this out for a while. My current
-	//       theory is that the dictionary is holding an extra reference.
+	m_renderModel.reset();
 	if(m_desc.renderModel.compare("") != 0 &&
 	   s_modelDictionary.find(m_desc.renderModel)->second.unique()) {
 		s_modelDictionary.erase(m_desc.renderModel);
