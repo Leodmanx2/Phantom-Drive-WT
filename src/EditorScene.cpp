@@ -14,6 +14,8 @@ PREDICATE(pd_saveas, 1) { return false; }
 PREDICATE0(pd_exit) { return false; }
 
 PREDICATE(pd_add_actor, 1) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_add_actor/1");
 	try {
 		EditorScene::activeScene->addActor(static_cast<const char*>(A1));
 	} catch(const std::exception& exception) {
@@ -24,6 +26,8 @@ PREDICATE(pd_add_actor, 1) {
 }
 
 PREDICATE0(pd_select) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_select/0");
 	int selected = Renderer::pick(Renderer::width() / 2, Renderer::height() / 2);
 	std::cout << selected << "\n";
 	EditorScene::activeScene->setSelected(selected);
@@ -38,17 +42,23 @@ PREDICATE(pd_select, 3) {
 }
 
 PREDICATE0(pd_deselect) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_deselect/0");
 	EditorScene::activeScene->setSelected(0);
 	return true;
 }
 
 PREDICATE0(pd_remove_actor) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_remove_actor/0");
 	int selected = EditorScene::activeScene->getSelectedID();
 	EditorScene::activeScene->removeActor(selected);
 	return true;
 }
 
 PREDICATE(pd_move_by, 3) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_move_by/3");
 	double longitude = static_cast<double>(A1);
 	double latitude  = static_cast<double>(A2);
 	double altitude  = static_cast<double>(A3);
@@ -59,6 +69,8 @@ PREDICATE(pd_move_by, 3) {
 }
 
 PREDICATE(pd_move_to, 3) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_move_to/3");
 	double x     = static_cast<double>(A1);
 	double y     = static_cast<double>(A2);
 	double z     = static_cast<double>(A3);
@@ -69,6 +81,8 @@ PREDICATE(pd_move_to, 3) {
 }
 
 PREDICATE(pd_rotate_by, 3) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_rotate_by/3");
 	double roll  = static_cast<double>(A1);
 	double pitch = static_cast<double>(A2);
 	double yaw   = static_cast<double>(A3);
@@ -79,6 +93,8 @@ PREDICATE(pd_rotate_by, 3) {
 }
 
 PREDICATE(pd_rotate_to, 3) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_rotate_to/3");
 	double roll  = glm::radians(static_cast<double>(A1));
 	double pitch = glm::radians(static_cast<double>(A2));
 	double yaw   = glm::radians(static_cast<double>(A3));

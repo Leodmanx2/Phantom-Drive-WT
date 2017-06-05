@@ -3,6 +3,9 @@
 SpatialModel* SpatialModel::activeModel = nullptr;
 
 PREDICATE(pd_translate, 3) {
+	if(!SpatialModel::activeModel)
+		throw std::logic_error(
+		  "Active SpatialModel not set on call to pd_translate/3");
 	try {
 		SpatialModel::activeModel->translate(static_cast<double>(A1),
 		                                     static_cast<double>(A2),
@@ -14,6 +17,9 @@ PREDICATE(pd_translate, 3) {
 }
 
 PREDICATE(pd_rotate, 3) {
+	if(!SpatialModel::activeModel)
+		throw std::logic_error(
+		  "Active SpatialModel not set on call to pd_rotate/3");
 	try {
 		SpatialModel::activeModel->rotate(static_cast<double>(A1),
 		                                  static_cast<double>(A2),
