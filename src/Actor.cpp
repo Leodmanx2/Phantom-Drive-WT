@@ -56,10 +56,8 @@ void Actor::draw(Shader& shader) {
 
 void Actor::processInput(GLFWwindow& window) {
 	SpatialModel::activeModel = &m_spatialModel;
-	InputModel::activeModel   = &m_inputModel;
 	m_inputModel.update(window);
 	SpatialModel::activeModel = nullptr;
-	InputModel::activeModel   = nullptr;
 }
 
 Actor::ActorDescription::ActorDescription(const std::string& actorName) {

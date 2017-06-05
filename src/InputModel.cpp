@@ -16,7 +16,7 @@ InputModel::InputModel(const std::string& schemaName)
 
 void InputModel::update(GLFWwindow& window) {
 	// TODO: Handle multiple keys in a binding
-
+	activeModel = this;
 	try {
 		// Get keys bound to schema
 		// Binding fills the role of the anonymous variable _, since
@@ -51,4 +51,6 @@ void InputModel::update(GLFWwindow& window) {
 	} catch(const PlException& exception) {
 		g_logger.write(Logger::LOG_ERROR, static_cast<char*>(exception));
 	}
+
+	activeModel = nullptr;
 }
