@@ -29,3 +29,23 @@ Hardware Requirements
 ---------------------
 
 *   OpenGL 3.3 compatible GPU
+
+Project Status
+--------------
+
+This section is intended to provide you with a quick glance at our progress and 
+imminent goals. It is not a complete development roadmap.
+
+### Current
+
+*   Scene editing tool, scene description files
+*   Input handling
+    *   Correct behaviour requires changing the windowing/event library (GLFW)
+
+### To-Do
+
+*   (Re-)Integrate physics engine
+*   Behaviour/AI scripting framework
+*   glbinding -> globjects (or maybe even Vulkan-Hpp)
+*   Rendering shadows
+*   Sorting for transparency or OIT

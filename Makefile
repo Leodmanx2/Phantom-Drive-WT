@@ -63,6 +63,8 @@ LDLIBS += -lglfw3 -lglbinding -lswipl -lpmdl
 # Targets
 ################################################################################
 
+# TODO: Strip symbols from release build (option -s)
+
 all: CXXFLAGS += -O2 -march=native
 all: executable
 
