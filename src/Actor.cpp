@@ -29,6 +29,8 @@ Actor::~Actor() {
 	}
 }
 
+const std::string& Actor::name() const { return m_desc.name; }
+
 /**
  * Called once per cycle. By default does nothing, but can be overriden to
  * progress animations, respond to collisions, etc.
@@ -60,7 +62,8 @@ void Actor::processInput(GLFWwindow& window) {
 	SpatialModel::activeModel = nullptr;
 }
 
-Actor::ActorDescription::ActorDescription(const std::string& actorName) {
+Actor::ActorDescription::ActorDescription(const std::string& actorName)
+  : name(actorName) {
 	assert(actorName.compare("") != 0);
 	// TODO: Actor file error checking
 	std::string        contents = readFile(ACTOR_DIR + actorName + ".actr");

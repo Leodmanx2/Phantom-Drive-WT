@@ -7,9 +7,19 @@ EditorScene* EditorScene::activeScene = nullptr;
 // ---------------------------------------------------------------------------
 // TODO: Rename to indicate editor-specificity
 
-PREDICATE0(pd_save) { return false; }
+PREDICATE0(pd_save) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_save/1");
+	EditorScene::activeScene->saveAs(EditorScene::activeScene->name);
+	return true;
+}
 
-PREDICATE(pd_saveas, 1) { return false; }
+PREDICATE(pd_saveas, 1) {
+	if(!EditorScene::activeScene)
+		throw std::logic_error("Active Scene not set on call to pd_saveas/1");
+	EditorScene::activeScene->saveAs(static_cast<const char*>(A1));
+	return true;
+}
 
 PREDICATE0(pd_exit) { return false; }
 
@@ -119,7 +129,7 @@ PREDICATE0(pd_load_assets) { return false; }
 //  Scene Overrides
 // ---------------------------------------------------------------------------
 
-EditorScene::EditorScene(const std::string& name)
+EditorScene::EditorScene(const std::string& sceneName)
   : Scene(name)
   , m_inputModel("SceneEdit")
   , m_mutex()
@@ -135,7 +145,8 @@ EditorScene::EditorScene(const std::string& name)
 		  m_commands.emplace(command);
 		  m_mutex.unlock();
 	  }
-	}) {
+	})
+  , name(sceneName) {
 	// TODO: Editor mode scene loading
 	// The scene will load normally first.
 	// If the scene file can't be found, we create a new one.
@@ -230,4 +241,86 @@ Actor* EditorScene::getSelectedActor() {
 	auto it = m_actors.find(m_selected);
 	if(it != m_actors.end()) return it->second.get();
 	return nullptr;
+}
+
+void EditorScene::saveAs(const std::string& file) {
+	// TODO: Seriously improve the format libraries, maybe move this out to an exporter class
+	PSCN::File contents;
+
+	// Header
+	contents.header =
+	  PSCN::Header(0x5053434e, 0); // TODO: This should be set by the library
+
+	// Actors
+	for(auto pair = m_actors.begin(); pair != m_actors.end(); ++pair) {
+		const Actor& actor = *pair->second.get();
+		PSCN::Actor  actorPSCN;
+		// Name
+		actorPSCN.name = actor.name();
+		// Position
+		glm::vec4 pos      = actor.position();
+		actorPSCN.position = {pos.x, pos.y, pos.z};
+		// Orientation
+		glm::quat ori         = actor.orientation();
+		glm::vec3 eulerAngles = glm::eulerAngles(ori);
+		actorPSCN.orientation = {eulerAngles.z, eulerAngles.x, eulerAngles.y};
+
+		contents.body.actors.push_back(actorPSCN);
+	}
+
+	// Cameras
+	for(auto camera : m_cameras) {
+		PSCN::Camera cameraPSCN;
+		// Position
+		glm::vec4 pos       = camera.getPosition();
+		cameraPSCN.position = {pos.x, pos.y, pos.z};
+		// Orientation
+		glm::quat ori          = camera.orientation();
+		glm::vec3 eulerAngles  = glm::eulerAngles(ori);
+		cameraPSCN.orientation = {eulerAngles.z, eulerAngles.x, eulerAngles.y};
+
+		contents.body.cameras.push_back(cameraPSCN);
+	}
+
+	// PointLights
+	for(auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it) {
+		if(!*it) continue;
+		const PointLight& light = *it->get();
+		PSCN::PointLight  lightPSCN;
+		lightPSCN.position = {light.position.x, light.position.y, light.position.z};
+		lightPSCN.color    = {light.color.x, light.color.y, light.color.z};
+		lightPSCN.intensity = light.intensity;
+		lightPSCN.radius    = light.radius;
+		contents.body.pointLights.push_back(lightPSCN);
+	}
+
+	// SpotLights
+	for(auto it = m_spotLights.begin(); it != m_spotLights.end(); ++it) {
+		if(!*it) continue;
+		const SpotLight& light = *it->get();
+		PSCN::SpotLight  lightPSCN;
+		lightPSCN.position = {light.position.x, light.position.y, light.position.z};
+		lightPSCN.direction = {
+		  light.direction.x, light.direction.y, light.direction.z};
+		lightPSCN.color     = {light.color.x, light.color.y, light.color.z};
+		lightPSCN.intensity = light.intensity;
+		lightPSCN.angle     = light.angle;
+		lightPSCN.radius    = light.radius;
+		contents.body.spotLights.push_back(lightPSCN);
+	}
+
+	// DirectionalLights
+	for(auto it = m_directionLights.begin(); it != m_directionLights.end();
+	    ++it) {
+		if(!*it) continue;
+		const DirectionLight& light = *it->get();
+		PSCN::DirectionLight  lightPSCN;
+		lightPSCN.direction = {
+		  light.direction.x, light.direction.y, light.direction.z};
+		lightPSCN.color     = {light.color.x, light.color.y, light.color.z};
+		lightPSCN.intensity = light.intensity;
+		contents.body.directionLights.push_back(lightPSCN);
+	}
+
+	contents.write(file);
 }

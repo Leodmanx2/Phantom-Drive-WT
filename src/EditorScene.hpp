@@ -3,7 +3,9 @@
 
 #include "InputModel.hpp"
 #include "Scene.hpp"
+#include <PSCN.hpp>
 #include <SWI-cpp.h>
+#include <fstream>
 #include <mutex>
 #include <queue>
 #include <thread>
@@ -23,6 +25,7 @@ class EditorScene final : public Scene {
 	std::thread m_consoleThread;
 
 	public:
+	const std::string   name;
 	static EditorScene* activeScene;
 	explicit EditorScene(const std::string& name);
 	~EditorScene();
@@ -35,6 +38,7 @@ class EditorScene final : public Scene {
 	void addActor(const std::string& name);
 	void removeActor(int id);
 	void setSelected(int id);
+	void saveAs(const std::string& file);
 	int    getSelectedID();
 	Actor* getSelectedActor();
 };

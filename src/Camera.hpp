@@ -17,7 +17,10 @@ class Camera {
 
 	public:
 	Camera();
-	glm::vec4 getPosition();
+	glm::vec4 getPosition(); // TODO: Normalize spatial model forwarding functions
+	inline const glm::quat orientation() const {
+		return m_spatialModel.orientation();
+	}
 	glm::mat4 getViewMatrix();
 
 	void processInput(GLFWwindow& window);

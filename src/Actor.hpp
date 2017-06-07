@@ -17,6 +17,7 @@ class Actor final {
 	struct ActorDescription final {
 		const std::string ACTOR_DIR = "Actors/";
 
+		std::string name;
 		std::string renderModel;
 		std::string inputModel;
 
@@ -46,6 +47,8 @@ class Actor final {
 
 	~Actor();
 
+	const std::string& name() const;
+
 	void processInput(GLFWwindow& window);
 	void draw(Shader& shader);
 
@@ -64,6 +67,11 @@ class Actor final {
 
 	inline void setPosition(float x, float y, float z) {
 		m_spatialModel.setPosition(x, y, z);
+	}
+
+	inline const glm::vec4 position() const { return m_spatialModel.position(); }
+	inline const glm::quat orientation() const {
+		return m_spatialModel.orientation();
 	}
 };
 
