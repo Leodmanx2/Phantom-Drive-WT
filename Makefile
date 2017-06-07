@@ -63,9 +63,8 @@ LDLIBS += -lglfw3 -lglbinding -lBulletDynamics -lBulletCollision -lLinearMath -l
 # Targets
 ################################################################################
 
-# TODO: Strip symbols from release build (option -s)
-
 all: CXXFLAGS += -O2 -march=native
+all: LDFLAGS += -s
 all: executable
 
 debug: CXXFLAGS += -D DEBUG -g
