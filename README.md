@@ -40,7 +40,6 @@ imminent goals. It is not a complete development roadmap.
 
 *   Scene editing tool, scene description files
 *   Input handling
-    *   Correct behaviour requires changing the windowing/event library (GLFW)
 
 ### To-Do
 
