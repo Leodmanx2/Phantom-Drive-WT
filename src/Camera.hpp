@@ -13,15 +13,18 @@ class Camera {
 	private:
 	InputModel   m_inputModel;
 	SpatialModel m_spatialModel;
-	glm::mat4    m_viewMatrix;
 
 	public:
 	Camera();
-	glm::vec4 getPosition(); // TODO: Normalize spatial model forwarding functions
-	inline const glm::quat orientation() const {
+	const glm::mat4 viewMatrix() const;
+
+	constexpr const glm::vec4& position() const {
+		return m_spatialModel.position();
+	}
+
+	constexpr const glm::quat& orientation() const {
 		return m_spatialModel.orientation();
 	}
-	glm::mat4 getViewMatrix();
 
 	void processInput(GLFWwindow& window);
 };

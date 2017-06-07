@@ -11,7 +11,7 @@ PREDICATE(pd_translate, 3) {
 		                                     static_cast<double>(A2),
 		                                     static_cast<double>(A3));
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LOG_ERROR, static_cast<char*>(exception));
+		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
 	}
 	return true;
 }
@@ -25,7 +25,7 @@ PREDICATE(pd_rotate, 3) {
 		                                  static_cast<double>(A2),
 		                                  static_cast<double>(A3));
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LOG_ERROR, static_cast<char*>(exception));
+		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
 	}
 	return true;
 }
@@ -48,15 +48,15 @@ SpatialModel::SpatialModel()
  * @param [in] altitude   Number of units along the actor's up/down axis to translate by
  */
 void SpatialModel::translate(float longitude, float latitude, float altitude) {
-	glm::mat4 orientationMatrix = glm::mat4_cast(m_orientation);
+	const glm::mat4 orientationMatrix = glm::mat4_cast(m_orientation);
 
-	glm::vec4 forward = orientationMatrix * canonicalForward;
-	glm::vec4 up      = orientationMatrix * canonicalUp;
-	glm::vec4 left    = orientationMatrix * canonicalLeft;
+	const glm::vec4 forward = orientationMatrix * canonicalForward;
+	const glm::vec4 up      = orientationMatrix * canonicalUp;
+	const glm::vec4 left    = orientationMatrix * canonicalLeft;
 
-	glm::vec4 longVec = forward * longitude;
-	glm::vec4 latVec  = left * latitude;
-	glm::vec4 altVec  = up * altitude;
+	const glm::vec4 longVec = forward * longitude;
+	const glm::vec4 latVec  = left * latitude;
+	const glm::vec4 altVec  = up * altitude;
 
 	m_position += longVec + latVec + altVec;
 }
@@ -69,10 +69,10 @@ void SpatialModel::translate(float longitude, float latitude, float altitude) {
  * @param [in] yaw    Number of degrees around the up/dawn axis to rotate by
  */
 void SpatialModel::rotate(float roll, float pitch, float yaw) {
-	float     rollRad  = glm::radians(roll);
-	float     pitchRad = glm::radians(pitch);
-	float     yawRad   = glm::radians(yaw);
-	glm::quat rotationQuat(glm::vec3(pitchRad, yawRad, rollRad));
+	const float     rollRad  = glm::radians(roll);
+	const float     pitchRad = glm::radians(pitch);
+	const float     yawRad   = glm::radians(yaw);
+	const glm::quat rotationQuat(glm::vec3(pitchRad, yawRad, rollRad));
 	m_orientation *= rotationQuat;
 }
 
@@ -100,27 +100,13 @@ void SpatialModel::setPosition(float x, float y, float z) {
 }
 
 /**
- * Return a 4-vector representing the offset from the world origin.
- *
- * @return The position vector
- */
-glm::vec4 SpatialModel::position() const { return m_position; }
-
-/**
- * Return a quaternion representing an arbitrary rotation about the local origin
- *
- * @return The rotation quaternion
- */
-glm::quat SpatialModel::orientation() const { return m_orientation; }
-
-/**
  * Returns a 4x4 matrix representing the complete world-space transformation
  *
  * @return The transformation matrix
  */
-glm::mat4 SpatialModel::matrix() const {
-	glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
-	glm::mat4 translationMatrix =
+const glm::mat4 SpatialModel::matrix() const {
+	const glm::mat4 rotationMatrix = glm::mat4_cast(m_orientation);
+	const glm::mat4 translationMatrix =
 	  glm::translate(glm::mat4(), glm::vec3(m_position));
 
 	return translationMatrix * rotationMatrix;

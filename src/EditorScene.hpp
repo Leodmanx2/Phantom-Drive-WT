@@ -30,17 +30,17 @@ class EditorScene final : public Scene {
 	explicit EditorScene(const std::string& name);
 	~EditorScene();
 
-	void update(std::chrono::milliseconds duration);
-	void simulate(std::chrono::milliseconds duration);
-	void draw();
-	void processInput(GLFWwindow& window);
+	void update(const std::chrono::milliseconds& duration) override;
+	void simulate(const std::chrono::milliseconds& duration) override;
+	void draw() override;
+	void processInput(GLFWwindow& window) override;
 
-	void addActor(const std::string& name);
-	void removeActor(int id);
-	void setSelected(int id);
+	void addActor(const std::string& actorName);
+	constexpr void removeActor(int id) { m_actors.erase(id); }
+	constexpr void setSelected(int id) { m_selected = id; }
 	void saveAs(const std::string& file);
-	int    getSelectedID();
-	Actor* getSelectedActor();
+	constexpr int selectedID() { return m_selected; }
+	Actor*        selectedActor();
 };
 
 #endif

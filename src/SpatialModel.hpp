@@ -28,9 +28,9 @@ class SpatialModel final {
 	void setOrientation(float deg, float x, float y, float z);
 	void setPosition(float x, float y, float z);
 
-	glm::vec4 position() const;
-	glm::quat orientation() const;
-	glm::mat4 matrix() const;
+	constexpr const glm::vec4& position() const { return m_position; }
+	constexpr const glm::quat& orientation() const { return m_orientation; }
+	const glm::mat4            matrix() const;
 };
 
 #endif

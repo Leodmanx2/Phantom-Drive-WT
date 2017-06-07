@@ -4,9 +4,9 @@ Logger::Logger() { logFile.open(timestamp()); }
 
 Logger::~Logger() { logFile.close(); }
 
-std::string Logger::timestamp() {
-	time_t    timeNow = time(nullptr);
-	struct tm localTimeNow;
+const std::string Logger::timestamp() {
+	const time_t timeNow = time(nullptr);
+	struct tm    localTimeNow;
 	localtime_s(&localTimeNow, &timeNow);
 	char buffer[80];
 	std::strftime(
@@ -22,23 +22,23 @@ std::string Logger::timestamp() {
  */
 void Logger::write(LogLevel level, const std::string& msg) {
 	switch(level) {
-		case LOG_INFO:
+		case LogLevel::LOG_INFO:
 			std::cout << "[INFO]  " << msg << std::endl;
 			logFile << "[INFO] ";
 			break;
-		case LOG_DEBUG:
+		case LogLevel::LOG_DEBUG:
 			std::clog << "[DEBUG] " << msg << std::endl;
 			logFile << "[DEBUG] ";
 			break;
-		case LOG_WARNING:
+		case LogLevel::LOG_WARNING:
 			std::cerr << "[WARNING]  " << msg << std::endl;
 			logFile << "[WARNING] ";
 			break;
-		case LOG_ERROR:
+		case LogLevel::LOG_ERROR:
 			std::cerr << "[ERROR] " << msg << std::endl;
 			logFile << "[ERROR] ";
 			break;
-		case LOG_CRITICAL:
+		case LogLevel::LOG_CRITICAL:
 			std::cerr << "[CRITICAL] " << msg << std::endl;
 			logFile << "[CRITICAL] ";
 			break;

@@ -1,10 +1,17 @@
 #include "Light.hpp"
 
-PointLight::PointLight(glm::vec3 pos, glm::vec3 clr, float its, float rad)
+PointLight::PointLight(const glm::vec3& pos,
+                       const glm::vec3& clr,
+                       float            its,
+                       float            rad)
   : position(pos), color(clr), intensity(its), radius(rad) {}
 
-SpotLight::SpotLight(
-  glm::vec3 pos, glm::vec3 dir, glm::vec3 clr, float its, float agl, float rad)
+SpotLight::SpotLight(const glm::vec3& pos,
+                     const glm::vec3& dir,
+                     const glm::vec3& clr,
+                     float            its,
+                     float            agl,
+                     float            rad)
   : position(pos)
   , direction(dir)
   , color(clr)
@@ -12,5 +19,7 @@ SpotLight::SpotLight(
   , angle(agl)
   , radius(rad) {}
 
-DirectionLight::DirectionLight(glm::vec3 dir, glm::vec3 clr, float its)
+DirectionLight::DirectionLight(const glm::vec3& dir,
+                               const glm::vec3& clr,
+                               float            its)
   : direction(dir), color(clr), intensity(its) {}

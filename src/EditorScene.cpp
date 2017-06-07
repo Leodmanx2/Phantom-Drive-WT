@@ -29,7 +29,7 @@ PREDICATE(pd_add_actor, 1) {
 	try {
 		EditorScene::activeScene->addActor(static_cast<const char*>(A1));
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		return false;
 	}
 	return true;
@@ -38,16 +38,17 @@ PREDICATE(pd_add_actor, 1) {
 PREDICATE0(pd_select) {
 	if(!EditorScene::activeScene)
 		throw std::logic_error("Active Scene not set on call to pd_select/0");
-	int selected = Renderer::pick(Renderer::width() / 2, Renderer::height() / 2);
+	const int selected =
+	  Renderer::pick(Renderer::width() / 2, Renderer::height() / 2);
 	std::cout << selected << "\n";
 	EditorScene::activeScene->setSelected(selected);
 	return true;
 }
 
 PREDICATE(pd_select, 3) {
-	int x = static_cast<int>(A1);
-	int y = static_cast<int>(A2);
-	A3    = Renderer::pick(x, y);
+	const int x = static_cast<int>(A1);
+	const int y = static_cast<int>(A2);
+	A3          = Renderer::pick(x, y);
 	return true;
 }
 
@@ -61,7 +62,7 @@ PREDICATE0(pd_deselect) {
 PREDICATE0(pd_remove_actor) {
 	if(!EditorScene::activeScene)
 		throw std::logic_error("Active Scene not set on call to pd_remove_actor/0");
-	int selected = EditorScene::activeScene->getSelectedID();
+	const int selected = EditorScene::activeScene->selectedID();
 	EditorScene::activeScene->removeActor(selected);
 	return true;
 }
@@ -69,10 +70,10 @@ PREDICATE0(pd_remove_actor) {
 PREDICATE(pd_move_by, 3) {
 	if(!EditorScene::activeScene)
 		throw std::logic_error("Active Scene not set on call to pd_move_by/3");
-	double longitude = static_cast<double>(A1);
-	double latitude  = static_cast<double>(A2);
-	double altitude  = static_cast<double>(A3);
-	auto   actor     = EditorScene::activeScene->getSelectedActor();
+	const double longitude = static_cast<double>(A1);
+	const double latitude  = static_cast<double>(A2);
+	const double altitude  = static_cast<double>(A3);
+	Actor*       actor     = EditorScene::activeScene->selectedActor();
 	if(!actor) return false;
 	actor->translate(longitude, latitude, altitude);
 	return true;
@@ -81,10 +82,10 @@ PREDICATE(pd_move_by, 3) {
 PREDICATE(pd_move_to, 3) {
 	if(!EditorScene::activeScene)
 		throw std::logic_error("Active Scene not set on call to pd_move_to/3");
-	double x     = static_cast<double>(A1);
-	double y     = static_cast<double>(A2);
-	double z     = static_cast<double>(A3);
-	auto   actor = EditorScene::activeScene->getSelectedActor();
+	const double x     = static_cast<double>(A1);
+	const double y     = static_cast<double>(A2);
+	const double z     = static_cast<double>(A3);
+	Actor*       actor = EditorScene::activeScene->selectedActor();
 	if(!actor) return false;
 	actor->setPosition(x, y, z);
 	return true;
@@ -93,10 +94,10 @@ PREDICATE(pd_move_to, 3) {
 PREDICATE(pd_rotate_by, 3) {
 	if(!EditorScene::activeScene)
 		throw std::logic_error("Active Scene not set on call to pd_rotate_by/3");
-	double roll  = static_cast<double>(A1);
-	double pitch = static_cast<double>(A2);
-	double yaw   = static_cast<double>(A3);
-	auto   actor = EditorScene::activeScene->getSelectedActor();
+	const double roll  = static_cast<double>(A1);
+	const double pitch = static_cast<double>(A2);
+	const double yaw   = static_cast<double>(A3);
+	Actor*       actor = EditorScene::activeScene->selectedActor();
 	if(!actor) return false;
 	actor->rotate(roll, pitch, yaw);
 	return true;
@@ -105,12 +106,12 @@ PREDICATE(pd_rotate_by, 3) {
 PREDICATE(pd_rotate_to, 3) {
 	if(!EditorScene::activeScene)
 		throw std::logic_error("Active Scene not set on call to pd_rotate_to/3");
-	double roll  = glm::radians(static_cast<double>(A1));
-	double pitch = glm::radians(static_cast<double>(A2));
-	double yaw   = glm::radians(static_cast<double>(A3));
-	auto   actor = EditorScene::activeScene->getSelectedActor();
+	const double roll  = glm::radians(static_cast<double>(A1));
+	const double pitch = glm::radians(static_cast<double>(A2));
+	const double yaw   = glm::radians(static_cast<double>(A3));
+	Actor*       actor = EditorScene::activeScene->selectedActor();
 	if(!actor) return false;
-	glm::quat quat = glm::quat(glm::vec3(pitch, yaw, roll));
+	const glm::quat quat = glm::quat(glm::vec3(pitch, yaw, roll));
 	actor->setOrientation(quat.w, quat.x, quat.y, quat.z);
 	return true;
 }
@@ -154,7 +155,7 @@ EditorScene::EditorScene(const std::string& sceneName)
 	try {
 		m_defaultShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 	}
 
 	m_ambience = 0.2f;
@@ -169,8 +170,8 @@ EditorScene::~EditorScene() {
 
 // The editor works with the initial moment of a scene.
 // We don't want these functions to do anything.
-void EditorScene::update(std::chrono::milliseconds) {}
-void EditorScene::simulate(std::chrono::milliseconds) {}
+void EditorScene::update(const std::chrono::milliseconds&) {}
+void EditorScene::simulate(const std::chrono::milliseconds&) {}
 
 // Similarly, we don't want the Actors processing any input.
 // Input processing is limited to editor and camera input.
@@ -198,7 +199,7 @@ void EditorScene::processInput(GLFWwindow& window) {
 //void EditorScene::draw() { Scene::draw(); }
 
 void EditorScene::draw() {
-	glm::mat4 projectionMatrix =
+	const glm::mat4 projectionMatrix =
 	  glm::perspective(45.0f,
 	                   static_cast<float>(Renderer::width()) /
 	                     static_cast<float>(Renderer::height()),
@@ -208,8 +209,8 @@ void EditorScene::draw() {
 		m_defaultShader->setAmbience(m_ambience);
 
 		// Send camera position to the GPU.
-		m_defaultShader->setViewMatrix(m_editorCamera.getViewMatrix());
-		m_defaultShader->setEyePosition(glm::vec3(m_editorCamera.getPosition()));
+		m_defaultShader->setViewMatrix(m_editorCamera.viewMatrix());
+		m_defaultShader->setEyePosition(glm::vec3(m_editorCamera.position()));
 
 		m_defaultShader->setProjectionMatrix(projectionMatrix);
 		m_defaultShader->setObjectID(actor->first);
@@ -221,24 +222,18 @@ void EditorScene::draw() {
 //  Editor Functionality
 // ---------------------------------------------------------------------------
 
-void EditorScene::addActor(const std::string& name) {
+void EditorScene::addActor(const std::string& actorName) {
 	try {
 		m_actors.emplace(
-		  std::make_pair(++m_highestID, std::make_unique<Actor>(name)));
+		  std::make_pair(++m_highestID, std::make_unique<Actor>(actorName)));
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		throw std::runtime_error("Failed to load Actor");
 	}
 }
 
-void EditorScene::removeActor(int id) { m_actors.erase(id); }
-
-void EditorScene::setSelected(int id) { m_selected = id; }
-
-int EditorScene::getSelectedID() { return m_selected; }
-
-Actor* EditorScene::getSelectedActor() {
-	auto it = m_actors.find(m_selected);
+Actor* EditorScene::selectedActor() {
+	const auto it = m_actors.find(m_selected);
 	if(it != m_actors.end()) return it->second.get();
 	return nullptr;
 }
@@ -258,12 +253,12 @@ void EditorScene::saveAs(const std::string& file) {
 		// Name
 		actorPSCN.name = actor.name();
 		// Position
-		glm::vec4 pos      = actor.position();
-		actorPSCN.position = {pos.x, pos.y, pos.z};
+		const glm::vec4 pos = actor.position();
+		actorPSCN.position  = {pos.x, pos.y, pos.z};
 		// Orientation
-		glm::quat ori         = actor.orientation();
-		glm::vec3 eulerAngles = glm::eulerAngles(ori);
-		actorPSCN.orientation = {eulerAngles.z, eulerAngles.x, eulerAngles.y};
+		const glm::quat ori         = actor.orientation();
+		const glm::vec3 eulerAngles = glm::eulerAngles(ori);
+		actorPSCN.orientation       = {eulerAngles.z, eulerAngles.x, eulerAngles.y};
 
 		contents.body.actors.push_back(actorPSCN);
 	}
@@ -272,12 +267,12 @@ void EditorScene::saveAs(const std::string& file) {
 	for(auto camera : m_cameras) {
 		PSCN::Camera cameraPSCN;
 		// Position
-		glm::vec4 pos       = camera.getPosition();
+		const glm::vec4 pos = camera.position();
 		cameraPSCN.position = {pos.x, pos.y, pos.z};
 		// Orientation
-		glm::quat ori          = camera.orientation();
-		glm::vec3 eulerAngles  = glm::eulerAngles(ori);
-		cameraPSCN.orientation = {eulerAngles.z, eulerAngles.x, eulerAngles.y};
+		const glm::quat ori         = camera.orientation();
+		const glm::vec3 eulerAngles = glm::eulerAngles(ori);
+		cameraPSCN.orientation      = {eulerAngles.z, eulerAngles.x, eulerAngles.y};
 
 		contents.body.cameras.push_back(cameraPSCN);
 	}

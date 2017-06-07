@@ -35,8 +35,8 @@ class Scene {
 	Scene& operator=(const Scene&) = delete;
 	virtual ~Scene();
 
-	virtual void update(std::chrono::milliseconds duration);
-	virtual void simulate(std::chrono::milliseconds duration);
+	virtual void update(const std::chrono::milliseconds& duration);
+	virtual void simulate(const std::chrono::milliseconds& duration);
 	virtual void draw();
 	virtual void processInput(GLFWwindow& window);
 };

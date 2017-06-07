@@ -95,26 +95,28 @@ class Shader final {
 
 	void bind();
 	void unbind();
-	bool isBound();
+	bool isBound() const;
 
-	void setModelMatrix(glm::mat4 matrix);
-	void setViewMatrix(glm::mat4 matrix);
-	void setProjectionMatrix(glm::mat4 matrix);
+	void setModelMatrix(const glm::mat4& matrix);
+	void setViewMatrix(const glm::mat4& matrix);
+	void setProjectionMatrix(const glm::mat4& matrix);
 
 	void updateNormalMatrix();
 
-	void setMatrices(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
+	void setMatrices(const glm::mat4& model,
+	                 const glm::mat4& view,
+	                 const glm::mat4& projection);
 
-	void setEyePosition(glm::vec3 position);
+	void setEyePosition(const glm::vec3& position);
 
 	void setDiffuseMap(gl::GLuint id);
 	void setSpecularMap(gl::GLuint id);
 
 	void setAmbience(float ambience);
 
-	void setPointLight(int index, PointLight& light);
-	void setSpotLight(int index, SpotLight& light);
-	void setDirectionLight(int index, DirectionLight& light);
+	void setPointLight(int index, const PointLight& light);
+	void setSpotLight(int index, const SpotLight& light);
+	void setDirectionLight(int index, const DirectionLight& light);
 
 	void setObjectID(int objectID);
 };

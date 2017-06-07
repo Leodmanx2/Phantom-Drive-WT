@@ -14,7 +14,7 @@ Actor::Actor(const std::string& actorName)
 			}
 			m_renderModel = s_modelDictionary.find(m_desc.renderModel)->second;
 		} catch(const std::exception& exception) {
-			g_logger.write(Logger::LOG_ERROR, exception.what());
+			g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 			throw std::runtime_error("Failed to load RenderModel");
 		}
 	}
@@ -28,8 +28,6 @@ Actor::~Actor() {
 		s_modelDictionary.erase(m_desc.renderModel);
 	}
 }
-
-const std::string& Actor::name() const { return m_desc.name; }
 
 /**
  * Called once per cycle. By default does nothing, but can be overriden to
@@ -49,7 +47,7 @@ const std::string& Actor::name() const { return m_desc.name; }
 void Actor::draw(Shader& shader) {
 	if(m_renderModel == nullptr) return;
 
-	glm::mat4 modelMatrix = m_spatialModel.matrix();
+	const glm::mat4 modelMatrix = m_spatialModel.matrix();
 	shader.setModelMatrix(modelMatrix);
 	shader.updateNormalMatrix();
 
@@ -61,6 +59,8 @@ void Actor::processInput(GLFWwindow& window) {
 	m_inputModel.update(window);
 	SpatialModel::activeModel = nullptr;
 }
+
+const std::string& Actor::name() const { return m_desc.name; }
 
 Actor::ActorDescription::ActorDescription(const std::string& actorName)
   : name(actorName) {

@@ -21,18 +21,19 @@ Application::~Application() {
 // ---------------------------------------------------------------------------
 
 void Application::initFilesystem(int, char** argv) {
-	g_logger.write(Logger::LOG_INFO, "Initializing virtual file system");
+	g_logger.write(Logger::LogLevel::LOG_INFO,
+	               "Initializing virtual file system");
 	if(PHYSFS_init(argv[0]) == 0) {
-		g_logger.write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
+		g_logger.write(Logger::LogLevel::LOG_CRITICAL, PHYSFS_getLastError());
 		throw std::runtime_error("Could not initialize virtual file system");
 	}
 
 	const std::string assetDir   = PHYSFS_getBaseDir() + std::string("ass");
 	const std::string logMessage = "Mounting asset location: " + assetDir;
-	g_logger.write(Logger::LOG_INFO, logMessage.c_str());
+	g_logger.write(Logger::LogLevel::LOG_INFO, logMessage.c_str());
 	if(PHYSFS_mount(assetDir.c_str(), "/", 1) == 0) {
 		PHYSFS_deinit();
-		g_logger.write(Logger::LOG_CRITICAL, PHYSFS_getLastError());
+		g_logger.write(Logger::LogLevel::LOG_CRITICAL, PHYSFS_getLastError());
 		throw std::runtime_error("Could not mount asset location");
 	}
 }

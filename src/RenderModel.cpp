@@ -5,14 +5,14 @@ RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 		m_diffuseMap  = loadTexture(MODEL_DIR + name + "/diffuse.dds");
 		m_specularMap = loadTexture(MODEL_DIR + name + "/specular.dds");
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load model textures");
 	}
 
 	try {
 		loadGeometry();
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load model geometry");
 	}
 }
@@ -21,21 +21,19 @@ void RenderModel::loadGeometry() {
 	// Prepare buffer data
 	VertexList         vertices;
 	IndexList          indices;
-	std::string        modelFilename = MODEL_DIR + name + "/model.mdl";
-	std::string        buffer        = readFile(modelFilename);
+	const std::string  modelFilename = MODEL_DIR + name + "/model.mdl";
+	const std::string  buffer        = readFile(modelFilename);
 	std::istringstream fileStream(buffer, std::istringstream::binary);
 	PMDL::File         fileData = PMDL::File::parse(fileStream);
 
 	// Load model vertices into local buffer
 	for(PMDL::Vertex fileVert : fileData.body.vertices) {
-		glm::vec3 pos(
-		  fileVert.position.x, fileVert.position.y, fileVert.position.z);
-		glm::vec3 norm(fileVert.normal.x, fileVert.normal.y, fileVert.normal.z);
-		glm::vec2 uv(fileVert.texCoord.u, fileVert.texCoord.v);
-		Vertex    vert;
-		vert.position = pos;
-		vert.normal   = norm;
-		vert.texCoord = uv;
+		Vertex vert;
+		vert.position =
+		  glm::vec3(fileVert.position.x, fileVert.position.y, fileVert.position.z);
+		vert.normal =
+		  glm::vec3(fileVert.normal.x, fileVert.normal.y, fileVert.normal.z);
+		vert.texCoord = glm::vec2(fileVert.texCoord.u, fileVert.texCoord.v);
 		vertices.push_back(vert);
 	}
 
@@ -49,7 +47,7 @@ void RenderModel::loadGeometry() {
 	try {
 		fillBuffers(vertices, indices);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		std::stringstream message;
 		message << "RenderModel3D (" << this
 		        << "): Could not commit data to OpenGL";

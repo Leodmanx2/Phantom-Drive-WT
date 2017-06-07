@@ -9,7 +9,7 @@ struct PointLight final {
 	float     intensity;
 	float     radius;
 
-	PointLight(glm::vec3 pos, glm::vec3 clr, float its, float rad);
+	PointLight(const glm::vec3& pos, const glm::vec3& clr, float its, float rad);
 };
 
 struct SpotLight final {
@@ -20,12 +20,12 @@ struct SpotLight final {
 	float     angle;
 	float     radius;
 
-	SpotLight(glm::vec3 pos,
-	          glm::vec3 dir,
-	          glm::vec3 clr,
-	          float     its,
-	          float     agl,
-	          float     rad);
+	SpotLight(const glm::vec3& pos,
+	          const glm::vec3& dir,
+	          const glm::vec3& clr,
+	          float            its,
+	          float            agl,
+	          float            rad);
 };
 
 struct DirectionLight final {
@@ -33,7 +33,7 @@ struct DirectionLight final {
 	glm::vec3 color;
 	float     intensity;
 
-	DirectionLight(glm::vec3 dir, glm::vec3 clr, float its);
+	DirectionLight(const glm::vec3& dir, const glm::vec3& clr, float its);
 };
 
 #endif

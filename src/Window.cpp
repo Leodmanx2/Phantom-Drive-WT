@@ -32,11 +32,11 @@ void Window::initGL() {
 	glbinding::setCallbackMaskExcept(glbinding::CallbackMask::After,
 	                                 {"glGetError"});
 	glbinding::setAfterCallback([](const glbinding::FunctionCall& call) {
-		const auto error = gl::glGetError();
+		const gl::GLenum error = gl::glGetError();
 		if(error != gl::GL_NO_ERROR) {
 			std::stringstream ss("OpenGL Error: ");
 			ss << std::hex << error << " after function: " << call.function->name();
-			g_logger.write(Logger::LOG_DEBUG, ss.str());
+			g_logger.write(Logger::LogLevel::LOG_DEBUG, ss.str());
 		}
 	});
 #endif
@@ -44,7 +44,7 @@ void Window::initGL() {
 	// Log loaded OpenGl version
 	std::stringstream version;
 	version << "OpenGl context version: " << gl::glGetString(gl::GL_VERSION);
-	g_logger.write(Logger::LOG_INFO, version.str());
+	g_logger.write(Logger::LogLevel::LOG_INFO, version.str());
 
 	// Enable back-face culling, z-buffering, and anti-aliasing
 	gl::glEnable(gl::GL_CULL_FACE);

@@ -6,15 +6,15 @@ Scene::Scene(const std::string& name) {
 
 Scene::~Scene() {}
 
-void Scene::simulate(std::chrono::milliseconds duration) {}
+void Scene::simulate(const std::chrono::milliseconds& duration) {}
 
-void Scene::update(std::chrono::milliseconds duration) {}
+void Scene::update(const std::chrono::milliseconds& duration) {}
 
 void Scene::draw() {
 	// It takes a little extra computation to do this every frame instead of in
 	// the renderer, but it allows for configuration of things such as the FOV
 	// as part of the scene or camera.
-	glm::mat4 projectionMatrix =
+	const glm::mat4 projectionMatrix =
 	  glm::perspective(45.0f,
 	                   static_cast<float>(Renderer::width()) /
 	                     static_cast<float>(Renderer::height()),
@@ -35,8 +35,8 @@ void Scene::draw() {
 
 			// Send camera position to the GPU.
 			for(auto camera : m_cameras) {
-				shader->setViewMatrix(camera.getViewMatrix());
-				shader->setEyePosition(glm::vec3(camera.getPosition()));
+				shader->setViewMatrix(camera.viewMatrix());
+				shader->setEyePosition(glm::vec3(camera.position()));
 			}
 
 			shader->setProjectionMatrix(projectionMatrix);

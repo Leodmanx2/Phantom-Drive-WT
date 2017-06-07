@@ -5,7 +5,7 @@ Renderer* Renderer::s_instance = nullptr;
 // There can only be one instance of Renderer at a time to keep exposure of
 // tools like pick() to scripting functions simple. If you have a suggestion
 // to improve on this situation, I'm all ears.
-Renderer::Renderer(std::shared_ptr<Window> window) : m_window(window) {
+Renderer::Renderer(const std::shared_ptr<Window>& window) : m_window(window) {
 	if(s_instance != nullptr)
 		throw std::logic_error("Attempted to create second instance of class "
 		                       "Renderer. Only one is allowed at a time.");
@@ -34,7 +34,7 @@ void Renderer::init() {
 	                 gl::GL_DEPTH24_STENCIL8,
 	                 gl::GL_DEPTH_STENCIL_ATTACHMENT);
 
-	gl::GLenum stat = gl::glCheckFramebufferStatus(gl::GL_FRAMEBUFFER);
+	const gl::GLenum stat = gl::glCheckFramebufferStatus(gl::GL_FRAMEBUFFER);
 	if(stat != gl::GL_FRAMEBUFFER_COMPLETE) {
 		clean();
 		throw std::runtime_error("Could not build framebuffer");
@@ -86,13 +86,13 @@ void Renderer::clear() {
 	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, m_frameBuffer);
 	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
 	            gl::GL_STENCIL_BUFFER_BIT);
-	int color = 0;
+	const int color = 0;
 	gl::glClearBufferiv(gl::GL_COLOR, 1, &color);
 }
 
 void Renderer::startNormalPass() {
-	gl::GLenum drawBuffers[2] = {gl::GL_COLOR_ATTACHMENT0,
-	                             gl::GL_COLOR_ATTACHMENT1};
+	const gl::GLenum drawBuffers[2] = {gl::GL_COLOR_ATTACHMENT0,
+	                                   gl::GL_COLOR_ATTACHMENT1};
 	gl::glDrawBuffers(2, drawBuffers);
 }
 

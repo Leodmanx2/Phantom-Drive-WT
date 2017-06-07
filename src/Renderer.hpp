@@ -30,7 +30,7 @@ class Renderer final {
 	void resize();
 
 	public:
-	explicit Renderer(std::shared_ptr<Window> window);
+	explicit Renderer(const std::shared_ptr<Window>& window);
 	Renderer(const Renderer&) = delete;
 	~Renderer();
 

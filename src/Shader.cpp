@@ -14,7 +14,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		            "Shaders/" + pixelShaderFilename,
 		            "Shaders/" + geometryShaderFilename);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 
 		std::stringstream message;
 		message << "Could not load shader (" << this << ")";
@@ -24,7 +24,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 
 	bind();
 
-	gl::GLint positionAttrib = gl::glGetAttribLocation(m_id, "position");
+	const gl::GLint positionAttrib = gl::glGetAttribLocation(m_id, "position");
 	if(positionAttrib != 0) {
 		std::stringstream message;
 		message << "Shader position attribute not at 0. Position obtained: "
@@ -32,7 +32,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		throw std::logic_error(message.str());
 	}
 
-	gl::GLint normalAttrib = gl::glGetAttribLocation(m_id, "normal");
+	const gl::GLint normalAttrib = gl::glGetAttribLocation(m_id, "normal");
 	if(normalAttrib != 1) {
 		std::stringstream message;
 		message << "Shader normal attribute not at 1. Position obtained: "
@@ -40,7 +40,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		throw std::logic_error(message.str());
 	}
 
-	gl::GLint texCoordAttrib = gl::glGetAttribLocation(m_id, "texCoord");
+	const gl::GLint texCoordAttrib = gl::glGetAttribLocation(m_id, "texCoord");
 	if(texCoordAttrib != 2) {
 		std::stringstream message;
 		message << "Shader texCoord attribute not at 2. Position obtained: "
@@ -159,14 +159,14 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 	try {
 		vertexShader = compileShader(vertexShaderFilename, gl::GL_VERTEX_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load vertex shader");
 	}
 
 	try {
 		pixelShader = compileShader(pixelShaderFilename, gl::GL_FRAGMENT_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not load pixel shader");
 	}
 
@@ -175,7 +175,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 			geometryShader =
 			  compileShader(geometryShaderFilename, gl::GL_GEOMETRY_SHADER);
 		} catch(const std::exception& exception) {
-			g_logger.write(Logger::LOG_ERROR, exception.what());
+			g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 			throw std::runtime_error("Could not load geometry shader");
 		}
 	}
@@ -186,7 +186,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 		else
 			m_id = linkShaders(vertexShader, pixelShader);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LOG_ERROR, exception.what());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		throw std::runtime_error("Could not link shader program");
 	}
 
@@ -205,12 +205,12 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
  * @return OpenGL id referencing the compiled shader object
  */
 gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
-	std::string buffer = readFile(filename);
+	const std::string buffer = readFile(filename);
 
-	gl::GLuint id = glCreateShader(type);
+	const gl::GLuint id = glCreateShader(type);
 
 	const char* bufferList[]       = {buffer.data()};
-	int         bufferLengthList[] = {static_cast<int>(buffer.size())};
+	const int   bufferLengthList[] = {static_cast<int>(buffer.size())};
 	gl::glShaderSource(id, 1, bufferList, bufferLengthList);
 	gl::glCompileShader(id);
 
@@ -244,7 +244,7 @@ gl::GLuint Shader::compileShader(const std::string& filename, gl::GLenum type) {
 gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
                                gl::GLuint pixelShader,
                                gl::GLuint geometryShader) {
-	gl::GLuint id = gl::glCreateProgram();
+	const gl::GLuint id = gl::glCreateProgram();
 
 	gl::glAttachShader(id, vertexShader);
 	gl::glAttachShader(id, pixelShader);
@@ -255,7 +255,7 @@ gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
 	gl::GLint isLinked;
 	gl::glGetProgramiv(id, gl::GL_LINK_STATUS, &isLinked);
 	if(static_cast<gl::GLboolean>(isLinked) == gl::GL_FALSE) {
-		gl::GLint maxLength = 0;
+		gl::GLint maxLength;
 		gl::glGetProgramiv(id, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<gl::GLchar> infoLog(maxLength);
 		gl::glGetProgramInfoLog(id, maxLength, &maxLength, infoLog.data());
@@ -287,7 +287,7 @@ gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
  */
 gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
                                gl::GLuint pixelShader) {
-	gl::GLuint id = gl::glCreateProgram();
+	const gl::GLuint id = gl::glCreateProgram();
 
 	gl::glAttachShader(id, vertexShader);
 	gl::glAttachShader(id, pixelShader);
@@ -297,7 +297,7 @@ gl::GLuint Shader::linkShaders(gl::GLuint vertexShader,
 	gl::GLint isLinked;
 	gl::glGetProgramiv(id, gl::GL_LINK_STATUS, &isLinked);
 	if(static_cast<gl::GLboolean>(isLinked) == gl::GL_FALSE) {
-		gl::GLint maxLength = 0;
+		gl::GLint maxLength;
 		gl::glGetProgramiv(id, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<gl::GLchar> infoLog(maxLength);
 		gl::glGetProgramInfoLog(id, maxLength, &maxLength, infoLog.data());
@@ -324,41 +324,42 @@ void Shader::unbind() {
 	if(m_active) gl::glUseProgram(0);
 }
 
-bool Shader::isBound() { return m_active; }
+bool Shader::isBound() const { return m_active; }
 
-void Shader::setModelMatrix(glm::mat4 matrix) {
+void Shader::setModelMatrix(const glm::mat4& matrix) {
 	m_modelMatrix = matrix;
 	gl::glUniformMatrix4fv(
 	  m_modelUniform, 1, gl::GL_FALSE, glm::value_ptr(matrix));
 }
 
-void Shader::setViewMatrix(glm::mat4 matrix) {
+void Shader::setViewMatrix(const glm::mat4& matrix) {
 	m_viewMatrix = matrix;
 	gl::glUniformMatrix4fv(
 	  m_viewUniform, 1, gl::GL_FALSE, glm::value_ptr(matrix));
 }
 
-void Shader::setProjectionMatrix(glm::mat4 matrix) {
+void Shader::setProjectionMatrix(const glm::mat4& matrix) {
 	gl::glUniformMatrix4fv(
 	  m_projectionUniform, 1, gl::GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Shader::updateNormalMatrix() {
-	glm::mat4 normalMatrix = glm::inverseTranspose(m_modelMatrix * m_viewMatrix);
+	const glm::mat4 normalMatrix =
+	  glm::inverseTranspose(m_modelMatrix * m_viewMatrix);
 	gl::glUniformMatrix4fv(
 	  m_normalUniform, 1, gl::GL_FALSE, glm::value_ptr(normalMatrix));
 }
 
-void Shader::setMatrices(glm::mat4 model,
-                         glm::mat4 view,
-                         glm::mat4 projection) {
+void Shader::setMatrices(const glm::mat4& model,
+                         const glm::mat4& view,
+                         const glm::mat4& projection) {
 	setModelMatrix(model);
 	setViewMatrix(view);
 	setProjectionMatrix(projection);
 	updateNormalMatrix();
 }
 
-void Shader::setEyePosition(glm::vec3 position) {
+void Shader::setEyePosition(const glm::vec3& position) {
 	gl::glUniform3fv(m_eyePositionUniform, 1, glm::value_ptr(position));
 }
 
@@ -378,7 +379,8 @@ void Shader::setAmbience(float ambience) {
 	gl::glUniform1f(m_ambienceUniform, ambience);
 }
 
-void Shader::setPointLight(int index, PointLight& light) {
+void Shader::setPointLight(int index, const PointLight& light) {
+	// TODO: 8 is a magic number. Define it as a constant.
 	assert(index >= 0 && index <= 8);
 	gl::glUniform3fv(
 	  m_pointLightUniforms[index].position, 1, glm::value_ptr(light.position));
@@ -388,7 +390,8 @@ void Shader::setPointLight(int index, PointLight& light) {
 	gl::glUniform1f(m_pointLightUniforms[index].radius, light.radius);
 }
 
-void Shader::setSpotLight(int index, SpotLight& light) {
+void Shader::setSpotLight(int index, const SpotLight& light) {
+	// TODO: 8 is a magic number. Define it as a constant.
 	assert(index >= 0 && index <= 8);
 	gl::glUniform3fv(
 	  m_spotLightUniforms[index].position, 1, glm::value_ptr(light.position));
@@ -401,7 +404,8 @@ void Shader::setSpotLight(int index, SpotLight& light) {
 	gl::glUniform1f(m_spotLightUniforms[index].angle, light.angle);
 }
 
-void Shader::setDirectionLight(int index, DirectionLight& light) {
+void Shader::setDirectionLight(int index, const DirectionLight& light) {
+	// TODO: 2 is a magic number. Define it as a constant.
 	assert(index >= 0 && index <= 2);
 	gl::glUniform3fv(
 	  m_directionLightUniforms[index].color, 1, glm::value_ptr(light.color));

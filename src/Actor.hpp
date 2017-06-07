@@ -53,24 +53,27 @@ class Actor final {
 	void draw(Shader& shader);
 
 	// Forwarding functions
-	inline void translate(float longitude, float latitude, float altitude) {
+	constexpr void translate(float longitude, float latitude, float altitude) {
 		m_spatialModel.translate(longitude, latitude, altitude);
 	}
 
-	inline void rotate(float roll, float pitch, float yaw) {
+	constexpr void rotate(float roll, float pitch, float yaw) {
 		m_spatialModel.rotate(roll, pitch, yaw);
 	}
 
-	inline void setOrientation(float deg, float x, float y, float z) {
+	constexpr void setOrientation(float deg, float x, float y, float z) {
 		m_spatialModel.setOrientation(deg, x, y, z);
 	}
 
-	inline void setPosition(float x, float y, float z) {
+	constexpr void setPosition(float x, float y, float z) {
 		m_spatialModel.setPosition(x, y, z);
 	}
 
-	inline const glm::vec4 position() const { return m_spatialModel.position(); }
-	inline const glm::quat orientation() const {
+	constexpr const glm::vec4& position() const {
+		return m_spatialModel.position();
+	}
+
+	constexpr const glm::quat& orientation() const {
 		return m_spatialModel.orientation();
 	}
 };

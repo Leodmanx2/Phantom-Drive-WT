@@ -2,8 +2,8 @@
 
 // pd_consult takes a filename as argument, opens that file, and consults it.
 PREDICATE(pd_consult, 1) {
-	std::string fileContents = readFile(static_cast<char*>(A1));
-	PlTerm      Stream;
+	const std::string fileContents = readFile(static_cast<char*>(A1));
+	PlTerm            Stream;
 
 	PlCall("open_string", PlTermv(fileContents.c_str(), Stream));
 
@@ -35,15 +35,15 @@ std::string readFile(const std::string& filename) {
 	if(fileSizeLong > std::numeric_limits<int>::max())
 		throw std::runtime_error(std::string("File too large: ") + filename);
 
-	int fileSize = static_cast<int>(fileSizeLong);
+	const int fileSize = static_cast<int>(fileSizeLong);
 
 	std::string buffer;
 	buffer.resize(fileSize);
-	int bytesRead =
+	const int bytesRead =
 	  PHYSFS_read(shaderFile, const_cast<char*>(buffer.data()), 1, fileSize);
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
-		g_logger.write(Logger::LOG_ERROR, PHYSFS_getLastError());
+		g_logger.write(Logger::LogLevel::LOG_ERROR, PHYSFS_getLastError());
 		throw std::runtime_error(std::string("Could not read all of file: ") +
 		                         filename);
 	}
