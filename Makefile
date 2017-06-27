@@ -32,7 +32,7 @@ BINDIR = $(CURDIR)/bin
 
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o Window.o Actor.o \
 RenderModel.o Camera.o Logger.o Scene.o EditorScene.o Renderer.o \
-Shader.o Light.o SpatialModel.o InputModel.o utility.o)
+Shader.o Light.o SpatialModel.o InputModel.o utility.o input.o)
 
 CXXFLAGS_WARNINGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
                     -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 \

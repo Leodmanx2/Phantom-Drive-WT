@@ -47,9 +47,32 @@ void Scene::draw() {
 	}
 }
 
-void Scene::processInput(GLFWwindow& window) {
-	for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
-		it->second->processInput(window);
+void Scene::process(std::queue<KeyEvent>& keyEvents) {
+	while(!keyEvents.empty()) {
+		for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
+			it->second->process(keyEvents.front());
+		}
+		for(auto camera : m_cameras) { camera.process(keyEvents.front()); }
+		keyEvents.pop();
 	}
-	for(auto camera : m_cameras) { camera.processInput(window); }
+}
+
+void Scene::process(std::queue<MouseButtonEvent>& buttonEvents) {
+	while(!buttonEvents.empty()) {
+		for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
+			it->second->process(buttonEvents.front());
+		}
+		for(auto camera : m_cameras) { camera.process(buttonEvents.front()); }
+		buttonEvents.pop();
+	}
+}
+
+void Scene::process(std::queue<MouseMovementEvent>& movementEvents) {
+	while(!movementEvents.empty()) {
+		for(auto it = m_actors.begin(); it != m_actors.end(); ++it) {
+			it->second->process(movementEvents.front());
+		}
+		for(auto camera : m_cameras) { camera.process(movementEvents.front()); }
+		movementEvents.pop();
+	}
 }

@@ -4,24 +4,36 @@
 % Standard Input
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-:- multifile schema_key_binding/3.
-:- multifile schema_handleMouse/5.
+:- multifile key_bind/4.
+:- multifile schema_handleMouse/3.
 
 % TODO: Handle movement commands including null case
 
-schema_key_binding('SceneEdit', 71, "pd_select.").  % G
+key_bind('SceneEdit', 71, 1, 0) :- pd_select.  % G Pressed
 
-schema_key_binding('SceneEdit', 263, "pd_move_by(0,-1,0).").  % Left Arrow
-schema_key_binding('SceneEdit', 265, "pd_move_by(0,0,1).").  % Up Arrow
-schema_key_binding('SceneEdit', 262, "pd_move_by(0,1,0).").  % Right Arrow
-schema_key_binding('SceneEdit', 264, "pd_move_by(0,0,-1).").  % Down Arrow
+key_bind('SceneEdit', 263, 1, 0) :- pd_move_by(0,-1,0).  % Left Arrow Pressed
+key_bind('SceneEdit', 265, 1, 0) :- pd_move_by(0,0,1).  % Up Arrow Pressed
+key_bind('SceneEdit', 262, 1, 0) :- pd_move_by(0,1,0).  % Right Arrow Pressed
+key_bind('SceneEdit', 264, 1, 0) :- pd_move_by(0,0,-1).  % Down Arrow Pressed
 
-schema_key_binding('SceneEdit', 93, "pd_rotate_by(1,0,0).").  % ]
-schema_key_binding('SceneEdit', 39, "pd_rotate_by(0,1,0).").  % '
-schema_key_binding('SceneEdit', 47, "pd_rotate_by(0,0,1).").  % /
-schema_key_binding('SceneEdit', 91, "pd_rotate_by(-1,0,0).").  % [
-schema_key_binding('SceneEdit', 59, "pd_rotate_by(0,-1,0).").  % ;
-schema_key_binding('SceneEdit', 46, "pd_rotate_by(0,0,-1).").  % .
+key_bind('SceneEdit', 93, 1, 0) :- pd_rotate_by(1,0,0).  % ] Pressed
+key_bind('SceneEdit', 39, 1, 0) :- pd_rotate_by(0,1,0).  % ' Pressed
+key_bind('SceneEdit', 47, 1, 0) :- pd_rotate_by(0,0,1).  % / Pressed
+key_bind('SceneEdit', 91, 1, 0) :- pd_rotate_by(-1,0,0).  % [ Pressed
+key_bind('SceneEdit', 59, 1, 0) :- pd_rotate_by(0,-1,0).  % ; Pressed
+key_bind('SceneEdit', 46, 1, 0) :- pd_rotate_by(0,0,-1).  % . Pressed
+
+key_bind('SceneEdit', 263, 2, 0) :- pd_move_by(0,-1,0).  % Left Arrow Held
+key_bind('SceneEdit', 265, 2, 0) :- pd_move_by(0,0,1).  % Up Arrow Held
+key_bind('SceneEdit', 262, 2, 0) :- pd_move_by(0,1,0).  % Right Arrow Held
+key_bind('SceneEdit', 264, 2, 0) :- pd_move_by(0,0,-1).  % Down Arrow Held
+
+key_bind('SceneEdit', 93, 2, 0) :- pd_rotate_by(1,0,0).  % ] Held
+key_bind('SceneEdit', 39, 2, 0) :- pd_rotate_by(0,1,0).  % ' Held
+key_bind('SceneEdit', 47, 2, 0) :- pd_rotate_by(0,0,1).  % / Held
+key_bind('SceneEdit', 91, 2, 0) :- pd_rotate_by(-1,0,0).  % [ Held
+key_bind('SceneEdit', 59, 2, 0) :- pd_rotate_by(0,-1,0).  % ; Held
+key_bind('SceneEdit', 46, 2, 0) :- pd_rotate_by(0,0,-1).  % . Held
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Console Input

@@ -18,23 +18,6 @@ void InputModel::update(GLFWwindow& window) {
 	// TODO: Handle multiple keys in a binding
 	activeModel = this;
 	try {
-		// Get keys bound to schema
-		// Binding fills the role of the anonymous variable _, since
-		// the API doesn't offer any special functionality for it.
-		PlTerm     Key, Bag, Binding;
-		PlCompound skb("schema_key_binding", {m_schema.c_str(), Key, Binding});
-		PlCall("findall", {Key, skb, Bag});
-
-		// Check all the keys and call their bindings if pressed
-		PlTail tail(Bag);
-		while(tail.next(Key)) {
-			if(glfwGetKey(&window, Key) == GLFW_PRESS) {
-				PlTerm Callback;
-				PlCall("schema_key_binding", {m_schema.c_str(), Key, Callback});
-				PlCall(static_cast<char*>(Callback));
-			}
-		}
-
 		// Process mouse movement
 		glfwGetCursorPos(&window, &m_newMousePos.x, &m_newMousePos.y);
 		if(m_firstMousePoll) {
@@ -52,5 +35,45 @@ void InputModel::update(GLFWwindow& window) {
 		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
 	}
 
+	activeModel = nullptr;
+}
+
+void InputModel::process(const KeyEvent& event) {
+	// TODO: Handle multiple keys in a binding
+	activeModel = this;
+	try {
+		PlCall("key_bind",
+		       {m_schema.c_str(),
+		        static_cast<long>(event.key),
+		        static_cast<long>(event.action),
+		        static_cast<long>(event.modifiers)});
+	} catch(const PlException& exception) {
+		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+	}
+	activeModel = nullptr;
+}
+
+void InputModel::process(const MouseButtonEvent& event) {
+	// TODO: Handle multiple keys in a binding
+	activeModel = this;
+	try {
+		PlCall("key_bind",
+		       {m_schema.c_str(),
+		        static_cast<long>(event.button),
+		        static_cast<long>(event.action),
+		        static_cast<long>(event.modifiers)});
+	} catch(const PlException& exception) {
+		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+	}
+	activeModel = nullptr;
+}
+
+void InputModel::process(const MouseMovementEvent& event) {
+	activeModel = this;
+	try {
+		PlCall("schema_handleMouse", {m_schema.c_str(), event.dx, event.dy});
+	} catch(const PlException& exception) {
+		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+	}
 	activeModel = nullptr;
 }

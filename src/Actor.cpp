@@ -54,9 +54,21 @@ void Actor::draw(Shader& shader) {
 	m_renderModel->draw(shader);
 }
 
-void Actor::processInput(GLFWwindow& window) {
+void Actor::process(const KeyEvent& event) {
 	SpatialModel::activeModel = &m_spatialModel;
-	m_inputModel.update(window);
+	m_inputModel.process(event);
+	SpatialModel::activeModel = nullptr;
+}
+
+void Actor::process(const MouseButtonEvent& event) {
+	SpatialModel::activeModel = &m_spatialModel;
+	m_inputModel.process(event);
+	SpatialModel::activeModel = nullptr;
+}
+
+void Actor::process(const MouseMovementEvent& event) {
+	SpatialModel::activeModel = &m_spatialModel;
+	m_inputModel.process(event);
 	SpatialModel::activeModel = nullptr;
 }
 

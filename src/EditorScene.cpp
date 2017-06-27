@@ -168,16 +168,7 @@ EditorScene::~EditorScene() {
 	delete m_defaultShader;
 }
 
-// The editor works with the initial moment of a scene.
-// We don't want these functions to do anything.
-void EditorScene::update(const std::chrono::milliseconds&) {}
-void EditorScene::simulate(const std::chrono::milliseconds&) {}
-
-// Similarly, we don't want the Actors processing any input.
-// Input processing is limited to editor and camera input.
-void EditorScene::processInput(GLFWwindow& window) {
-	m_editorCamera.processInput(window);
-
+void EditorScene::update(const std::chrono::milliseconds&) {
 	// Process command queue
 	EditorScene::activeScene = this;
 	std::lock_guard<std::mutex> lock(m_mutex);
@@ -189,9 +180,42 @@ void EditorScene::processInput(GLFWwindow& window) {
 		          << "\n";
 		m_commands.pop();
 	}
+	EditorScene::activeScene = nullptr;
+}
 
-	m_inputModel.update(window);
+// The editor works with the initial moment of a scene.
+// We don't want to do anything.
+void EditorScene::simulate(const std::chrono::milliseconds&) {}
 
+// Similarly, we don't want the Actors processing any input.
+// Input processing is limited to editor and camera input.
+void EditorScene::process(std::queue<KeyEvent>& keyEvents) {
+	EditorScene::activeScene = this;
+	while(!keyEvents.empty()) {
+		m_editorCamera.process(keyEvents.front());
+		m_inputModel.process(keyEvents.front());
+		keyEvents.pop();
+	}
+	EditorScene::activeScene = nullptr;
+}
+
+void EditorScene::process(std::queue<MouseButtonEvent>& buttonEvents) {
+	EditorScene::activeScene = this;
+	while(!buttonEvents.empty()) {
+		m_editorCamera.process(buttonEvents.front());
+		m_inputModel.process(buttonEvents.front());
+		buttonEvents.pop();
+	}
+	EditorScene::activeScene = nullptr;
+}
+
+void EditorScene::process(std::queue<MouseMovementEvent>& movementEvents) {
+	EditorScene::activeScene = this;
+	while(!movementEvents.empty()) {
+		m_editorCamera.process(movementEvents.front());
+		m_inputModel.process(movementEvents.front());
+		movementEvents.pop();
+	}
 	EditorScene::activeScene = nullptr;
 }
 

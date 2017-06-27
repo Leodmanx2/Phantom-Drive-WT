@@ -13,7 +13,6 @@ Window::Window() {
 		throw std::runtime_error("Window or OpenGL context could not be created");
 	}
 	glfwMakeContextCurrent(m_window);
-	glfwSetInputMode(m_window, GLFW_STICKY_KEYS, 1);
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	initGL();

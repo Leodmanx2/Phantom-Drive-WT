@@ -4,6 +4,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Logger.hpp"
+#include "input.hpp"
 #include "utility.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
@@ -12,6 +13,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <map>
+#include <mutex>
 #include <sstream>
 #include <vector>
 
@@ -30,6 +32,9 @@ class InputModel {
 	static InputModel* activeModel;
 
 	void update(GLFWwindow& window);
+	void process(const KeyEvent& event);
+	void process(const MouseButtonEvent& event);
+	void process(const MouseMovementEvent& event);
 };
 
 #endif

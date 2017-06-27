@@ -4,9 +4,11 @@
 #include "InputModel.hpp"
 #include "Logger.hpp"
 #include "SpatialModel.hpp"
+#include "input.hpp"
 #include <SWI-cpp.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <queue>
 #include <sstream>
 
 class Camera {
@@ -26,7 +28,9 @@ class Camera {
 		return m_spatialModel.orientation();
 	}
 
-	void processInput(GLFWwindow& window);
+	void process(const KeyEvent& event);
+	void process(const MouseButtonEvent& event);
+	void process(const MouseMovementEvent& event);
 };
 
 #endif

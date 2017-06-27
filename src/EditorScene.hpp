@@ -33,7 +33,9 @@ class EditorScene final : public Scene {
 	void update(const std::chrono::milliseconds& duration) override;
 	void simulate(const std::chrono::milliseconds& duration) override;
 	void draw() override;
-	void processInput(GLFWwindow& window) override;
+	void process(std::queue<KeyEvent>& keyEvents) override;
+	void process(std::queue<MouseButtonEvent>& buttonEvents) override;
+	void process(std::queue<MouseMovementEvent>& movementEvents) override;
 
 	void addActor(const std::string& actorName);
 	constexpr void removeActor(int id) { m_actors.erase(id); }

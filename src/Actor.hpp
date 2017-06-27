@@ -6,6 +6,7 @@
 #include "RenderModel.hpp"
 #include "Shader.hpp"
 #include "SpatialModel.hpp"
+#include "input.hpp"
 #include <glbinding/gl/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -49,7 +50,9 @@ class Actor final {
 
 	const std::string& name() const;
 
-	void processInput(GLFWwindow& window);
+	void process(const KeyEvent& event);
+	void process(const MouseButtonEvent& event);
+	void process(const MouseMovementEvent& event);
 	void draw(Shader& shader);
 
 	// Forwarding functions

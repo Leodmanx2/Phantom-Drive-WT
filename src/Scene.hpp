@@ -8,6 +8,7 @@
 #include "Light.hpp"
 #include "Renderer.hpp"
 #include "Shader.hpp"
+#include "input.hpp"
 #include <GLFW/glfw3.h>
 #include <array>
 #include <chrono>
@@ -38,7 +39,9 @@ class Scene {
 	virtual void update(const std::chrono::milliseconds& duration);
 	virtual void simulate(const std::chrono::milliseconds& duration);
 	virtual void draw();
-	virtual void processInput(GLFWwindow& window);
+	virtual void process(std::queue<KeyEvent>& keyEvents);
+	virtual void process(std::queue<MouseButtonEvent>& buttonEvents);
+	virtual void process(std::queue<MouseMovementEvent>& movementEvents);
 };
 
 #endif

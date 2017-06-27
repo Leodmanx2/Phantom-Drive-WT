@@ -17,10 +17,26 @@ const glm::mat4 Camera::viewMatrix() const {
 	return viewMatrix;
 }
 
-void Camera::processInput(GLFWwindow& window) {
+void Camera::process(const KeyEvent& event) {
 	SpatialModel::activeModel = &m_spatialModel;
 	InputModel::activeModel   = &m_inputModel;
-	m_inputModel.update(window);
+	m_inputModel.process(event);
+	SpatialModel::activeModel = nullptr;
+	InputModel::activeModel   = nullptr;
+}
+
+void Camera::process(const MouseButtonEvent& event) {
+	SpatialModel::activeModel = &m_spatialModel;
+	InputModel::activeModel   = &m_inputModel;
+	m_inputModel.process(event);
+	SpatialModel::activeModel = nullptr;
+	InputModel::activeModel   = nullptr;
+}
+
+void Camera::process(const MouseMovementEvent& event) {
+	SpatialModel::activeModel = &m_spatialModel;
+	InputModel::activeModel   = &m_inputModel;
+	m_inputModel.process(event);
 	SpatialModel::activeModel = nullptr;
 	InputModel::activeModel   = nullptr;
 }
