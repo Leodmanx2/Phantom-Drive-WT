@@ -45,6 +45,7 @@ imminent goals. It is not a complete development roadmap.
 
 *   (Re-)Integrate physics engine
 *   Behaviour/AI scripting framework
+*   Audio framework
 *   glbinding -> globjects (or maybe even Vulkan-Hpp)
 *   Rendering shadows
 *   Sorting for transparency or OIT
