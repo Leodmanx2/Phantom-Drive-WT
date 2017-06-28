@@ -5,6 +5,7 @@
 #include "Scene.hpp"
 #include <PSCN.hpp>
 #include <SWI-cpp.h>
+#include <cstdlib>
 #include <fstream>
 #include <mutex>
 #include <queue>

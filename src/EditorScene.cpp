@@ -14,14 +14,7 @@ PREDICATE0(pd_save) {
 	return true;
 }
 
-PREDICATE(pd_saveas, 1) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_saveas/1");
-	EditorScene::activeScene->saveAs(static_cast<const char*>(A1));
-	return true;
-}
-
-PREDICATE0(pd_exit) { return false; }
+PREDICATE0(pd_exit) { std::exit(EXIT_SUCCESS); }
 
 PREDICATE(pd_add_actor, 1) {
 	if(!EditorScene::activeScene)
@@ -123,8 +116,6 @@ PREDICATE(pd_select_light, 1) { return false; }
 PREDICATE0(pd_remove_light) { return false; }
 
 PREDICATE0(pd_edit_light) { return false; }
-
-PREDICATE0(pd_load_assets) { return false; }
 
 // ---------------------------------------------------------------------------
 //  Scene Overrides
