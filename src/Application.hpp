@@ -27,8 +27,9 @@ class Application final {
 	Renderer                m_renderer;
 
 	struct KeyHash {
+		// Hash function appends 4-bit modifier to 8-bit ASCII key code
+		// Requires the pair to be ordered as (key, modifiers)
 		std::size_t operator()(const std::pair<int, int>& key) const {
-			// Requires the pair to be ordered as (key, modifiers)
 			return key.first << 4 | key.second;
 		}
 	};
