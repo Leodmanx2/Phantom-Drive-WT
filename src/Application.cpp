@@ -61,15 +61,21 @@ void Application::initFilesystem(int, char** argv) {
 void Application::key_callback(
   GLFWwindow*, int key, int, int action, int modifiers) {
 	// System repeat events are not useful for our purposes. They do not occur
-	// every frame and may not occur if other keys are pressed. Scenes must
-	// simulate their own repeat events.
+	// every frame and may not occur if other keys are pressed. We simulate our
+	// own repeat events on each frame instead.
 	if(action == GLFW_REPEAT) return;
 
-	if(action == GLFW_PRESS) { s_keysPressed.emplace(key, modifiers); };
+	// The placement of this expression ensures no REPEAT event occurs after a
+	// RELEASED event in the queue
 	if(action == GLFW_RELEASE) { s_keysPressed.erase({key, modifiers}); };
 
+	// Add the event to the queue
 	std::lock_guard<std::mutex> lock(s_keyQueueMutex);
 	s_keyQueue.emplace<KeyEvent>({key, action, modifiers});
+
+	// The placement of this expression ensures all REPEAT events occur after
+	// PRESSED events in the queue
+	if(action == GLFW_PRESS) { s_keysPressed.emplace(key, modifiers); };
 }
 
 void Application::mouse_button_callback(GLFWwindow*,
@@ -101,8 +107,9 @@ void Application::processInput() {
 
 	{
 		std::lock_guard<std::mutex> lock(s_keyQueueMutex);
-		// Generate a REPEAT event for all keys that have been pressed but have not
-		// been released
+		// Make a REPEAT event for all keys that have been pressed but not released
+		// REASONING: Input bindings are only defined at runtime, so we cannot use
+		//            glfwGetKey() without polling every key each frame.
 		for(auto key : s_keysPressed) {
 			s_keyQueue.emplace<KeyEvent>({key.first, GLFW_REPEAT, key.second});
 		}

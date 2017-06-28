@@ -11,18 +11,6 @@
 
 key_bind('SceneEdit', 71, 1, 0) :- pd_select.  % G Pressed
 
-key_bind('SceneEdit', 263, 1, 0) :- pd_move_by(0,-1,0).  % Left Arrow Pressed
-key_bind('SceneEdit', 265, 1, 0) :- pd_move_by(0,0,1).  % Up Arrow Pressed
-key_bind('SceneEdit', 262, 1, 0) :- pd_move_by(0,1,0).  % Right Arrow Pressed
-key_bind('SceneEdit', 264, 1, 0) :- pd_move_by(0,0,-1).  % Down Arrow Pressed
-
-key_bind('SceneEdit', 93, 1, 0) :- pd_rotate_by(1,0,0).  % ] Pressed
-key_bind('SceneEdit', 39, 1, 0) :- pd_rotate_by(0,1,0).  % ' Pressed
-key_bind('SceneEdit', 47, 1, 0) :- pd_rotate_by(0,0,1).  % / Pressed
-key_bind('SceneEdit', 91, 1, 0) :- pd_rotate_by(-1,0,0).  % [ Pressed
-key_bind('SceneEdit', 59, 1, 0) :- pd_rotate_by(0,-1,0).  % ; Pressed
-key_bind('SceneEdit', 46, 1, 0) :- pd_rotate_by(0,0,-1).  % . Pressed
-
 key_bind('SceneEdit', 263, 2, 0) :- pd_move_by(0,-1,0).  % Left Arrow Held
 key_bind('SceneEdit', 265, 2, 0) :- pd_move_by(0,0,1).  % Up Arrow Held
 key_bind('SceneEdit', 262, 2, 0) :- pd_move_by(0,1,0).  % Right Arrow Held
