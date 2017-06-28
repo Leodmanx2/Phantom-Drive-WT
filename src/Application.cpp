@@ -1,6 +1,6 @@
 #include "Application.hpp"
 
-std::unordered_set<std::pair<int, int>, boost::hash<std::pair<int, int>>>
+std::unordered_set<std::pair<int, int>, Application::KeyHash>
   Application::s_keysPressed;
 
 std::mutex           Application::s_keyQueueMutex;

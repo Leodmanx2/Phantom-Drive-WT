@@ -13,7 +13,6 @@
 #include "input.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
-#include <boost/functional/hash.hpp> // TODO: Do not pull in Boost!
 #include <functional>
 #include <iostream>
 #include <physfs.h>
@@ -27,10 +26,14 @@ class Application final {
 	std::shared_ptr<Window> m_window;
 	Renderer                m_renderer;
 
+	struct KeyHash {
+		std::size_t operator()(const std::pair<int, int>& key) const {
+			// Requires the pair to be ordered as (key, modifiers)
+			return key.first << 4 | key.second;
+		}
+	};
 	static std::mutex s_keyQueueMutex;
-	static std::unordered_set<std::pair<int, int>,
-	                          boost::hash<std::pair<int, int>>>
-	                            s_keysPressed;
+	static std::unordered_set<std::pair<int, int>, KeyHash> s_keysPressed;
 	static std::queue<KeyEvent> s_keyQueue;
 
 	static std::mutex                   s_buttonQueueMutex;

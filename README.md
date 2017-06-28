@@ -24,7 +24,6 @@ Dependencies
 *   [SWI-Prolog](http://www.swi-prolog.org/)
 *   Phantom Drive (WT) Format Libraries
     *   [PMDL](https://bitbucket.org/leodmanx2/pmdl)
-*   [Boost/Functional/Hash (Temporarily)](http://www.boost.org/doc/libs/1_64_0/doc/html/hash.html)
 
 Hardware Requirements
 ---------------------
