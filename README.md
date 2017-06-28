@@ -40,7 +40,6 @@ imminent goals. It is not a complete development roadmap.
 ### Current
 
 *   Scene editing tool, scene description files
-*   Input handling
 
 ### To-Do
 
