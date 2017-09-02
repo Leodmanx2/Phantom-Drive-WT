@@ -168,9 +168,9 @@ gl::GLuint RenderModel::loadTexture(const std::string& filename) {
 	                   texture.dimensions().y);
 
 	// Write image data to GPU memory
-	for(unsigned int layer = 0; layer < texture.layers(); ++layer) {
-		for(unsigned int face = 0; face < texture.faces(); ++face) {
-			for(unsigned int level = 0; level < texture.levels(); ++level) {
+	for(std::size_t layer = 0; layer < texture.layers(); ++layer) {
+		for(std::size_t face = 0; face < texture.faces(); ++face) {
+			for(std::size_t level = 0; level < texture.levels(); ++level) {
 				if(gli::is_compressed(texture.format())) {
 					glCompressedTexSubImage2D(target,
 					                          level,

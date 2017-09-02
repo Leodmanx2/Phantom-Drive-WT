@@ -13,6 +13,7 @@
 #include "input.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
+#include <cstddef>
 #include <functional>
 #include <iostream>
 #include <physfs.h>

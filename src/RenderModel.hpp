@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include "Shader.hpp"
 #include "utility.hpp"
+#include <cstddef>
 #include <fstream>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
@@ -25,7 +26,7 @@ class RenderModel final {
 	RenderModel& operator=(const RenderModel&) = delete;
 
 	private:
-	size_t m_elementCount;
+	std::size_t m_elementCount;
 
 	struct Vertex {
 		glm::vec3 position;

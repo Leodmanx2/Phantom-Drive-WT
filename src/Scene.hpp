@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>
 #include <array>
 #include <chrono>
+#include <cstddef>
 #include <vector>
 
 class Scene {

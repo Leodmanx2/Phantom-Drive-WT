@@ -23,13 +23,13 @@ void Scene::draw() {
 	for(auto actor = m_actors.begin(); actor != m_actors.end(); ++actor) {
 		for(auto shader = m_shaders.begin(); shader != m_shaders.end(); ++shader) {
 			shader->setAmbience(m_ambience);
-			for(size_t i = 0; i < m_pointLights.size(); ++i) {
+			for(std::size_t i = 0; i < m_pointLights.size(); ++i) {
 				shader->setPointLight(i, *m_pointLights.at(i));
 			}
-			for(size_t i = 0; i < m_spotLights.size(); ++i) {
+			for(std::size_t i = 0; i < m_spotLights.size(); ++i) {
 				shader->setSpotLight(i, *m_spotLights.at(i));
 			}
-			for(size_t i = 0; i < m_directionLights.size(); ++i) {
+			for(std::size_t i = 0; i < m_directionLights.size(); ++i) {
 				shader->setDirectionLight(i, *m_directionLights.at(i));
 			}
 

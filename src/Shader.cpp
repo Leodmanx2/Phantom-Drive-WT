@@ -59,7 +59,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 	m_eyePositionUniform = gl::glGetUniformLocation(m_id, "eyePos");
 	m_objectIDUniform    = gl::glGetUniformLocation(m_id, "ID");
 
-	for(size_t i = 0; i < m_pointLightUniforms.size(); ++i) {
+	for(std::size_t i = 0; i < m_pointLightUniforms.size(); ++i) {
 		PointLightUniform& light = m_pointLightUniforms.at(i);
 
 		std::stringstream positionStream;
@@ -84,7 +84,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		light.radius    = gl::glGetUniformLocation(m_id, radius.c_str());
 	}
 
-	for(size_t i = 0; i < m_spotLightUniforms.size(); ++i) {
+	for(std::size_t i = 0; i < m_spotLightUniforms.size(); ++i) {
 		SpotLightUniform& light = m_spotLightUniforms.at(i);
 
 		std::stringstream positionStream;
@@ -119,7 +119,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		light.radius    = gl::glGetUniformLocation(m_id, radius.c_str());
 	}
 
-	for(size_t i = 0; i < m_directionLightUniforms.size(); ++i) {
+	for(std::size_t i = 0; i < m_directionLightUniforms.size(); ++i) {
 		DirectionLightUniform& light = m_directionLightUniforms.at(i);
 
 		std::stringstream directionStream;

@@ -6,6 +6,7 @@
 #include "utility.hpp"
 #include <array>
 #include <cassert>
+#include <cstddef>
 #include <glbinding/gl/gl.h>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
