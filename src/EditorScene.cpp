@@ -1,112 +1,6 @@
 #include "EditorScene.hpp"
 
 // ---------------------------------------------------------------------------
-//  Prolog Interface to Scene Editing Commands
-// ---------------------------------------------------------------------------
-// TODO: Rewrite as editor member functions
-
-PREDICATE(pd_save, 1) {
-	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	scene.saveAs(scene.name);
-	return true;
-}
-
-PREDICATE(pd_exit, 1) { std::exit(EXIT_SUCCESS); }
-
-PREDICATE(pd_add_actor, 2) {
-	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	try {
-		scene.addActor(static_cast<const char*>(A2));
-	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
-		return false;
-	}
-	return true;
-}
-
-PREDICATE(pd_select, 1) {
-	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	const int    selected =
-	  Renderer::pick(Renderer::width() / 2, Renderer::height() / 2);
-	std::cout << selected << "\n";
-	scene.setSelected(selected);
-	return true;
-}
-
-PREDICATE(pd_select, 3) {
-	const int x = static_cast<int>(A1);
-	const int y = static_cast<int>(A2);
-	A3          = Renderer::pick(x, y);
-	return true;
-}
-
-PREDICATE(pd_deselect, 1) {
-	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	scene.setSelected(0);
-	return true;
-}
-
-PREDICATE(pd_remove_actor, 1) {
-	EditorScene& scene    = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	const int    selected = scene.selectedID();
-	scene.removeActor(selected);
-	return true;
-}
-
-PREDICATE(pd_move_by, 4) {
-	EditorScene& scene     = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	const double longitude = static_cast<double>(A2);
-	const double latitude  = static_cast<double>(A3);
-	const double altitude  = static_cast<double>(A4);
-	Actor*       actor     = scene.selectedActor();
-	if(!actor) return false;
-	actor->translate(longitude, latitude, altitude);
-	return true;
-}
-
-PREDICATE(pd_move_to, 4) {
-	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	const double x     = static_cast<double>(A2);
-	const double y     = static_cast<double>(A3);
-	const double z     = static_cast<double>(A4);
-	Actor*       actor = scene.selectedActor();
-	if(!actor) return false;
-	actor->setPosition(x, y, z);
-	return true;
-}
-
-PREDICATE(pd_rotate_by, 4) {
-	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	const double roll  = static_cast<double>(A2);
-	const double pitch = static_cast<double>(A3);
-	const double yaw   = static_cast<double>(A4);
-	Actor*       actor = scene.selectedActor();
-	if(!actor) return false;
-	actor->rotate(roll, pitch, yaw);
-	return true;
-}
-
-PREDICATE(pd_rotate_to, 4) {
-	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
-	const double roll  = glm::radians(static_cast<double>(A2));
-	const double pitch = glm::radians(static_cast<double>(A3));
-	const double yaw   = glm::radians(static_cast<double>(A4));
-	Actor*       actor = scene.selectedActor();
-	if(!actor) return false;
-	const glm::quat quat = glm::quat(glm::vec3(pitch, yaw, roll));
-	actor->setOrientation(quat.w, quat.x, quat.y, quat.z);
-	return true;
-}
-
-PREDICATE(pd_add_light, 1) { return false; }
-
-PREDICATE(pd_select_light, 2) { return false; }
-
-PREDICATE(pd_remove_light, 1) { return false; }
-
-PREDICATE(pd_edit_light, 1) { return false; }
-
-// ---------------------------------------------------------------------------
 //  Scene Overrides
 // ---------------------------------------------------------------------------
 
@@ -125,7 +19,6 @@ EditorScene::EditorScene(const std::string& sceneName)
 	PlCall("consult", {"SceneEdit.pro"});
 
 	m_ambience = 0.2f;
-	addActor("Akari");
 }
 
 EditorScene::~EditorScene() { delete m_defaultShader; }
@@ -140,7 +33,7 @@ void EditorScene::simulate(const std::chrono::milliseconds&) {}
 void EditorScene::process(std::queue<KeyEvent>& keyEvents) {
 	while(!keyEvents.empty()) {
 		m_editorCamera.process(keyEvents.front());
-		// TODO: Handle events for the scene on the C++ side
+
 		if(keyEvents.front().key == GLFW_KEY_GRAVE_ACCENT &&
 		   keyEvents.front().action == GLFW_PRESS) {
 			std::cout << "Enter command:\n";
@@ -148,9 +41,89 @@ void EditorScene::process(std::queue<KeyEvent>& keyEvents) {
 			std::getline(std::cin, command);
 			PlTerm Codes;
 			PlCall("atom_codes", {command.c_str(), Codes});
+
+			PlTerm     T1, T2, T3;
+			PlCompound pd_add_actor("pd_add_actor", {T1});
+			PlCompound pd_move_by("pd_move_by", {T1, T2, T3});
+			PlCompound pd_move_to("pd_move_to", {T1, T2, T3});
+			PlCompound pd_rotate_by("pd_rotate_by", {T1, T2, T3});
+			PlCompound pd_rotate_to("pd_rotate_to", {T1, T2, T3});
+			PlCompound pd_select_light("pd_select_light", {T1});
+
 			if(PlCall("phrase", {"pd_save", Codes})) {
-				std::cout << "Save command!\n";
-			} // TODO: check other commands
+				saveAs(name);
+				std::cout << "success\n";
+			} else if(PlCall("phrase", {"pd_exit", Codes})) {
+				std::exit(EXIT_SUCCESS);
+			} else if(PlCall("phrase", {pd_add_actor, Codes})) {
+				try {
+					addActor(static_cast<const char*>(T1));
+					std::cout << "success\n";
+				} catch(const std::exception& exception) {
+					std::cout << "failure: " << exception.what();
+				}
+			} else if(PlCall("phrase", {"pd_select", Codes})) {
+				const int selected =
+				  Renderer::pick(Renderer::width() / 2, Renderer::height() / 2);
+				std::cout << selected << "\n";
+				setSelected(selected);
+				std::cout << "success\n";
+			} else if(PlCall("phrase", {"pd_deselect", Codes})) {
+				setSelected(0);
+				std::cout << "success\n";
+			} else if(PlCall("phrase", {"pd_remove_actor", Codes})) {
+				const int selected = selectedID();
+				removeActor(selected);
+				std::cout << "success\n";
+			} else if(PlCall("phrase", {pd_move_by, Codes})) {
+				if(selectedActor()) {
+					selectedActor()->translate(static_cast<double>(T1),
+					                           static_cast<double>(T2),
+					                           static_cast<double>(T3));
+					std::cout << "success\n";
+				} else
+					std::cout << "failure: no actor selected\n";
+			} else if(PlCall("phrase", {pd_move_to, Codes})) {
+				if(selectedActor()) {
+					selectedActor()->setPosition(static_cast<double>(T1),
+					                             static_cast<double>(T2),
+					                             static_cast<double>(T3));
+					std::cout << "success\n";
+				} else
+					std::cout << "failure: no actor selected\n";
+			} else if(PlCall("phrase", {pd_rotate_by, Codes})) {
+				if(selectedActor()) {
+					selectedActor()->rotate(static_cast<double>(T1),
+					                        static_cast<double>(T2),
+					                        static_cast<double>(T3));
+					std::cout << "success\n";
+				} else
+					std::cout << "failure: no actor selected\n";
+			} else if(PlCall("phrase", {pd_rotate_to, Codes})) {
+				if(selectedActor()) {
+					const double    roll  = glm::radians(static_cast<double>(T1));
+					const double    pitch = glm::radians(static_cast<double>(T2));
+					const double    yaw   = glm::radians(static_cast<double>(T3));
+					const glm::quat quat  = glm::quat(glm::vec3(pitch, yaw, roll));
+					selectedActor()->setOrientation(quat.w, quat.x, quat.y, quat.z);
+					std::cout << "success\n";
+				} else
+					std::cout << "failure: no actor selected\n";
+			} else if(PlCall("phrase", {"pd_add_light", Codes})) {
+				// TODO: add light command
+				std::cout << "failure: not implemented\n";
+			} else if(PlCall("phrase", {pd_select_light, Codes})) {
+				// TODO: select light command
+				std::cout << "failure: not implemented\n";
+			} else if(PlCall("phrase", {"pd_remove_light", Codes})) {
+				// TODO: remove light command
+				std::cout << "failure: not implemented\n";
+			} else if(PlCall("phrase", {"pd_edit_light", Codes})) {
+				// TODO: edit light command
+				std::cout << "failure: not implemented\n";
+			} else {
+				std::cout << "failure: unrecognized command\n";
+			}
 		}
 		keyEvents.pop();
 	}
