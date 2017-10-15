@@ -1,5 +1,29 @@
 #include "Actor.hpp"
 
+PREDICATE(pd_translate_actor, 4) {
+	try {
+		Actor& actor = *static_cast<Actor*>(static_cast<void*>(A1));
+		actor.translate(static_cast<double>(A2),
+		                static_cast<double>(A3),
+		                static_cast<double>(A4));
+	} catch(const PlException& exception) {
+		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+	}
+	return true;
+}
+
+PREDICATE(pd_rotate_actor, 4) {
+	try {
+		Actor& actor = *static_cast<Actor*>(static_cast<void*>(A1));
+		actor.rotate(static_cast<double>(A2),
+		             static_cast<double>(A3),
+		             static_cast<double>(A4));
+	} catch(const PlException& exception) {
+		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+	}
+	return true;
+}
+
 std::map<std::string, std::shared_ptr<RenderModel>> Actor::s_modelDictionary;
 
 Actor::Actor(const std::string& actorName)
@@ -55,21 +79,15 @@ void Actor::draw(Shader& shader) {
 }
 
 void Actor::process(const KeyEvent& event) {
-	SpatialModel::activeModel = &m_spatialModel;
-	m_inputModel.process(event);
-	SpatialModel::activeModel = nullptr;
+	m_inputModel.process(m_spatialModel, event);
 }
 
 void Actor::process(const MouseButtonEvent& event) {
-	SpatialModel::activeModel = &m_spatialModel;
-	m_inputModel.process(event);
-	SpatialModel::activeModel = nullptr;
+	m_inputModel.process(m_spatialModel, event);
 }
 
 void Actor::process(const MouseMovementEvent& event) {
-	SpatialModel::activeModel = &m_spatialModel;
-	m_inputModel.process(event);
-	SpatialModel::activeModel = nullptr;
+	m_inputModel.process(m_spatialModel, event);
 }
 
 const std::string& Actor::name() const { return m_desc.name; }

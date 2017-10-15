@@ -1,29 +1,23 @@
 #include "SpatialModel.hpp"
 
-SpatialModel* SpatialModel::activeModel = nullptr;
-
-PREDICATE(pd_translate, 3) {
-	if(!SpatialModel::activeModel)
-		throw std::logic_error(
-		  "Active SpatialModel not set on call to pd_translate/3");
+PREDICATE(pd_translate, 4) {
 	try {
-		SpatialModel::activeModel->translate(static_cast<double>(A1),
-		                                     static_cast<double>(A2),
-		                                     static_cast<double>(A3));
+		SpatialModel& model = *static_cast<SpatialModel*>(static_cast<void*>(A1));
+		model.translate(static_cast<double>(A2),
+		                static_cast<double>(A3),
+		                static_cast<double>(A4));
 	} catch(const PlException& exception) {
 		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
 	}
 	return true;
 }
 
-PREDICATE(pd_rotate, 3) {
-	if(!SpatialModel::activeModel)
-		throw std::logic_error(
-		  "Active SpatialModel not set on call to pd_rotate/3");
+PREDICATE(pd_rotate, 4) {
 	try {
-		SpatialModel::activeModel->rotate(static_cast<double>(A1),
-		                                  static_cast<double>(A2),
-		                                  static_cast<double>(A3));
+		SpatialModel& model = *static_cast<SpatialModel*>(static_cast<void*>(A1));
+		model.rotate(static_cast<double>(A2),
+		             static_cast<double>(A3),
+		             static_cast<double>(A4));
 	} catch(const PlException& exception) {
 		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
 	}

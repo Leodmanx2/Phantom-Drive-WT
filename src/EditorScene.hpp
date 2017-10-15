@@ -13,21 +13,16 @@
 
 class EditorScene final : public Scene {
 	private:
-	InputModel m_inputModel;
-	Camera     m_editorCamera;
-	Shader*    m_defaultShader;
+	Camera  m_editorCamera;
+	Shader* m_defaultShader;
 
 	std::queue<std::string> m_commands;
 	std::mutex              m_mutex;
 
 	int m_selected;
 
-	bool        m_runConsole;
-	std::thread m_consoleThread;
-
 	public:
-	const std::string   name;
-	static EditorScene* activeScene;
+	const std::string name;
 	explicit EditorScene(const std::string& name);
 	~EditorScene();
 
@@ -38,12 +33,12 @@ class EditorScene final : public Scene {
 	void process(std::queue<MouseButtonEvent>& buttonEvents) override;
 	void process(std::queue<MouseMovementEvent>& movementEvents) override;
 
-	void addActor(const std::string& actorName);
+	void           addActor(const std::string& actorName);
 	constexpr void removeActor(int id) { m_actors.erase(id); }
 	constexpr void setSelected(int id) { m_selected = id; }
-	void saveAs(const std::string& file);
-	constexpr int selectedID() { return m_selected; }
-	Actor*        selectedActor();
+	void           saveAs(const std::string& file);
+	constexpr int  selectedID() { return m_selected; }
+	Actor*         selectedActor();
 };
 
 #endif

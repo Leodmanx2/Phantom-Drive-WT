@@ -4,6 +4,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Logger.hpp"
+#include "SpatialModel.hpp"
 #include "input.hpp"
 #include "utility.hpp"
 #include <GLFW/glfw3.h>
@@ -21,20 +22,15 @@ class InputModel {
 	const std::string SCHEMA_DIR = "Controls/";
 
 	private:
-	glm::dvec2  m_oldMousePos;
-	glm::dvec2  m_newMousePos;
-	bool        m_firstMousePoll;
 	std::string m_schema;
 
 	public:
 	explicit InputModel(const std::string& schemaName);
 
-	static InputModel* activeModel;
-
 	void update(GLFWwindow& window);
-	void process(const KeyEvent& event);
-	void process(const MouseButtonEvent& event);
-	void process(const MouseMovementEvent& event);
+	void process(SpatialModel& spatial, const KeyEvent& event);
+	void process(SpatialModel& spatial, const MouseButtonEvent& event);
+	void process(SpatialModel& spatial, const MouseMovementEvent& event);
 };
 
 #endif

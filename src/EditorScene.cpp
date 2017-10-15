@@ -1,26 +1,22 @@
 #include "EditorScene.hpp"
 
-EditorScene* EditorScene::activeScene = nullptr;
-
 // ---------------------------------------------------------------------------
 //  Prolog Interface to Scene Editing Commands
 // ---------------------------------------------------------------------------
-// TODO: Rename to indicate editor-specificity
+// TODO: Rewrite as editor member functions
 
-PREDICATE0(pd_save) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_save/1");
-	EditorScene::activeScene->saveAs(EditorScene::activeScene->name);
+PREDICATE(pd_save, 1) {
+	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	scene.saveAs(scene.name);
 	return true;
 }
 
-PREDICATE0(pd_exit) { std::exit(EXIT_SUCCESS); }
+PREDICATE(pd_exit, 1) { std::exit(EXIT_SUCCESS); }
 
-PREDICATE(pd_add_actor, 1) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_add_actor/1");
+PREDICATE(pd_add_actor, 2) {
+	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
 	try {
-		EditorScene::activeScene->addActor(static_cast<const char*>(A1));
+		scene.addActor(static_cast<const char*>(A2));
 	} catch(const std::exception& exception) {
 		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 		return false;
@@ -28,13 +24,12 @@ PREDICATE(pd_add_actor, 1) {
 	return true;
 }
 
-PREDICATE0(pd_select) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_select/0");
-	const int selected =
+PREDICATE(pd_select, 1) {
+	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	const int    selected =
 	  Renderer::pick(Renderer::width() / 2, Renderer::height() / 2);
 	std::cout << selected << "\n";
-	EditorScene::activeScene->setSelected(selected);
+	scene.setSelected(selected);
 	return true;
 }
 
@@ -45,100 +40,78 @@ PREDICATE(pd_select, 3) {
 	return true;
 }
 
-PREDICATE0(pd_deselect) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_deselect/0");
-	EditorScene::activeScene->setSelected(0);
+PREDICATE(pd_deselect, 1) {
+	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	scene.setSelected(0);
 	return true;
 }
 
-PREDICATE0(pd_remove_actor) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_remove_actor/0");
-	const int selected = EditorScene::activeScene->selectedID();
-	EditorScene::activeScene->removeActor(selected);
+PREDICATE(pd_remove_actor, 1) {
+	EditorScene& scene    = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	const int    selected = scene.selectedID();
+	scene.removeActor(selected);
 	return true;
 }
 
-PREDICATE(pd_move_by, 3) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_move_by/3");
-	const double longitude = static_cast<double>(A1);
-	const double latitude  = static_cast<double>(A2);
-	const double altitude  = static_cast<double>(A3);
-	Actor*       actor     = EditorScene::activeScene->selectedActor();
+PREDICATE(pd_move_by, 4) {
+	EditorScene& scene     = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	const double longitude = static_cast<double>(A2);
+	const double latitude  = static_cast<double>(A3);
+	const double altitude  = static_cast<double>(A4);
+	Actor*       actor     = scene.selectedActor();
 	if(!actor) return false;
 	actor->translate(longitude, latitude, altitude);
 	return true;
 }
 
-PREDICATE(pd_move_to, 3) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_move_to/3");
-	const double x     = static_cast<double>(A1);
-	const double y     = static_cast<double>(A2);
-	const double z     = static_cast<double>(A3);
-	Actor*       actor = EditorScene::activeScene->selectedActor();
+PREDICATE(pd_move_to, 4) {
+	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	const double x     = static_cast<double>(A2);
+	const double y     = static_cast<double>(A3);
+	const double z     = static_cast<double>(A4);
+	Actor*       actor = scene.selectedActor();
 	if(!actor) return false;
 	actor->setPosition(x, y, z);
 	return true;
 }
 
-PREDICATE(pd_rotate_by, 3) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_rotate_by/3");
-	const double roll  = static_cast<double>(A1);
-	const double pitch = static_cast<double>(A2);
-	const double yaw   = static_cast<double>(A3);
-	Actor*       actor = EditorScene::activeScene->selectedActor();
+PREDICATE(pd_rotate_by, 4) {
+	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	const double roll  = static_cast<double>(A2);
+	const double pitch = static_cast<double>(A3);
+	const double yaw   = static_cast<double>(A4);
+	Actor*       actor = scene.selectedActor();
 	if(!actor) return false;
 	actor->rotate(roll, pitch, yaw);
 	return true;
 }
 
-PREDICATE(pd_rotate_to, 3) {
-	if(!EditorScene::activeScene)
-		throw std::logic_error("Active Scene not set on call to pd_rotate_to/3");
-	const double roll  = glm::radians(static_cast<double>(A1));
-	const double pitch = glm::radians(static_cast<double>(A2));
-	const double yaw   = glm::radians(static_cast<double>(A3));
-	Actor*       actor = EditorScene::activeScene->selectedActor();
+PREDICATE(pd_rotate_to, 4) {
+	EditorScene& scene = *static_cast<EditorScene*>(static_cast<void*>(A1));
+	const double roll  = glm::radians(static_cast<double>(A2));
+	const double pitch = glm::radians(static_cast<double>(A3));
+	const double yaw   = glm::radians(static_cast<double>(A4));
+	Actor*       actor = scene.selectedActor();
 	if(!actor) return false;
 	const glm::quat quat = glm::quat(glm::vec3(pitch, yaw, roll));
 	actor->setOrientation(quat.w, quat.x, quat.y, quat.z);
 	return true;
 }
 
-PREDICATE0(pd_add_light) { return false; }
+PREDICATE(pd_add_light, 1) { return false; }
 
-PREDICATE(pd_select_light, 1) { return false; }
+PREDICATE(pd_select_light, 2) { return false; }
 
-PREDICATE0(pd_remove_light) { return false; }
+PREDICATE(pd_remove_light, 1) { return false; }
 
-PREDICATE0(pd_edit_light) { return false; }
+PREDICATE(pd_edit_light, 1) { return false; }
 
 // ---------------------------------------------------------------------------
 //  Scene Overrides
 // ---------------------------------------------------------------------------
 
 EditorScene::EditorScene(const std::string& sceneName)
-  : Scene(name)
-  , m_inputModel("SceneEdit")
-  , m_mutex()
-  , m_selected(0)
-  , m_runConsole(true)
-  , m_consoleThread([&]() {
-	  while(m_runConsole) {
-		  std::string command;
-		  std::getline(std::cin, command);
-		  if(command.at(command.size() - 1) == '\r')
-			  command.resize(command.size() - 1);
-		  m_mutex.lock();
-		  m_commands.emplace(command);
-		  m_mutex.unlock();
-	  }
-	})
-  , name(sceneName) {
+  : Scene(name), m_mutex(), m_selected(0), name(sceneName) {
 	// TODO: Editor mode scene loading
 	// The scene will load normally first.
 	// If the scene file can't be found, we create a new one.
@@ -149,69 +122,55 @@ EditorScene::EditorScene(const std::string& sceneName)
 		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
 	}
 
+	PlCall("consult", {"SceneEdit.pro"});
+
 	m_ambience = 0.2f;
+	addActor("Akari");
 }
 
-EditorScene::~EditorScene() {
-	m_runConsole = false;
-	std::cout << "Press ENTER to quit.\n";
-	m_consoleThread.join();
-	delete m_defaultShader;
-}
-
-void EditorScene::update(const std::chrono::milliseconds&) {
-	// Process command queue
-	EditorScene::activeScene = this;
-	std::lock_guard<std::mutex> lock(m_mutex);
-	while(!m_commands.empty()) {
-		std::string command = m_commands.front();
-		std::cout << (PlCall("do_command", {{command.c_str()}}) ?
-		                "Command Succeeded" :
-		                "Command Failed")
-		          << "\n";
-		m_commands.pop();
-	}
-	EditorScene::activeScene = nullptr;
-}
+EditorScene::~EditorScene() { delete m_defaultShader; }
 
 // The editor works with the initial moment of a scene.
 // We don't want to do anything.
+void EditorScene::update(const std::chrono::milliseconds&) {}
 void EditorScene::simulate(const std::chrono::milliseconds&) {}
 
 // Similarly, we don't want the Actors processing any input.
 // Input processing is limited to editor and camera input.
 void EditorScene::process(std::queue<KeyEvent>& keyEvents) {
-	EditorScene::activeScene = this;
 	while(!keyEvents.empty()) {
 		m_editorCamera.process(keyEvents.front());
-		m_inputModel.process(keyEvents.front());
+		// TODO: Handle events for the scene on the C++ side
+		if(keyEvents.front().key == GLFW_KEY_GRAVE_ACCENT &&
+		   keyEvents.front().action == GLFW_PRESS) {
+			std::cout << "Enter command:\n";
+			std::string command;
+			std::getline(std::cin, command);
+			PlTerm Codes;
+			PlCall("atom_codes", {command.c_str(), Codes});
+			if(PlCall("phrase", {"pd_save", Codes})) {
+				std::cout << "Save command!\n";
+			} // TODO: check other commands
+		}
 		keyEvents.pop();
 	}
-	EditorScene::activeScene = nullptr;
 }
 
 void EditorScene::process(std::queue<MouseButtonEvent>& buttonEvents) {
-	EditorScene::activeScene = this;
 	while(!buttonEvents.empty()) {
 		m_editorCamera.process(buttonEvents.front());
-		m_inputModel.process(buttonEvents.front());
+		// TODO: Handle events for the scene on the C++ side
 		buttonEvents.pop();
 	}
-	EditorScene::activeScene = nullptr;
 }
 
 void EditorScene::process(std::queue<MouseMovementEvent>& movementEvents) {
-	EditorScene::activeScene = this;
 	while(!movementEvents.empty()) {
 		m_editorCamera.process(movementEvents.front());
-		m_inputModel.process(movementEvents.front());
+		// TODO: Handle events for the scene on the C++ side
 		movementEvents.pop();
 	}
-	EditorScene::activeScene = nullptr;
 }
-
-// The scene should draw as per usual, though.
-//void EditorScene::draw() { Scene::draw(); }
 
 void EditorScene::draw() {
 	const glm::mat4 projectionMatrix =
