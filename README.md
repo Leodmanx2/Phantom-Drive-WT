@@ -24,6 +24,7 @@ Dependencies
 *   [SWI-Prolog](http://www.swi-prolog.org/)
 *   Phantom Drive (WT) Format Libraries
     *   [PMDL](https://bitbucket.org/leodmanx2/pmdl)
+    *   [PSCN](https://bitbucket.org/leodmanx2/pscn)
 
 Hardware Requirements
 ---------------------
