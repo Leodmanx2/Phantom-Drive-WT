@@ -1,9 +1,11 @@
 #include "Actor.hpp"
 
-#include "Logger.hpp"
 #include "RenderModel.hpp"
 #include "Shader.hpp"
 #include "utility.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 PREDICATE(pd_translate_actor, 4) {
 	try {
@@ -12,7 +14,7 @@ PREDICATE(pd_translate_actor, 4) {
 		                static_cast<double>(A3),
 		                static_cast<double>(A4));
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 	return true;
 }
@@ -24,7 +26,7 @@ PREDICATE(pd_rotate_actor, 4) {
 		             static_cast<double>(A3),
 		             static_cast<double>(A4));
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 	return true;
 }
@@ -43,7 +45,7 @@ Actor::Actor(const std::string& actorName)
 			}
 			m_renderModel = s_modelDictionary.find(m_desc.renderModel)->second;
 		} catch(const std::exception& exception) {
-			g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+			LOG(error) << exception.what();
 			throw std::runtime_error("Failed to load RenderModel");
 		}
 	}

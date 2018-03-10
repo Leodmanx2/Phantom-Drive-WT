@@ -1,6 +1,8 @@
 #include "utility.hpp"
 
-#include "Logger.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 // pd_consult takes a filename as argument, opens that file, and consults it.
 PREDICATE(pd_consult, 1) {
@@ -45,8 +47,7 @@ std::string readFile(const std::string& filename) {
 	  PHYSFS_readBytes(shaderFile, const_cast<char*>(buffer.data()), fileSize);
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR,
-		               PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+		LOG(error) << PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode());
 		throw std::runtime_error(std::string("Could not read all of file: ") +
 		                         filename);
 	}

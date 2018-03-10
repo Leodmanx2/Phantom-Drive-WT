@@ -1,6 +1,8 @@
 #include "Window.hpp"
 
-#include "Logger.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 Window::Window() {
 // Make window and OpenGl context with available extensions
@@ -45,7 +47,7 @@ void Window::initGL() {
 	// Log loaded OpenGl version
 	std::stringstream version;
 	version << "OpenGl context version: " << gl::glGetString(gl::GL_VERSION);
-	g_logger.write(Logger::LogLevel::LOG_INFO, version.str());
+	LOG(info) << version.str();
 
 	// Enable back-face culling, z-buffering, and anti-aliasing
 	gl::glEnable(gl::GL_CULL_FACE);

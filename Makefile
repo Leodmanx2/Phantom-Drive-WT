@@ -31,8 +31,8 @@ ASSDIR = $(CURDIR)/ass
 BINDIR = $(CURDIR)/bin
 
 OBJ = $(addprefix $(OBJDIR)/, main.o Application.o Window.o Actor.o \
-RenderModel.o Camera.o Logger.o Scene.o EditorScene.o Renderer.o \
-Shader.o Light.o SpatialModel.o InputModel.o utility.o input.o)
+RenderModel.o Camera.o Scene.o EditorScene.o Renderer.o Shader.o Light.o \
+SpatialModel.o InputModel.o utility.o input.o)
 
 CXXFLAGS_WARNINGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
                     -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 \
@@ -45,7 +45,7 @@ ifeq ($(CXX), clang++)
 	CXXFLAGS_WARNINGS += -Wdeprecated -Wdocumentation -Werror=documentation
 endif
 
-CXXFLAGS += -std=c++14 $(CXXFLAGS_CLANG) $(CXXFLAGS_WARNINGS) -c
+CXXFLAGS += -std=c++17 $(CXXFLAGS_CLANG) $(CXXFLAGS_WARNINGS) -c
 
 # Certain library names and flags depend on the OS
 ifeq ($(OS), Windows_NT)

@@ -2,10 +2,12 @@
 
 #include "Actor.hpp"
 #include "Light.hpp"
-#include "Logger.hpp"
 #include "Renderer.hpp"
 #include "Window.hpp"
 #include "input.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 // ---------------------------------------------------------------------------
 //  Scene Overrides
@@ -19,9 +21,7 @@ EditorScene::EditorScene(const std::string& sceneName)
 	// If the scene file is corrupt, we give up.
 	try {
 		m_defaultShader = new Shader("textured.vert.glsl", "textured.frag.glsl");
-	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
-	}
+	} catch(const std::exception& exception) { LOG(error) << exception.what(); }
 
 	PlCall("consult", {"SceneEdit.pro"});
 
@@ -181,7 +181,7 @@ void EditorScene::addActor(const std::string& actorName) {
 		m_actors.emplace(
 		  std::make_pair(++m_highestID, std::make_unique<Actor>(actorName)));
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 		throw std::runtime_error("Failed to load Actor");
 	}
 }

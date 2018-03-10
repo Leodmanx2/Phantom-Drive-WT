@@ -2,8 +2,10 @@
 
 #include "Actor.hpp"
 #include "EditorScene.hpp"
-#include "Logger.hpp"
 #include "Window.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 std::unordered_set<std::pair<int, int>, Application::KeyHash>
   Application::s_keysPressed;
@@ -42,22 +44,18 @@ Application::~Application() {
 // ---------------------------------------------------------------------------
 
 void Application::initFilesystem(int, char** argv) {
-	g_logger.write(Logger::LogLevel::LOG_INFO,
-	               "Initializing virtual file system");
+	LOG(info) << "Initializing virtual file system";
 	if(PHYSFS_init(argv[0]) == 0) {
-		g_logger.write(Logger::LogLevel::LOG_CRITICAL,
-		               PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
-		throw std::runtime_error("Could not initialize virtual file system");
+		LOG(fatal) << PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode());
+		throw std::runtime_error("could not initialize virtual file system");
 	}
 
-	const std::string assetDir   = PHYSFS_getBaseDir() + std::string("ass");
-	const std::string logMessage = "Mounting asset location: " + assetDir;
-	g_logger.write(Logger::LogLevel::LOG_INFO, logMessage.c_str());
+	const std::string assetDir = PHYSFS_getBaseDir() + std::string("ass");
+	LOG(info) << "mounting asset location: " << assetDir;
 	if(PHYSFS_mount(assetDir.c_str(), "/", 1) == 0) {
 		PHYSFS_deinit();
-		g_logger.write(Logger::LogLevel::LOG_CRITICAL,
-		               PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
-		throw std::runtime_error("Could not mount asset location");
+		LOG(fatal) << PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode());
+		throw std::runtime_error("could not mount asset location");
 	}
 }
 

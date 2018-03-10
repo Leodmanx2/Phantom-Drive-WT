@@ -1,22 +1,24 @@
 #include "RenderModel.hpp"
 
-#include "Logger.hpp"
 #include "Shader.hpp"
 #include "utility.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	try {
 		m_diffuseMap  = loadTexture(MODEL_DIR + name + "/diffuse.dds");
 		m_specularMap = loadTexture(MODEL_DIR + name + "/specular.dds");
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 		throw std::runtime_error("Could not load model textures");
 	}
 
 	try {
 		loadGeometry();
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 		throw std::runtime_error("Could not load model geometry");
 	}
 }
@@ -51,7 +53,7 @@ void RenderModel::loadGeometry() {
 	try {
 		fillBuffers(vertices, indices);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 		std::stringstream message;
 		message << "RenderModel3D (" << this
 		        << "): Could not commit data to OpenGL";

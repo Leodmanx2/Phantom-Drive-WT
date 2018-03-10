@@ -1,6 +1,8 @@
 #include "SpatialModel.hpp"
 
-#include "Logger.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 PREDICATE(pd_translate, 4) {
 	try {
@@ -9,7 +11,7 @@ PREDICATE(pd_translate, 4) {
 		                static_cast<double>(A3),
 		                static_cast<double>(A4));
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 	return true;
 }
@@ -21,7 +23,7 @@ PREDICATE(pd_rotate, 4) {
 		             static_cast<double>(A3),
 		             static_cast<double>(A4));
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 	return true;
 }

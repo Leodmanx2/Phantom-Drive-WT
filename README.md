@@ -25,6 +25,7 @@ Dependencies
 *   Phantom Drive (WT) Format Libraries
     *   [PMDL](https://bitbucket.org/leodmanx2/pmdl)
     *   [PSCN](https://bitbucket.org/leodmanx2/pscn)
+*   [plog](https://github.com/SergiusTheBest/plog)
 
 Hardware Requirements
 ---------------------

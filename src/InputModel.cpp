@@ -1,14 +1,16 @@
 #include "InputModel.hpp"
 
-#include "Logger.hpp"
 #include "input.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 InputModel::InputModel(const std::string& schemaName) : m_schema(schemaName) {
 	try {
 		std::string fileName = SCHEMA_DIR + schemaName + ".pro";
 		PlCall("pd_consult", PlTerm(fileName.c_str()));
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 }
 
@@ -24,7 +26,7 @@ void InputModel::process(SpatialModel& spatial, const KeyEvent& event) {
 		        static_cast<long>(event.action),
 		        static_cast<long>(event.modifiers)});
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 }
 
@@ -38,7 +40,7 @@ void InputModel::process(SpatialModel& spatial, const MouseButtonEvent& event) {
 		        static_cast<long>(event.action),
 		        static_cast<long>(event.modifiers)});
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 }
 
@@ -49,6 +51,6 @@ void InputModel::process(SpatialModel&             spatial,
 		PlCall("schema_handleMouse",
 		       {&spatial, m_schema.c_str(), event.dx, event.dy});
 	} catch(const PlException& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, static_cast<char*>(exception));
+		LOG(error) << static_cast<char*>(exception);
 	}
 }

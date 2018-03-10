@@ -1,8 +1,10 @@
 #include "Shader.hpp"
 
 #include "Light.hpp"
-#include "Logger.hpp"
 #include "utility.hpp"
+#include <plog/Log.h>
+
+using namespace plog;
 
 // TODO: Fix everything in Shader.
 // Of particular importance is checking whether the shader is bound before setting anything.
@@ -18,7 +20,7 @@ Shader::Shader(const std::string& vertexShaderFilename,
 		            "Shaders/" + pixelShaderFilename,
 		            "Shaders/" + geometryShaderFilename);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 
 		std::stringstream message;
 		message << "Could not load shader (" << this << ")";
@@ -163,14 +165,14 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 	try {
 		vertexShader = compileShader(vertexShaderFilename, gl::GL_VERTEX_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 		throw std::runtime_error("Could not load vertex shader");
 	}
 
 	try {
 		pixelShader = compileShader(pixelShaderFilename, gl::GL_FRAGMENT_SHADER);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 		throw std::runtime_error("Could not load pixel shader");
 	}
 
@@ -179,7 +181,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 			geometryShader =
 			  compileShader(geometryShaderFilename, gl::GL_GEOMETRY_SHADER);
 		} catch(const std::exception& exception) {
-			g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+			LOG(error) << exception.what();
 			throw std::runtime_error("Could not load geometry shader");
 		}
 	}
@@ -190,7 +192,7 @@ void Shader::loadShaders(const std::string& vertexShaderFilename,
 		else
 			m_id = linkShaders(vertexShader, pixelShader);
 	} catch(const std::exception& exception) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, exception.what());
+		LOG(error) << exception.what();
 		throw std::runtime_error("Could not link shader program");
 	}
 
