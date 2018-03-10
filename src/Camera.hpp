@@ -2,14 +2,18 @@
 #define CAMERA_H
 
 #include "InputModel.hpp"
-#include "Logger.hpp"
 #include "SpatialModel.hpp"
-#include "input.hpp"
 #include <SWI-cpp.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <queue>
 #include <sstream>
+
+// Forward declarations ------------------------------------------------------
+struct KeyEvent;
+struct MouseMovementEvent;
+struct MouseButtonEvent;
+// ---------------------------------------------------------------------------
 
 class Camera {
 	private:

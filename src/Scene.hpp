@@ -3,17 +3,23 @@
 
 #define GLFW_INCLUDE_NONE
 
-#include "Actor.hpp"
 #include "Camera.hpp"
-#include "Light.hpp"
-#include "Renderer.hpp"
 #include "Shader.hpp"
-#include "input.hpp"
 #include <GLFW/glfw3.h>
 #include <array>
 #include <chrono>
 #include <cstddef>
 #include <vector>
+
+// Forward declarations ------------------------------------------------------
+class Actor;
+struct PointLight;
+struct SpotLight;
+struct DirectionLight;
+struct KeyEvent;
+struct MouseMovementEvent;
+struct MouseButtonEvent;
+// ---------------------------------------------------------------------------
 
 class Scene {
 	protected:

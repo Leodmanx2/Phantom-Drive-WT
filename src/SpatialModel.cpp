@@ -1,5 +1,7 @@
 #include "SpatialModel.hpp"
 
+#include "Logger.hpp"
+
 PREDICATE(pd_translate, 4) {
 	try {
 		SpatialModel& model = *static_cast<SpatialModel*>(static_cast<void*>(A1));

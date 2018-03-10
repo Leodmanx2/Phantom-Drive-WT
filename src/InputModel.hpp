@@ -3,10 +3,6 @@
 
 #define GLFW_INCLUDE_NONE
 
-#include "Logger.hpp"
-#include "SpatialModel.hpp"
-#include "input.hpp"
-#include "utility.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
 #include <cassert>
@@ -17,6 +13,13 @@
 #include <mutex>
 #include <sstream>
 #include <vector>
+
+// Forward declarations ------------------------------------------------------
+class SpatialModel;
+struct KeyEvent;
+struct MouseMovementEvent;
+struct MouseButtonEvent;
+// ---------------------------------------------------------------------------
 
 class InputModel {
 	const std::string SCHEMA_DIR = "Controls/";

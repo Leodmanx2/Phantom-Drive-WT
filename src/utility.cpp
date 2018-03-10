@@ -1,5 +1,7 @@
 #include "utility.hpp"
 
+#include "Logger.hpp"
+
 // pd_consult takes a filename as argument, opens that file, and consults it.
 PREDICATE(pd_consult, 1) {
 	const std::string fileContents = readFile(static_cast<char*>(A1));
@@ -40,10 +42,11 @@ std::string readFile(const std::string& filename) {
 	std::string buffer;
 	buffer.resize(fileSize);
 	const int bytesRead =
-	  PHYSFS_read(shaderFile, const_cast<char*>(buffer.data()), 1, fileSize);
+	  PHYSFS_readBytes(shaderFile, const_cast<char*>(buffer.data()), fileSize);
 	PHYSFS_close(shaderFile);
 	if(bytesRead < fileSize || bytesRead == -1) {
-		g_logger.write(Logger::LogLevel::LOG_ERROR, PHYSFS_getLastError());
+		g_logger.write(Logger::LogLevel::LOG_ERROR,
+		               PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 		throw std::runtime_error(std::string("Could not read all of file: ") +
 		                         filename);
 	}

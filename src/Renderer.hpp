@@ -5,9 +5,12 @@
 #include <glbinding/gl/gl.h>
 #define GLFW_INCLUDE_NONE
 
-#include "Window.hpp"
 #include <GLFW/glfw3.h>
 #include <cassert>
+
+// Forward declarations ------------------------------------------------------
+class Window;
+// ---------------------------------------------------------------------------
 
 class Renderer final {
 	private:
@@ -24,7 +27,7 @@ class Renderer final {
 	gl::GLuint m_depthStencilAttachment;
 
 	void
-	makeRenderBuffer(gl::GLuint* bufferID, gl::GLenum format, gl::GLenum target);
+	     makeRenderBuffer(gl::GLuint* bufferID, gl::GLenum format, gl::GLenum target);
 	void init();
 	void clean();
 	void resize();

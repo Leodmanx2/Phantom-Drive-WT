@@ -1,5 +1,10 @@
 #include "Scene.hpp"
 
+#include "Actor.hpp"
+#include "Light.hpp"
+#include "Renderer.hpp"
+#include "input.hpp"
+
 Scene::Scene(const std::string& name) : m_ambience(1.0f), m_highestID(0) {
 	// TODO: Load scene from file
 }

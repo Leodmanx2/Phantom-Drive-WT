@@ -1,5 +1,9 @@
 #include "RenderModel.hpp"
 
+#include "Logger.hpp"
+#include "Shader.hpp"
+#include "utility.hpp"
+
 RenderModel::RenderModel(const std::string& modelName) : name(modelName) {
 	try {
 		m_diffuseMap  = loadTexture(MODEL_DIR + name + "/diffuse.dds");

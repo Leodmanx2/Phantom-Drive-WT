@@ -1,5 +1,9 @@
 #include "Shader.hpp"
 
+#include "Light.hpp"
+#include "Logger.hpp"
+#include "utility.hpp"
+
 // TODO: Fix everything in Shader.
 // Of particular importance is checking whether the shader is bound before setting anything.
 // Failing to do so will inevitably result sending data to one shader using another's values.

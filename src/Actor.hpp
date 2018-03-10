@@ -2,17 +2,22 @@
 #define ACTOR_H
 
 #include "InputModel.hpp"
-#include "Logger.hpp"
-#include "RenderModel.hpp"
-#include "Shader.hpp"
 #include "SpatialModel.hpp"
-#include "input.hpp"
 #include <glbinding/gl/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
+#include <memory>
+
+// Forward declarations ------------------------------------------------------
+class RenderModel;
+class Shader;
+struct KeyEvent;
+struct MouseMovementEvent;
+struct MouseButtonEvent;
+// ---------------------------------------------------------------------------
 
 class Actor final {
 	struct ActorDescription final {

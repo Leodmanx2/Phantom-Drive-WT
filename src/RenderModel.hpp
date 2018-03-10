@@ -1,11 +1,9 @@
 #ifndef RENDERMODEL_H
 #define RENDERMODEL_H
 
-#include "Logger.hpp"
-#include "Shader.hpp"
-#include "utility.hpp"
 #include <cstddef>
 #include <fstream>
+#include <glbinding/gl/gl.h>
 #include <gli/gli.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
@@ -17,6 +15,10 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+
+// Forward declarations ------------------------------------------------------
+class Shader;
+// ---------------------------------------------------------------------------
 
 class RenderModel final {
 	const std::string MODEL_DIR = "Models/";

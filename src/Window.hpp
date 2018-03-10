@@ -5,7 +5,6 @@
 #include <glbinding/gl/gl.h>
 #define GLFW_INCLUDE_NONE
 
-#include "Logger.hpp"
 #include <GLFW/glfw3.h>
 #include <sstream>
 

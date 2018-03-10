@@ -1,7 +1,6 @@
 #ifndef EDITORSCENE_H
 #define EDITORSCENE_H
 
-#include "InputModel.hpp"
 #include "Scene.hpp"
 #include <PSCN.hpp>
 #include <SWI-cpp.h>

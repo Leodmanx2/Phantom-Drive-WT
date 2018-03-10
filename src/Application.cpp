@@ -1,5 +1,10 @@
 #include "Application.hpp"
 
+#include "Actor.hpp"
+#include "EditorScene.hpp"
+#include "Logger.hpp"
+#include "Window.hpp"
+
 std::unordered_set<std::pair<int, int>, Application::KeyHash>
   Application::s_keysPressed;
 

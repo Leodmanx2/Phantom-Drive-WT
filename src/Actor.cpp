@@ -1,5 +1,10 @@
 #include "Actor.hpp"
 
+#include "Logger.hpp"
+#include "RenderModel.hpp"
+#include "Shader.hpp"
+#include "utility.hpp"
+
 PREDICATE(pd_translate_actor, 4) {
 	try {
 		Actor& actor = *static_cast<Actor*>(static_cast<void*>(A1));

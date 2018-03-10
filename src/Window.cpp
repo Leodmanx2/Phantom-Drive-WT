@@ -1,5 +1,7 @@
 #include "Window.hpp"
 
+#include "Logger.hpp"
+
 Window::Window() {
 // Make window and OpenGl context with available extensions
 #ifdef DEBUG

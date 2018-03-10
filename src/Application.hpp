@@ -5,22 +5,24 @@
 #include <glbinding/gl/gl.h>
 #define GLFW_INCLUDE_NONE
 
-#include "EditorScene.hpp"
-#include "Logger.hpp"
 #include "Renderer.hpp"
-#include "Scene.hpp"
-#include "Window.hpp"
 #include "input.hpp"
 #include <GLFW/glfw3.h>
 #include <SWI-cpp.h>
 #include <cstddef>
 #include <functional>
 #include <iostream>
+#include <mutex>
 #include <physfs.h>
 #include <queue>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_set>
+
+// Forward declarations ------------------------------------------------------
+class Scene;
+class Window;
+// ---------------------------------------------------------------------------
 
 class Application final {
 	private:
@@ -34,9 +36,9 @@ class Application final {
 			return key.first << 4 | key.second;
 		}
 	};
-	static std::mutex s_keyQueueMutex;
+	static std::mutex                                       s_keyQueueMutex;
 	static std::unordered_set<std::pair<int, int>, KeyHash> s_keysPressed;
-	static std::queue<KeyEvent> s_keyQueue;
+	static std::queue<KeyEvent>                             s_keyQueue;
 
 	static std::mutex                   s_buttonQueueMutex;
 	static std::queue<MouseButtonEvent> s_buttonQueue;

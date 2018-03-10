@@ -1,5 +1,7 @@
 #include "Renderer.hpp"
 
+#include "Window.hpp"
+
 Renderer* Renderer::s_instance = nullptr;
 
 // There can only be one instance of Renderer at a time to keep exposure of

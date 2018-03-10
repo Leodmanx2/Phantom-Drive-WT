@@ -1,5 +1,12 @@
 #include "EditorScene.hpp"
 
+#include "Actor.hpp"
+#include "Light.hpp"
+#include "Logger.hpp"
+#include "Renderer.hpp"
+#include "Window.hpp"
+#include "input.hpp"
+
 // ---------------------------------------------------------------------------
 //  Scene Overrides
 // ---------------------------------------------------------------------------

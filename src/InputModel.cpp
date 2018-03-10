@@ -1,5 +1,8 @@
 #include "InputModel.hpp"
 
+#include "Logger.hpp"
+#include "input.hpp"
+
 InputModel::InputModel(const std::string& schemaName) : m_schema(schemaName) {
 	try {
 		std::string fileName = SCHEMA_DIR + schemaName + ".pro";

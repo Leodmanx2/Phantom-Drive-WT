@@ -1,9 +1,6 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "Light.hpp"
-#include "Logger.hpp"
-#include "utility.hpp"
 #include <array>
 #include <cassert>
 #include <cstddef>
@@ -16,6 +13,12 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+
+// Forward declarations ------------------------------------------------------
+struct PointLight;
+struct SpotLight;
+struct DirectionLight;
+// ---------------------------------------------------------------------------
 
 class Shader final {
 	const std::string SHADER_DIR = "Shaders/";
