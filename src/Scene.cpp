@@ -1,6 +1,6 @@
 #include "Scene.hpp"
 
-Scene::Scene(const std::string& name) {
+Scene::Scene(const std::string& name) : m_ambience(1.0f), m_highestID(0) {
 	// TODO: Load scene from file
 }
 

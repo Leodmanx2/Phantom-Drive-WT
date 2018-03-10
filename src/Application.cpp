@@ -40,7 +40,8 @@ void Application::initFilesystem(int, char** argv) {
 	g_logger.write(Logger::LogLevel::LOG_INFO,
 	               "Initializing virtual file system");
 	if(PHYSFS_init(argv[0]) == 0) {
-		g_logger.write(Logger::LogLevel::LOG_CRITICAL, PHYSFS_getLastError());
+		g_logger.write(Logger::LogLevel::LOG_CRITICAL,
+		               PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 		throw std::runtime_error("Could not initialize virtual file system");
 	}
 
@@ -49,7 +50,8 @@ void Application::initFilesystem(int, char** argv) {
 	g_logger.write(Logger::LogLevel::LOG_INFO, logMessage.c_str());
 	if(PHYSFS_mount(assetDir.c_str(), "/", 1) == 0) {
 		PHYSFS_deinit();
-		g_logger.write(Logger::LogLevel::LOG_CRITICAL, PHYSFS_getLastError());
+		g_logger.write(Logger::LogLevel::LOG_CRITICAL,
+		               PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 		throw std::runtime_error("Could not mount asset location");
 	}
 }
