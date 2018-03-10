@@ -186,6 +186,10 @@ void EditorScene::addActor(const std::string& actorName) {
 	}
 }
 
+void EditorScene::removeActor(int id) { m_actors.erase(id); }
+void EditorScene::setSelected(int id) { m_selected = id; }
+int  EditorScene::selectedID() { return m_selected; }
+
 Actor* EditorScene::selectedActor() {
 	const auto it = m_actors.find(m_selected);
 	if(it != m_actors.end()) return it->second.get();

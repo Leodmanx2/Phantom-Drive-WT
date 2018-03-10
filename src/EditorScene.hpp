@@ -32,12 +32,12 @@ class EditorScene final : public Scene {
 	void process(std::queue<MouseButtonEvent>& buttonEvents) override;
 	void process(std::queue<MouseMovementEvent>& movementEvents) override;
 
-	void           addActor(const std::string& actorName);
-	constexpr void removeActor(int id) { m_actors.erase(id); }
-	constexpr void setSelected(int id) { m_selected = id; }
-	void           saveAs(const std::string& file);
-	constexpr int  selectedID() { return m_selected; }
-	Actor*         selectedActor();
+	void   addActor(const std::string& actorName);
+	void   removeActor(int id);
+	void   setSelected(int id);
+	void   saveAs(const std::string& file);
+	int    selectedID();
+	Actor* selectedActor();
 };
 
 #endif

@@ -95,6 +95,10 @@ void SpatialModel::setPosition(float x, float y, float z) {
 	m_position = glm::vec4(x, y, z, 0);
 }
 
+const glm::vec4& SpatialModel::position() const { return m_position; }
+
+const glm::quat& SpatialModel::orientation() const { return m_orientation; }
+
 /**
  * Returns a 4x4 matrix representing the complete world-space transformation
  *

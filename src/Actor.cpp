@@ -106,3 +106,26 @@ Actor::ActorDescription::ActorDescription(const std::string& actorName)
 	std::getline(ss, renderModel);
 	std::getline(ss, inputModel);
 }
+
+// Forwarding functions
+void Actor::translate(float longitude, float latitude, float altitude) {
+	m_spatialModel.translate(longitude, latitude, altitude);
+}
+
+void Actor::rotate(float roll, float pitch, float yaw) {
+	m_spatialModel.rotate(roll, pitch, yaw);
+}
+
+void Actor::setOrientation(float deg, float x, float y, float z) {
+	m_spatialModel.setOrientation(deg, x, y, z);
+}
+
+void Actor::setPosition(float x, float y, float z) {
+	m_spatialModel.setPosition(x, y, z);
+}
+
+const glm::vec4& Actor::position() const { return m_spatialModel.position(); }
+
+const glm::quat& Actor::orientation() const {
+	return m_spatialModel.orientation();
+}

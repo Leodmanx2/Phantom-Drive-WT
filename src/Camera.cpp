@@ -28,3 +28,26 @@ void Camera::process(const MouseButtonEvent& event) {
 void Camera::process(const MouseMovementEvent& event) {
 	m_inputModel.process(m_spatialModel, event);
 }
+
+// Forwarding functions
+void Camera::translate(float longitude, float latitude, float altitude) {
+	m_spatialModel.translate(longitude, latitude, altitude);
+}
+
+void Camera::rotate(float roll, float pitch, float yaw) {
+	m_spatialModel.rotate(roll, pitch, yaw);
+}
+
+void Camera::setOrientation(float deg, float x, float y, float z) {
+	m_spatialModel.setOrientation(deg, x, y, z);
+}
+
+void Camera::setPosition(float x, float y, float z) {
+	m_spatialModel.setPosition(x, y, z);
+}
+
+const glm::vec4& Camera::position() const { return m_spatialModel.position(); }
+
+const glm::quat& Camera::orientation() const {
+	return m_spatialModel.orientation();
+}

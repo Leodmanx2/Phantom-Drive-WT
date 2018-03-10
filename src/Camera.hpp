@@ -29,29 +29,12 @@ class Camera {
 	void process(const MouseMovementEvent& event);
 
 	// Forwarding functions
-	constexpr void translate(float longitude, float latitude, float altitude) {
-		m_spatialModel.translate(longitude, latitude, altitude);
-	}
-
-	constexpr void rotate(float roll, float pitch, float yaw) {
-		m_spatialModel.rotate(roll, pitch, yaw);
-	}
-
-	constexpr void setOrientation(float deg, float x, float y, float z) {
-		m_spatialModel.setOrientation(deg, x, y, z);
-	}
-
-	constexpr void setPosition(float x, float y, float z) {
-		m_spatialModel.setPosition(x, y, z);
-	}
-
-	constexpr const glm::vec4& position() const {
-		return m_spatialModel.position();
-	}
-
-	constexpr const glm::quat& orientation() const {
-		return m_spatialModel.orientation();
-	}
+	void             translate(float longitude, float latitude, float altitude);
+	void             rotate(float roll, float pitch, float yaw);
+	void             setOrientation(float deg, float x, float y, float z);
+	void             setPosition(float x, float y, float z);
+	const glm::vec4& position() const;
+	const glm::quat& orientation() const;
 };
 
 #endif
