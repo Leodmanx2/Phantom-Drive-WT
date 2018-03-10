@@ -10,7 +10,11 @@ int main(int argc, char* argv[]) {
 	g_logger.write(Logger::LogLevel::LOG_INFO, "Starting program");
 
 	glfwSetErrorCallback(glfw_error_callback);
-	if(!glfwInit()) { throw std::runtime_error("GLFW initialization failed"); }
+	if(!glfwInit()) {
+		g_logger.write(Logger::LogLevel::LOG_CRITICAL,
+		               "GLFW initialization failed");
+		return EXIT_FAILURE;
+	}
 
 	try {
 		const char* plArgv[] = {argv[0], "--quiet"};
