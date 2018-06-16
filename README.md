@@ -7,6 +7,11 @@ Description
 Phantom Drive is the working title of a game based on the anime
 series *Gen'ei wo Kakeru Taiyou.*
 
+In reality this project is more of a game engine upon which eventually
+a game will be built. It was begun primarily as a learning exercise, and
+consequently goes through periods of inactivity as I explore architectural
+options.
+
 Download
 --------
 
@@ -50,3 +55,4 @@ imminent goals. It is not a complete development roadmap.
 *   glbinding -> globjects (or maybe even Vulkan-Hpp)
 *   Rendering shadows
 *   Sorting for transparency or OIT
+*   Animation system
