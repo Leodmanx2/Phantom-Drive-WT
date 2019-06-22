@@ -1,53 +1,49 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <glbinding/Binding.h>
-#include <glbinding/gl/gl.h>
-#define GLFW_INCLUDE_NONE
+#include "ResourceCache.hpp"
+#include <glm/glm.hpp>
+#include <globjects/globjects.h>
+#include <memory>
+#include <queue>
+#include <string>
 
-#include <GLFW/glfw3.h>
-#include <cassert>
+struct RenderComponent {
+	std::string diffuse;
+	std::string specular;
+	std::string shader;
+	std::string geometry;
+	int         elementCount;
+};
 
-// Forward declarations ------------------------------------------------------
-class Window;
-// ---------------------------------------------------------------------------
+struct RenderTask {
+	RenderComponent keys;
+	int             id;
+	glm::mat4       model;
+	glm::mat4       view;
+	glm::mat4       projection;
+	glm::vec4       eye;
+	float           ambience;
+	// other lights
+};
 
-class Renderer final {
+class Renderer {
 	private:
-	static Renderer* s_instance;
+	std::unique_ptr<globjects::Framebuffer>  m_frameBuffer;
+	std::unique_ptr<globjects::Renderbuffer> m_colorAttachment;
+	std::unique_ptr<globjects::Renderbuffer> m_depthStencilAttachment;
 
-	std::shared_ptr<Window> m_window;
+	ResourceCache<globjects::Texture>     m_textureCache;
+	ResourceCache<globjects::VertexArray> m_geometryCache;
+	ResourceCache<globjects::Program>     m_shaderCache;
 
-	int m_width;
-	int m_height;
-
-	gl::GLuint m_frameBuffer;
-	gl::GLuint m_colorAttachment;
-	gl::GLuint m_selectionAttachment;
-	gl::GLuint m_depthStencilAttachment;
-
-	void
-	     makeRenderBuffer(gl::GLuint* bufferID, gl::GLenum format, gl::GLenum target);
-	void init();
-	void clean();
-	void resize();
+	std::queue<RenderTask> m_queue;
 
 	public:
-	explicit Renderer(const std::shared_ptr<Window>& window);
-	Renderer(const Renderer&) = delete;
-	~Renderer();
+	Renderer();
 
-	// Render-related tools
-	static int pick(int frameCoordX, int frameCoordY);
-
-	// Rendering phase controls
-	void clear();
-	void startNormalPass();
-	void finishNormalPass();
-
-	// Member accessors
-	static int width();
-	static int height();
+	void queue(RenderTask);
+	void draw();
 };
 
 #endif
