@@ -1,6 +1,9 @@
 Phantom Drive
 =============
 
+**Update (2019-06-22):** This project is currently undergoing a significant
+rewrite. New functionality will not be added until this is complete.
+
 Description
 -----------
 
