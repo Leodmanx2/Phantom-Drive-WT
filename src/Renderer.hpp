@@ -1,7 +1,10 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#define GLFW_INCLUDE_NONE
+
 #include "ResourceCache.hpp"
+#include "Window.hpp"
 #include <glm/glm.hpp>
 #include <globjects/globjects.h>
 #include <memory>
@@ -29,8 +32,11 @@ struct RenderTask {
 
 class Renderer {
 	private:
+	std::shared_ptr<Window> m_window;
+
 	std::unique_ptr<globjects::Framebuffer>  m_frameBuffer;
 	std::unique_ptr<globjects::Renderbuffer> m_colorAttachment;
+	std::unique_ptr<globjects::Renderbuffer> m_selectionAttachment;
 	std::unique_ptr<globjects::Renderbuffer> m_depthStencilAttachment;
 
 	ResourceCache<globjects::Texture>     m_textureCache;
@@ -39,8 +45,15 @@ class Renderer {
 
 	std::queue<RenderTask> m_queue;
 
+	int m_height;
+	int m_width;
+
+	void init();
+	void resize();
+	void clear();
+
 	public:
-	Renderer();
+	explicit Renderer(const std::shared_ptr<Window>& window);
 
 	void queue(RenderTask);
 	void draw();

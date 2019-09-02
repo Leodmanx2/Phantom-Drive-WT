@@ -132,14 +132,6 @@ void Application::processInput() {
 	}
 }
 
-void Application::draw() {
-	m_renderer.clear();
-	m_renderer.startNormalPass();
-	m_scene->draw();
-	m_renderer.finishNormalPass();
-	glfwSwapBuffers(&m_window->get());
-}
-
 // ---------------------------------------------------------------------------
 //  Public-facing functions
 // ---------------------------------------------------------------------------
@@ -154,7 +146,7 @@ void Application::run() {
 		std::chrono::milliseconds timeStep =
 		  std::chrono::duration_cast<std::chrono::milliseconds>(newTime - oldTime);
 		m_scene->update(timeStep);
-		draw();
+		m_renderer.draw();
 		processInput();
 		oldTime = newTime;
 		newTime = std::chrono::steady_clock::now();
