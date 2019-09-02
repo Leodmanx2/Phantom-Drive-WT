@@ -1,8 +1,8 @@
 #ifndef EDITORSCENE_H
 #define EDITORSCENE_H
 
+#include "PSCN.hpp"
 #include "Scene.hpp"
-#include <PSCN.hpp>
 #include <SWI-cpp.h>
 #include <cstdlib>
 #include <fstream>
