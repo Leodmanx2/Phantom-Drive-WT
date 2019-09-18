@@ -1,13 +1,23 @@
 #include "Renderer.hpp"
 
+#include "Geometry.hpp"
+#include "pmdl.hpp"
+#include "utility.hpp"
+#include <algorithm>
 #include <glbinding/gl/gl.h>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <globjects/Renderbuffer.h>
 #include <globjects/Texture.h>
+#include <globjects/VertexArray.h>
+#include <globjects/VertexAttributeBinding.h>
 
 using namespace globjects;
 using namespace gl;
 using namespace std;
+
+Renderer::Renderer(const shared_ptr<Window>& window) : m_window(window) {
+	init();
+}
 
 void Renderer::init() {
 	glfwGetFramebufferSize(&m_window->get(), &m_width, &m_height);
@@ -68,6 +78,7 @@ void Renderer::draw() {
 		RenderTask task = m_queue.front();
 
 		auto shader = m_shaderCache.get(task.keys.shader);
+		shader->use();
 
 		shader->setUniform("id", task.id);
 		shader->setUniform("model", task.model);
@@ -80,10 +91,12 @@ void Renderer::draw() {
 		m_textureCache.get(task.keys.diffuse)->bindActive(0);
 		m_textureCache.get(task.keys.specular)->bindActive(1);
 
-		auto vao = m_geometryCache.get(task.keys.geometry);
+		auto vao = m_geometryCache.get(task.keys.geometry)->vao();
 		vao->bind();
 		vao->drawElements(GL_TRIANGLES, task.keys.elementCount, GL_UNSIGNED_INT);
 		vao->unbind();
+
+		shader->release();
 
 		m_queue.pop();
 	}
@@ -102,4 +115,50 @@ void Renderer::draw() {
 	                  GL_NEAREST);
 
 	glfwSwapBuffers(&m_window->get());
+}
+
+void Renderer::queue(RenderTask task) {
+	throw logic_error("not implemented");
+	// TODO: Implement renderer queuing
+	// 1. Construct any resources not in the cache
+	//    1. Validate resources
+	// 2. Add the task to the internal queue structure
+
+	// ------------------------
+
+	if(!m_textureCache.get(task.keys.diffuse)) {
+		// TODO: Construct texture
+		shared_ptr<globjects::Texture> diffuse = nullptr;
+		m_textureCache.put(task.keys.diffuse, diffuse);
+	}
+
+	if(!m_textureCache.get(task.keys.specular)) {
+		// TODO: Construct texture
+		shared_ptr<globjects::Texture> specular = nullptr;
+		m_textureCache.put(task.keys.specular, specular);
+	}
+
+	if(!m_geometryCache.get(task.keys.geometry)) {
+		// TODO: Construct geometry
+		shared_ptr<Geometry> geometry = nullptr;
+		m_geometryCache.put(task.keys.geometry, geometry);
+	}
+
+	if(!m_shaderCache.get(task.keys.shader)) {
+		// TODO: Construct shader
+		shared_ptr<globjects::Program> shader = nullptr;
+		m_shaderCache.put(task.keys.shader, shader);
+	}
+
+	m_queue.push(task);
+}
+
+// -------------------------------------------------
+//  Resource loading WIP
+// -------------------------------------------------
+
+Texture loadTexture(const string& filename) {
+	throw logic_error("not implemented");
+	string buffer = readFile(filename);
+	// TODO: Switch to KTX texture format, use libktx and ktxTexture_CreateFromMemory()
 }

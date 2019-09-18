@@ -30,6 +30,8 @@ struct RenderTask {
 	// other lights
 };
 
+class Geometry;
+
 class Renderer {
 	private:
 	std::shared_ptr<Window> m_window;
@@ -39,9 +41,9 @@ class Renderer {
 	std::unique_ptr<globjects::Renderbuffer> m_selectionAttachment;
 	std::unique_ptr<globjects::Renderbuffer> m_depthStencilAttachment;
 
-	ResourceCache<globjects::Texture>     m_textureCache;
-	ResourceCache<globjects::VertexArray> m_geometryCache;
-	ResourceCache<globjects::Program>     m_shaderCache;
+	ResourceCache<globjects::Texture> m_textureCache;
+	ResourceCache<Geometry>           m_geometryCache;
+	ResourceCache<globjects::Program> m_shaderCache;
 
 	std::queue<RenderTask> m_queue;
 
