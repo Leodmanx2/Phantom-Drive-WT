@@ -91,9 +91,11 @@ void Renderer::draw() {
 		m_textureCache.get(task.keys.diffuse)->bindActive(0);
 		m_textureCache.get(task.keys.specular)->bindActive(1);
 
-		auto vao = m_geometryCache.get(task.keys.geometry)->vao();
+		auto geometry = m_geometryCache.get(task.keys.geometry);
+		auto vao      = geometry->vao();
+		int  elements = geometry->elements();
 		vao->bind();
-		vao->drawElements(GL_TRIANGLES, task.keys.elementCount, GL_UNSIGNED_INT);
+		vao->drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 		vao->unbind();
 
 		shader->release();

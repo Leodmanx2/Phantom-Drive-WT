@@ -13,7 +13,8 @@ class Geometry final {
 
 	public:
 	explicit Geometry(const std::string& name);
-	globjects::VertexArray* vao();
+	globjects::VertexArray* vao() const;
+	int                     elements() const;
 };
 
 #endif

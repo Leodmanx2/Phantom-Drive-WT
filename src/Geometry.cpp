@@ -72,4 +72,6 @@ Geometry::Geometry(const string& name)
 	m_vertexArray->enable(2);
 }
 
-globjects::VertexArray* Geometry::vao() { return m_vertexArray.get(); }
+globjects::VertexArray* Geometry::vao() const { return m_vertexArray.get(); }
+
+int Geometry::elements() const { return m_elementCount; }

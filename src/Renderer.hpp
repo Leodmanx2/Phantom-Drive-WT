@@ -16,7 +16,6 @@ struct RenderComponent {
 	std::string specular;
 	std::string shader;
 	std::string geometry;
-	int         elementCount;
 };
 
 struct RenderTask {
@@ -57,7 +56,7 @@ class Renderer {
 	public:
 	explicit Renderer(const std::shared_ptr<Window>& window);
 
-	void queue(RenderTask);
+	void queue(RenderTask task);
 	void draw();
 };
 
