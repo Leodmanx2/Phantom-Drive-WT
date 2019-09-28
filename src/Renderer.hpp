@@ -3,20 +3,13 @@
 
 #define GLFW_INCLUDE_NONE
 
+#include "RenderComponent.hpp"
 #include "ResourceCache.hpp"
 #include "Window.hpp"
 #include <glm/glm.hpp>
 #include <globjects/globjects.h>
 #include <memory>
 #include <queue>
-#include <string>
-
-struct RenderComponent {
-	std::string diffuse;
-	std::string specular;
-	std::string shader;
-	std::string geometry;
-};
 
 struct RenderTask {
 	RenderComponent keys;
