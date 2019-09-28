@@ -1,8 +1,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <globjects/Buffer.h>
-#include <globjects/VertexArray.h>
+#include <globjects/globjects.h>
 #include <string>
 
 class Geometry final {

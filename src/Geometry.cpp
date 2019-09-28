@@ -5,7 +5,6 @@
 #include <glbinding/gl/gl.h>
 #include <glm/glm.hpp>
 #include <globjects/VertexAttributeBinding.h>
-#include <globjects/globjects.h>
 #include <vector>
 
 using namespace std;

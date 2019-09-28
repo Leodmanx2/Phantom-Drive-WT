@@ -5,6 +5,7 @@
 
 #include "RenderComponent.hpp"
 #include "ResourceCache.hpp"
+#include "ShaderProgram.hpp"
 #include "Window.hpp"
 #include <glm/glm.hpp>
 #include <globjects/globjects.h>
@@ -35,7 +36,7 @@ class Renderer {
 
 	ResourceCache<globjects::Texture> m_textureCache;
 	ResourceCache<Geometry>           m_geometryCache;
-	ResourceCache<globjects::Program> m_shaderCache;
+	ResourceCache<ShaderProgram>      m_shaderCache;
 
 	std::queue<RenderTask> m_queue;
 

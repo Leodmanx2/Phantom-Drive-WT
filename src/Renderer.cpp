@@ -7,6 +7,7 @@
 #include <glbinding/gl/gl.h>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <globjects/Renderbuffer.h>
+#include <globjects/Shader.h>
 #include <globjects/Texture.h>
 #include <globjects/VertexArray.h>
 #include <globjects/VertexAttributeBinding.h>
@@ -78,15 +79,16 @@ void Renderer::draw() {
 		RenderTask task = m_queue.front();
 
 		auto shader = m_shaderCache.get(task.keys.shader);
-		shader->use();
+		shader->program()->use();
 
-		shader->setUniform("id", task.id);
-		shader->setUniform("model", task.model);
-		shader->setUniform("view", task.view);
-		shader->setUniform("projection", task.projection);
-		shader->setUniform("eyePos", task.eye);
-		shader->setUniform("ambience", task.ambience);
-		shader->setUniform("normal", inverseTranspose(task.model * task.view));
+		shader->program()->setUniform("id", task.id);
+		shader->program()->setUniform("model", task.model);
+		shader->program()->setUniform("view", task.view);
+		shader->program()->setUniform("projection", task.projection);
+		shader->program()->setUniform("eyePos", task.eye);
+		shader->program()->setUniform("ambience", task.ambience);
+		shader->program()->setUniform("normal",
+		                              inverseTranspose(task.model * task.view));
 
 		m_textureCache.get(task.keys.diffuse)->bindActive(0);
 		m_textureCache.get(task.keys.specular)->bindActive(1);
@@ -98,7 +100,7 @@ void Renderer::draw() {
 		vao->drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 		vao->unbind();
 
-		shader->release();
+		shader->program()->release();
 
 		m_queue.pop();
 	}
@@ -138,8 +140,8 @@ void Renderer::queue(RenderTask task) {
 	}
 
 	if(!m_shaderCache.get(task.keys.shader)) {
-		// TODO: Construct shader
-		shared_ptr<Program> shader = nullptr;
+		shared_ptr<ShaderProgram> shader =
+		  make_shared<ShaderProgram>(task.keys.shader);
 		m_shaderCache.put(task.keys.shader, shader);
 	}
 
