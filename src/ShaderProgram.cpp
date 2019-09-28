@@ -2,7 +2,6 @@
 
 #include "utility.hpp"
 #include <glbinding/gl/gl.h>
-#include <globjects/base/StaticStringSource.h>
 
 using namespace std;
 using namespace gl;
@@ -22,4 +21,4 @@ ShaderProgram::ShaderProgram(const string& name) : m_program() {
 	m_program->attach(m_fragmentShader.get());
 }
 
-Program* ShaderProgram::program() const { return m_program.get(); }
+Program& ShaderProgram::get() const { return *m_program; }

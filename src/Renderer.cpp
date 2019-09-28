@@ -78,29 +78,29 @@ void Renderer::draw() {
 	while(!m_queue.empty()) {
 		RenderTask task = m_queue.front();
 
-		auto shader = m_shaderCache.get(task.keys.shader);
-		shader->program()->use();
+		shared_ptr<ShaderProgram> shader = m_shaderCache.get(task.keys.shader);
+		shader->get().use();
 
-		shader->program()->setUniform("id", task.id);
-		shader->program()->setUniform("model", task.model);
-		shader->program()->setUniform("view", task.view);
-		shader->program()->setUniform("projection", task.projection);
-		shader->program()->setUniform("eyePos", task.eye);
-		shader->program()->setUniform("ambience", task.ambience);
-		shader->program()->setUniform("normal",
-		                              inverseTranspose(task.model * task.view));
+		shader->get().setUniform("id", task.id);
+		shader->get().setUniform("model", task.model);
+		shader->get().setUniform("view", task.view);
+		shader->get().setUniform("projection", task.projection);
+		shader->get().setUniform("eyePos", task.eye);
+		shader->get().setUniform("ambience", task.ambience);
+		shader->get().setUniform("normal",
+		                         inverseTranspose(task.model * task.view));
 
 		m_textureCache.get(task.keys.diffuse)->bindActive(0);
 		m_textureCache.get(task.keys.specular)->bindActive(1);
 
-		auto geometry = m_geometryCache.get(task.keys.geometry);
-		auto vao      = geometry->vao();
-		int  elements = geometry->elements();
-		vao->bind();
-		vao->drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
-		vao->unbind();
+		shared_ptr<Geometry> geometry = m_geometryCache.get(task.keys.geometry);
+		const VertexArray&   vao      = geometry->vao();
+		int                  elements = geometry->elements();
+		vao.bind();
+		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+		vao.unbind();
 
-		shader->program()->release();
+		shader->get().release();
 
 		m_queue.pop();
 	}
