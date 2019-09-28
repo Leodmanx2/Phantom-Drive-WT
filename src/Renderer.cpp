@@ -121,34 +121,25 @@ void Renderer::draw() {
 
 void Renderer::queue(RenderTask task) {
 	throw logic_error("not implemented");
-	// TODO: Implement renderer queuing
-	// 1. Construct any resources not in the cache
-	//    1. Validate resources
-	// 2. Add the task to the internal queue structure
-
-	// ------------------------
 
 	if(!m_textureCache.get(task.keys.diffuse)) {
-		// TODO: Construct texture
-		shared_ptr<globjects::Texture> diffuse = nullptr;
+		shared_ptr<Texture> diffuse(loadTexture(task.keys.diffuse));
 		m_textureCache.put(task.keys.diffuse, diffuse);
 	}
 
 	if(!m_textureCache.get(task.keys.specular)) {
-		// TODO: Construct texture
-		shared_ptr<globjects::Texture> specular = nullptr;
+		shared_ptr<Texture> specular(loadTexture(task.keys.specular));
 		m_textureCache.put(task.keys.specular, specular);
 	}
 
 	if(!m_geometryCache.get(task.keys.geometry)) {
-		// TODO: Construct geometry
-		shared_ptr<Geometry> geometry = nullptr;
+		shared_ptr<Geometry> geometry = make_shared<Geometry>(task.keys.geometry);
 		m_geometryCache.put(task.keys.geometry, geometry);
 	}
 
 	if(!m_shaderCache.get(task.keys.shader)) {
 		// TODO: Construct shader
-		shared_ptr<globjects::Program> shader = nullptr;
+		shared_ptr<Program> shader = nullptr;
 		m_shaderCache.put(task.keys.shader, shader);
 	}
 
@@ -159,8 +150,8 @@ void Renderer::queue(RenderTask task) {
 //  Resource loading WIP
 // -------------------------------------------------
 
-Texture loadTexture(const string& filename) {
+Texture* loadTexture(const string& name) {
 	throw logic_error("not implemented");
-	string buffer = readFile(filename);
+	string buffer = readFile(name);
 	// TODO: Switch to KTX texture format, use libktx and ktxTexture_CreateFromMemory()
 }
