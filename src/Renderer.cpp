@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 
 #include "Geometry.hpp"
+#include "Window.hpp"
 #include "pmdl.hpp"
 #include "utility.hpp"
 #include <algorithm>

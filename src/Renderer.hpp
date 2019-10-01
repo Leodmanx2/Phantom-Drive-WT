@@ -3,10 +3,10 @@
 
 #define GLFW_INCLUDE_NONE
 
+#include "Geometry.hpp"
 #include "RenderComponent.hpp"
 #include "ResourceCache.hpp"
 #include "ShaderProgram.hpp"
-#include "Window.hpp"
 #include <glm/glm.hpp>
 #include <globjects/globjects.h>
 #include <memory>
@@ -23,7 +23,7 @@ struct RenderTask {
 	// other lights
 };
 
-class Geometry;
+class Window;
 
 class Renderer {
 	private:
