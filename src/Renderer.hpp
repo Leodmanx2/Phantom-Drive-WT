@@ -47,7 +47,7 @@ class Renderer {
 	void resize();
 	void clear();
 
-	globjects::Texture* loadTexture(const std::string& name);
+	std::unique_ptr<globjects::Texture> loadTexture(const std::string& name);
 
 	public:
 	explicit Renderer(const std::shared_ptr<Window>& window);
