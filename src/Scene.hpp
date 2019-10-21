@@ -1,5 +1,5 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef PD_SCENE_HPP
+#define PD_SCENE_HPP
 
 #define GLFW_INCLUDE_NONE
 

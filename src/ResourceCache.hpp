@@ -1,5 +1,5 @@
-#ifndef RESOURCECACHE_H
-#define RESOURCECACHE_H
+#ifndef PD_RESOURCECACHE_HPP
+#define PD_RESOURCECACHE_HPP
 
 #include <chrono>
 #include <memory>

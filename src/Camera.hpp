@@ -1,5 +1,5 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef PD_CAMERA_HPP
+#define PD_CAMERA_HPP
 
 #include "InputModel.hpp"
 #include "SpatialModel.hpp"

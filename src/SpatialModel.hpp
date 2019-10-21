@@ -1,5 +1,5 @@
-#ifndef SPATIALMODEL_H
-#define SPATIALMODEL_H
+#ifndef PD_SPATIALMODEL_HPP
+#define PD_SPATIALMODEL_HPP
 
 #include <SWI-cpp.h>
 #include <glm/glm.hpp>

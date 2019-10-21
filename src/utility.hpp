@@ -1,5 +1,5 @@
-#ifndef UTILITY_H
-#define UTILITY_H
+#ifndef PD_UTILITY_HPP
+#define PD_UTILITY_HPP
 
 #include <SWI-cpp.h>
 #include <limits>

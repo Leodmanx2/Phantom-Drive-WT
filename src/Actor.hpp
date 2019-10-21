@@ -1,5 +1,5 @@
-#ifndef ACTOR_H
-#define ACTOR_H
+#ifndef PD_ACTOR_HPP
+#define PD_ACTOR_HPP
 
 #include "InputModel.hpp"
 #include "SpatialModel.hpp"

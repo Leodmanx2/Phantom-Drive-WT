@@ -1,5 +1,5 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef PD_RENDERER_HPP
+#define PD_RENDERER_HPP
 
 #define GLFW_INCLUDE_NONE
 

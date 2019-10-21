@@ -1,5 +1,5 @@
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef PD_INPUT_HPP
+#define PD_INPUT_HPP
 
 struct KeyEvent {
 	int key;

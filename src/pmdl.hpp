@@ -1,5 +1,5 @@
-#ifndef PMDL_H
-#define PMDL_H
+#ifndef PD_PMDL_HPP
+#define PD_PMDL_HPP
 
 #include <cmath>
 #include <cstdint>
@@ -120,6 +120,6 @@ namespace PMDL {
 			archive(header, body);
 		}
 	};
-}
+} // namespace PMDL
 
 #endif

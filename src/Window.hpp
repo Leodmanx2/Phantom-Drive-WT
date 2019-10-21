@@ -1,5 +1,5 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef PD_WINDOW_HPP
+#define PD_WINDOW_HPP
 
 #include <glbinding/Binding.h>
 #include <glbinding/gl/gl.h>

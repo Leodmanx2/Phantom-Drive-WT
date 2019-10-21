@@ -1,5 +1,5 @@
-#ifndef LIGHT_H
-#define LIGHT_H
+#ifndef PD_LIGHT_HPP
+#define PD_LIGHT_HPP
 
 #include <glm/glm.hpp>
 

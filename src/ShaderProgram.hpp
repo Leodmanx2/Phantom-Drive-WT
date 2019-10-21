@@ -1,5 +1,5 @@
-#ifndef SHADERPROGRAM_H
-#define SHADERPROGRAM_H
+#ifndef PD_SHADERPROGRAM_HPP
+#define PD_SHADERPROGRAM_HPP
 
 #include <globjects/globjects.h>
 #include <memory>

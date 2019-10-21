@@ -1,5 +1,5 @@
-#ifndef PSCN_H
-#define PSCN_H
+#ifndef PD_PSCN_HPP
+#define PD_PSCN_HPP
 
 #include <cmath>
 #include <cstdint>
@@ -127,7 +127,7 @@ namespace PSCN {
 		std::vector<PointLight>     pointLights;
 		std::vector<SpotLight>      spotLights;
 		std::vector<DirectionLight> directionLights;
-		float32 ambience;
+		float32                     ambience;
 
 		Body()
 		  : cameras(), actors(), pointLights(), spotLights(), directionLights(){};
@@ -164,6 +164,6 @@ namespace PSCN {
 			archive(header, body);
 		}
 	};
-}
+} // namespace PSCN
 
 #endif

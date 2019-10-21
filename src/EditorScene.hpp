@@ -1,5 +1,5 @@
-#ifndef EDITORSCENE_H
-#define EDITORSCENE_H
+#ifndef PD_EDITORSCENE_HPP
+#define PD_EDITORSCENE_HPP
 
 #include "PSCN.hpp"
 #include "Scene.hpp"

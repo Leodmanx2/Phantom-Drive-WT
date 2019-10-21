@@ -1,5 +1,5 @@
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#ifndef PD_GEOMETRY_HPP
+#define PD_GEOMETRY_HPP
 
 #include <globjects/globjects.h>
 #include <string>

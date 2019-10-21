@@ -1,5 +1,5 @@
-#ifndef INPUTMODEL_H
-#define INPUTMODEL_H
+#ifndef PD_INPUTMODEL_HPP
+#define PD_INPUTMODEL_HPP
 
 #define GLFW_INCLUDE_NONE
 

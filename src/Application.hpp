@@ -1,5 +1,5 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef PD_APPLICATION_HPP
+#define PD_APPLICATION_HPP
 
 #include <glbinding/Binding.h>
 #include <glbinding/gl/gl.h>

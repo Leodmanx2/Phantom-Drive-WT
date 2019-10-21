@@ -1,5 +1,5 @@
-#ifndef RENDERCOMPONENT_H
-#define RENDERCOMPONENT_H
+#ifndef PD_RENDERCOMPONENT_HPP
+#define PD_RENDERCOMPONENT_HPP
 
 #include <string>
 
