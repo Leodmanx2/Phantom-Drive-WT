@@ -12,6 +12,11 @@
 #include <memory>
 #include <queue>
 
+// Forward declarations ------------------------------------------------------
+class Window;
+// ---------------------------------------------------------------------------
+
+// RenderTask collects all the information required to render a game entity.
 struct RenderTask {
 	RenderComponent keys;
 	int             id;
@@ -20,10 +25,8 @@ struct RenderTask {
 	glm::mat4       projection;
 	glm::vec4       eye;
 	float           ambience;
-	// other lights
+	// TODO: other lights
 };
-
-class Window;
 
 class Renderer {
 	private:
