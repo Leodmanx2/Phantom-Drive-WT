@@ -3,52 +3,38 @@
 
 #define GLFW_INCLUDE_NONE
 
-#include "Camera.hpp"
-#include "Shader.hpp"
-#include <GLFW/glfw3.h>
+#include "Actor.hpp"
 #include <array>
-#include <chrono>
 #include <cstddef>
-#include <vector>
+#include <memory>
+#include <queue>
+#include <unordered_set>
 
 // Forward declarations ------------------------------------------------------
-class Actor;
 struct PointLight;
 struct SpotLight;
 struct DirectionLight;
-struct KeyEvent;
-struct MouseMovementEvent;
-struct MouseButtonEvent;
+class Event;
 // ---------------------------------------------------------------------------
 
-class Scene {
-	protected:
-	std::vector<Shader> m_shaders;
+class Scene final {
+	std::queue<Event>         m_events;
+	std::unordered_set<Actor> m_actors;
 
-	std::vector<Camera> m_cameras;
-
-	std::map<std::uint32_t, std::unique_ptr<Actor>> m_actors;
-
+	// Lights
 	std::array<std::unique_ptr<PointLight>, 8>     m_pointLights;
 	std::array<std::unique_ptr<SpotLight>, 8>      m_spotLights;
 	std::array<std::unique_ptr<DirectionLight>, 2> m_directionLights;
+	float                                          m_ambience;
 
-	float m_ambience; // How bright the scene is on average
-
-	std::uint32_t m_highestID; // TODO: Rename. Highest is a misleading term.
+	void addObserver(const Actor& actor);
+	void removeObserver(const Actor& actor);
+	void notifyAll(); // Works through event queue, called by update()
 
 	public:
 	explicit Scene(const std::string& name);
-	Scene(const Scene&) = delete;
-	Scene& operator=(const Scene&) = delete;
-	virtual ~Scene();
-
-	virtual void update(const std::chrono::milliseconds& duration);
-	virtual void simulate(const std::chrono::milliseconds& duration);
-	virtual void draw();
-	virtual void process(std::queue<KeyEvent>& keyEvents);
-	virtual void process(std::queue<MouseButtonEvent>& buttonEvents);
-	virtual void process(std::queue<MouseMovementEvent>& movementEvents);
+	void queue(Event event);
+	void update();
 };
 
 #endif
