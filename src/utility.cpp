@@ -1,6 +1,11 @@
 #include "utility.hpp"
 
+#include <SWI-cpp.h>
+#include <limits>
+#include <physfs.h>
 #include <plog/Log.h>
+#include <stdexcept>
+#include <vector>
 
 using namespace plog;
 
