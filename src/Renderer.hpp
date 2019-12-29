@@ -30,8 +30,6 @@ struct RenderTask {
 
 class Renderer {
 	private:
-	std::shared_ptr<Window> m_window;
-
 	std::unique_ptr<globjects::Framebuffer>  m_frameBuffer;
 	std::unique_ptr<globjects::Renderbuffer> m_colorAttachment;
 	std::unique_ptr<globjects::Renderbuffer> m_selectionAttachment;
@@ -47,13 +45,13 @@ class Renderer {
 	int m_width;
 
 	void init();
-	void resize();
+	void resize(int width, int height);
 	void clear();
 
 	std::unique_ptr<globjects::Texture> loadTexture(const std::string& name);
 
 	public:
-	explicit Renderer(const std::shared_ptr<Window>& window);
+	Renderer();
 
 	void queue(RenderTask task);
 	void draw();

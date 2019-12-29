@@ -1,7 +1,6 @@
 #include "Renderer.hpp"
 
 #include "Geometry.hpp"
-#include "Window.hpp"
 #include "pmdl.hpp"
 #include "utility.hpp"
 #include <algorithm>
@@ -18,13 +17,16 @@ using namespace globjects;
 using namespace gl;
 using namespace std;
 
-Renderer::Renderer(const shared_ptr<Window>& window) : m_window(window) {
+Renderer::Renderer() : m_height(480), m_width(640) {
+	// Enable back-face culling, z-buffering, and anti-aliasing
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LINE_SMOOTH);
+
 	init();
 }
 
 void Renderer::init() {
-	glfwGetFramebufferSize(&m_window->get(), &m_width, &m_height);
-
 	m_colorAttachment = make_unique<Renderbuffer>();
 	m_colorAttachment->storage(GL_RGBA32F, m_width, m_height);
 
@@ -49,9 +51,7 @@ void Renderer::init() {
 	}
 }
 
-void Renderer::resize() {
-	int width, height;
-	glfwGetFramebufferSize(&m_window->get(), &width, &height);
+void Renderer::resize(int width, int height) {
 	if(width != m_width || height != m_height) {
 		m_width  = width;
 		m_height = height;
@@ -60,9 +60,6 @@ void Renderer::resize() {
 }
 
 void Renderer::clear() {
-	// Resize buffers if glfw-controlled default buffer size changes
-	resize();
-
 	// Clear the default framebuffer
 	glClearColor(0.53f, 0.88f, 0.96f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -119,8 +116,6 @@ void Renderer::draw() {
 	                  m_height,
 	                  GL_COLOR_BUFFER_BIT,
 	                  GL_NEAREST);
-
-	glfwSwapBuffers(&m_window->get());
 }
 
 void Renderer::queue(RenderTask task) {
