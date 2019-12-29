@@ -1,8 +1,6 @@
 #ifndef PD_SCENE_HPP
 #define PD_SCENE_HPP
 
-#define GLFW_INCLUDE_NONE
-
 #include "Actor.hpp"
 #include <array>
 #include <cstddef>
