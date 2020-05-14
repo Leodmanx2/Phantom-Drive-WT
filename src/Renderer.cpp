@@ -96,6 +96,7 @@ void Renderer::draw() {
 		const VertexArray&   vao      = geometry->vao();
 		int                  elements = geometry->elements();
 		vao.bind();
+		// TODO: Instead of iterating over lights in the shader, call drawElements per light and blend the results with glBlendFunc
 		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 		vao.unbind();
 
