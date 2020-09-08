@@ -3,16 +3,12 @@
 
 #include <glm/glm.hpp>
 
-struct PointLight final {
-	glm::vec3 position;
-	glm::vec3 color;
-	float     intensity;
-	float     radius;
-
-	PointLight(const glm::vec3& pos, const glm::vec3& clr, float its, float rad);
-};
-
-struct SpotLight final {
+// Light can represent point lights or spot lights by changing the angle to be
+// greater than or equal to or less than 2*pi, respectively. Direction lights
+// can be approximated by setting the position to a minimum or maximum and the
+// radius to max. (Rather, a direction light is an approximation of a very
+// far off point light.)
+struct Light final {
 	glm::vec3 position;
 	glm::vec3 direction;
 	glm::vec3 color;
@@ -20,20 +16,12 @@ struct SpotLight final {
 	float     angle;
 	float     radius;
 
-	SpotLight(const glm::vec3& pos,
-	          const glm::vec3& dir,
-	          const glm::vec3& clr,
-	          float            its,
-	          float            agl,
-	          float            rad);
-};
-
-struct DirectionLight final {
-	glm::vec3 direction;
-	glm::vec3 color;
-	float     intensity;
-
-	DirectionLight(const glm::vec3& dir, const glm::vec3& clr, float its);
+	Light(const glm::vec3& pos,
+	      const glm::vec3& dir,
+	      const glm::vec3& clr,
+	      float            its,
+	      float            agl,
+	      float            rad);
 };
 
 #endif

@@ -14,18 +14,19 @@
 
 // Forward declarations ------------------------------------------------------
 class Window;
+struct Light;
 // ---------------------------------------------------------------------------
 
 // RenderTask collects all the information required to render a game entity.
 struct RenderTask {
-	RenderComponent keys;
-	int             id;
-	glm::mat4       model;
-	glm::mat4       view;
-	glm::mat4       projection;
-	glm::vec4       eye;
-	float           ambience;
-	// TODO: other lights
+	RenderComponent    keys;
+	int                id;
+	glm::mat4          model;
+	glm::mat4          view;
+	glm::mat4          projection;
+	glm::vec4          eye;
+	float              ambience;
+	std::vector<Light> lights;
 };
 
 class Renderer {

@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 
 #include "Geometry.hpp"
+#include "Light.hpp"
 #include "pmdl.hpp"
 #include "utility.hpp"
 #include <algorithm>
@@ -78,16 +79,15 @@ void Renderer::draw() {
 		RenderTask task = m_queue.front();
 
 		shared_ptr<ShaderProgram> shader = m_shaderCache.get(task.keys.shader);
-		shader->get().use();
+		shader->use();
 
-		shader->get().setUniform("id", task.id);
-		shader->get().setUniform("model", task.model);
-		shader->get().setUniform("view", task.view);
-		shader->get().setUniform("projection", task.projection);
-		shader->get().setUniform("eyePos", task.eye);
-		shader->get().setUniform("ambience", task.ambience);
-		shader->get().setUniform("normal",
-		                         inverseTranspose(task.model * task.view));
+		shader->setUniform("id", task.id);
+		shader->setUniform("model", task.model);
+		shader->setUniform("view", task.view);
+		shader->setUniform("projection", task.projection);
+		shader->setUniform("eyePos", task.eye);
+		shader->setUniform("ambience", task.ambience);
+		shader->setUniform("normal", inverseTranspose(task.model * task.view));
 
 		m_textureCache.get(task.keys.diffuse)->bindActive(0);
 		m_textureCache.get(task.keys.specular)->bindActive(1);
@@ -96,11 +96,25 @@ void Renderer::draw() {
 		const VertexArray&   vao      = geometry->vao();
 		int                  elements = geometry->elements();
 		vao.bind();
-		// TODO: Instead of iterating over lights in the shader, call drawElements per light and blend the results with glBlendFunc
-		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_CONSTANT_COLOR, GL_ONE);
+		const int lightFactor = 1.0 / task.lights.size();
+		glBlendColor(lightFactor, lightFactor, lightFactor, lightFactor);
+		for(const Light& light : task.lights) {
+			// TODO: Update test shaders to match new model
+			shader->setUniform("light.position", light.position);
+			shader->setUniform("light.direction", light.direction);
+			shader->setUniform("light.color", light.color);
+			shader->setUniform("light.intensity", light.intensity);
+			shader->setUniform("light.angle", light.angle);
+			shader->setUniform("light.radius", light.radius);
+			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+		}
+		glDisable(GL_BLEND);
 		vao.unbind();
 
-		shader->get().release();
+		shader->release();
 
 		m_queue.pop();
 	}
