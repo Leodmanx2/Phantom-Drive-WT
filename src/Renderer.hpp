@@ -4,17 +4,18 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Geometry.hpp"
+#include "Light.hpp"
 #include "RenderComponent.hpp"
 #include "ResourceCache.hpp"
 #include "ShaderProgram.hpp"
 #include <glm/glm.hpp>
+#include <globjects/Renderbuffer.h>
 #include <globjects/globjects.h>
 #include <memory>
 #include <queue>
 
 // Forward declarations ------------------------------------------------------
 class Window;
-struct Light;
 // ---------------------------------------------------------------------------
 
 // RenderTask collects all the information required to render a game entity.
@@ -42,8 +43,8 @@ class Renderer {
 
 	std::queue<RenderTask> m_queue;
 
-	int m_height;
 	int m_width;
+	int m_height;
 
 	void init();
 	void resize(int width, int height);
@@ -52,7 +53,7 @@ class Renderer {
 	std::unique_ptr<globjects::Texture> loadTexture(const std::string& name);
 
 	public:
-	Renderer();
+	Renderer(unsigned int width, unsigned int height);
 
 	void queue(RenderTask task);
 	void draw();

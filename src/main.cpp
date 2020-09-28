@@ -23,8 +23,8 @@ int main(int argc, char* argv[]) {
 
 	try {
 		const char* plArgv[] = {argv[0], "--quiet"};
-		LOG(info) << "starting Prolog engine";
-		PlEngine engine(2, const_cast<char**>(plArgv));
+		//LOG(info) << "starting Prolog engine";
+		//PlEngine engine(2, const_cast<char**>(plArgv));
 
 		Application app(argc, argv);
 		app.run();

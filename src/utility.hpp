@@ -3,6 +3,7 @@
 
 #include <string>
 
+// TODO: Replace readFile & rip out SWIPL
 std::string readFile(const std::string& filename);
 
 #endif

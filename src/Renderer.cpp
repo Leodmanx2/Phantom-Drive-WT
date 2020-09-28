@@ -1,7 +1,6 @@
 #include "Renderer.hpp"
 
 #include "Geometry.hpp"
-#include "Light.hpp"
 #include "pmdl.hpp"
 #include "utility.hpp"
 #include <algorithm>
@@ -18,7 +17,8 @@ using namespace globjects;
 using namespace gl;
 using namespace std;
 
-Renderer::Renderer() : m_height(480), m_width(640) {
+Renderer::Renderer(unsigned int width, unsigned int height)
+  : m_width(width), m_height(height) {
 	// Enable back-face culling, z-buffering, and anti-aliasing
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);

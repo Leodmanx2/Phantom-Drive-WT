@@ -2,28 +2,25 @@
 #define PD_SCENE_HPP
 
 #include "Actor.hpp"
-#include <array>
+#include "Light.hpp"
 #include <cstddef>
 #include <memory>
 #include <queue>
-#include <unordered_set>
+//#include <unordered_set>
+#include <vector>
 
 // Forward declarations ------------------------------------------------------
-struct PointLight;
-struct SpotLight;
-struct DirectionLight;
-class Event;
+class Event {}; // TODO: Define Event
 // ---------------------------------------------------------------------------
 
 class Scene final {
-	std::queue<Event>         m_events;
-	std::unordered_set<Actor> m_actors;
+	std::queue<Event> m_events;
+	//std::unordered_set<Actor> m_actors;
+	// TODO: Manage Actors
 
 	// Lights
-	std::array<std::unique_ptr<PointLight>, 8>     m_pointLights;
-	std::array<std::unique_ptr<SpotLight>, 8>      m_spotLights;
-	std::array<std::unique_ptr<DirectionLight>, 2> m_directionLights;
-	float                                          m_ambience;
+	std::vector<std::unique_ptr<Light>> m_pointLights;
+	float                               m_ambience;
 
 	void addObserver(const Actor& actor);
 	void removeObserver(const Actor& actor);

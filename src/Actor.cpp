@@ -4,5 +4,5 @@
 #include "SpatialComponent.hpp"
 
 Actor::Actor(const std::string& name) {
-	// TODO: Load scene from file
+	// TODO: Load Actor from file
 }

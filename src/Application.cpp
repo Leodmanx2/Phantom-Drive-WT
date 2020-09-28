@@ -6,20 +6,24 @@
 
 using namespace plog;
 
+const unsigned int INIT_WIDTH  = 640;
+const unsigned int INIT_HEIGHT = 640;
+
 // ---------------------------------------------------------------------------
 //  Constructors & Destructors
 // ---------------------------------------------------------------------------
 
-Application::Application(int argc, char** argv) {
+Application::Application(int argc, char** argv)
+  : m_renderer(new Renderer(INIT_WIDTH, INIT_HEIGHT)) {
 	initFilesystem(argc, argv);
-	// TODO: Initialize renderer, sync Renderer with window size
 
 // Make window and OpenGl context with available extensions
 #ifdef DEBUG
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	m_window = glfwCreateWindow(640, 480, "Phantom Drive (WT)", nullptr, nullptr);
+	m_window = glfwCreateWindow(
+	  INIT_WIDTH, INIT_HEIGHT, "Phantom Drive (WT)", nullptr, nullptr);
 	if(!m_window) {
 		glfwTerminate();
 		throw std::runtime_error("Window or OpenGL context could not be created");
