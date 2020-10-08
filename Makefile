@@ -25,7 +25,7 @@ ifeq ($(OS), Windows_NT)
 else
 	LDLIBS = -lGL -lGLU
 endif
-LDLIBS += -lphysfs -lglfw3 -lglbinding -lglobjects
+LDLIBS += -lglfw3 -lglbinding -lglobjects
 
 all: CXXFLAGS += -O2 -march=native -finline-functions -flto
 all: LDFLAGS += -s -flto

@@ -12,6 +12,11 @@ struct RenderComponent {
 	std::string specular;
 	std::string shader;
 	std::string geometry;
+
+	RenderComponent(const std::string& diff,
+	                const std::string& spec,
+	                const std::string& shdr,
+	                const std::string& geo);
 };
 
 #endif

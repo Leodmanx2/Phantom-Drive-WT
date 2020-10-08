@@ -6,8 +6,6 @@
 #include <string>
 #include <unordered_map>
 
-// TODO: Implement ResourceCache
-
 template <typename T>
 class ResourceCache {
 	struct CacheEntry {
@@ -22,8 +20,25 @@ class ResourceCache {
 
 	public:
 	// TODO: Construct with default/placeholder resource
-	std::shared_ptr<T> get(std::string key);
-	void               put(std::string key, std::shared_ptr<T> resource);
+	std::shared_ptr<T> get(const std::string& key);
+	void               put(const std::string& key, std::shared_ptr<T> resource);
 };
+
+template <typename T>
+void ResourceCache<T>::removeExpiredEntries() {}
+
+template <typename T>
+std::shared_ptr<T> ResourceCache<T>::get(const std::string& key) {
+	auto it = m_map.find(key);
+	if(it != m_map.end()) { return it->second.resource; }
+	return nullptr;
+}
+
+template <typename T>
+void ResourceCache<T>::put(const std::string& key,
+                           std::shared_ptr<T> resource) {
+	CacheEntry entry{resource, std::chrono::system_clock::now()};
+	m_map.insert({key, entry});
+}
 
 #endif

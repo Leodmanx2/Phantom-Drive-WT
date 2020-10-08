@@ -7,7 +7,7 @@
 using namespace plog;
 
 const unsigned int INIT_WIDTH  = 640;
-const unsigned int INIT_HEIGHT = 640;
+const unsigned int INIT_HEIGHT = 480;
 
 // ---------------------------------------------------------------------------
 //  Constructors & Destructors

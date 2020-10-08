@@ -28,6 +28,15 @@ struct RenderTask {
 	glm::vec4          eye;
 	float              ambience;
 	std::vector<Light> lights;
+
+	RenderTask(const RenderComponent&    component,
+	           int                       id,
+	           glm::mat4                 model,
+	           glm::mat4                 view,
+	           glm::mat4                 projection,
+	           glm::vec4                 eye,
+	           float                     ambience,
+	           const std::vector<Light>& lights);
 };
 
 class Renderer {

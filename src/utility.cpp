@@ -1,6 +1,4 @@
 #include "utility.hpp"
-
-#include <SWI-cpp.h>
 #include <limits>
 #include <physfs.h>
 #include <plog/Log.h>
@@ -9,34 +7,22 @@
 
 using namespace plog;
 
-// pd_consult takes a filename as argument, opens that file, and consults it.
-PREDICATE(pd_consult, 1) {
-	const std::string fileContents = readFile(static_cast<char*>(A1));
-	PlTerm            Stream;
-
-	PlCall("open_string", PlTermv(fileContents.c_str(), Stream));
-
-	PlCompound streamOption("stream", Stream);
-	PlTerm     options;
-	PlTail     list(options);
-	list.append(streamOption);
-	list.close();
-	PlCall("load_files", PlTermv(A1, options));
-
-	PlCall("close", Stream);
-	return true;
-}
-
 std::string readFile(const std::string& filename) {
-	if(!PHYSFS_exists(filename.c_str())) {
+	LOG(plog::debug) << "readFile -- 1";
+	if(!PHYSFS_exists(
+	     filename.c_str())) { // FIXME: Crash here; PHYSFD wasn't initialized
+		LOG(plog::debug) << "readFile -- 1.1";
 		throw std::runtime_error(std::string("Could not find file: ") + filename);
+		LOG(plog::debug) << "readFile -- 1.2";
 	}
 
+	LOG(plog::debug) << "readFile -- 2";
 	PHYSFS_File* shaderFile = PHYSFS_openRead(filename.c_str());
 	if(!shaderFile) {
 		throw std::runtime_error(std::string("Could not open file: ") + filename);
 	}
 
+	LOG(plog::debug) << "readFile -- 3";
 	PHYSFS_sint64 fileSizeLong = PHYSFS_fileLength(shaderFile);
 	if(fileSizeLong == -1)
 		throw std::runtime_error(
@@ -46,6 +32,7 @@ std::string readFile(const std::string& filename) {
 
 	const int fileSize = static_cast<int>(fileSizeLong);
 
+	LOG(plog::debug) << "readFile -- 4";
 	std::string buffer;
 	buffer.resize(fileSize);
 	const int bytesRead =
