@@ -2,7 +2,6 @@
 
 #include "Geometry.hpp"
 #include "pmdl.hpp"
-#include "utility.hpp"
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -26,7 +25,7 @@ RenderTask::RenderTask(const RenderComponent&    component,
                        glm::mat4                 model,
                        glm::mat4                 view,
                        glm::mat4                 projection,
-                       glm::vec4                 eye,
+                       glm::vec3                 eye,
                        float                     ambience,
                        const std::vector<Light>& lights)
   : keys(component)
@@ -117,6 +116,7 @@ void Renderer::draw() {
 		const VertexArray&   vao      = geometry->vao();
 		int                  elements = geometry->elements();
 		vao.bind();
+
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_CONSTANT_COLOR, GL_ONE);
@@ -133,8 +133,8 @@ void Renderer::draw() {
 			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 		}
 		glDisable(GL_BLEND);
-		vao.unbind();
 
+		vao.unbind();
 		shader->release();
 
 		m_queue.pop();
@@ -155,40 +155,31 @@ void Renderer::draw() {
 }
 
 void Renderer::queue(RenderTask task) {
-	LOG(plog::debug) << "diffuse lookup";
 	if(!m_textureCache.get(task.keys.diffuse)) {
-		LOG(plog::debug) << "no diffuse--loading";
 		shared_ptr<Texture> diffuse(loadTexture(task.keys.diffuse));
-		LOG(plog::debug) << "caching diffuse";
 		m_textureCache.put(task.keys.diffuse, diffuse);
 	}
 
-	LOG(plog::debug) << "specular lookup";
 	if(!m_textureCache.get(task.keys.specular)) {
 		shared_ptr<Texture> specular(loadTexture(task.keys.specular));
 		m_textureCache.put(task.keys.specular, specular);
 	}
 
-	LOG(plog::debug) << "geometry lookup";
 	if(!m_geometryCache.get(task.keys.geometry)) {
 		shared_ptr<Geometry> geometry = make_shared<Geometry>(task.keys.geometry);
 		m_geometryCache.put(task.keys.geometry, geometry);
 	}
 
-	LOG(plog::debug) << "shader lookup";
 	if(!m_shaderCache.get(task.keys.shader)) {
 		shared_ptr<ShaderProgram> shader =
 		  make_shared<ShaderProgram>(task.keys.shader);
 		m_shaderCache.put(task.keys.shader, shader);
 	}
 
-	LOG(plog::debug) << "queuing render task";
 	m_queue.push(task);
 }
 
 unique_ptr<Texture> Renderer::loadTexture(const string& name) {
-	LOG(plog::debug) << "loadTexture()";
-	// Create a GLI texture from the data read in by PhysFS
 	gli::texture texture = gli::load(name);
 	if(texture.empty()) {
 		throw std::runtime_error(name + std::string(" is not a valid texture"));
@@ -203,7 +194,6 @@ unique_ptr<Texture> Renderer::loadTexture(const string& name) {
 		  "texture target is not GL_TEXTURE_2D/gli::TARGET_2D");
 	}
 
-	LOG(plog::debug) << "making GPU texture resources";
 	// Reserve memory on the GPU for texture and describe its layout
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -225,7 +215,6 @@ unique_ptr<Texture> Renderer::loadTexture(const string& name) {
 	               extent.x,
 	               extent.y);
 
-	LOG(plog::debug) << "writing data to GPU";
 	// Write image data to GPU memory
 	for(std::size_t layer = 0; layer < texture.layers(); ++layer) {
 		for(std::size_t face = 0; face < texture.faces(); ++face) {

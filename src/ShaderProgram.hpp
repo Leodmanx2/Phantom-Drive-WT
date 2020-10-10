@@ -1,6 +1,7 @@
 #ifndef PD_SHADERPROGRAM_HPP
 #define PD_SHADERPROGRAM_HPP
 
+#include <globjects/base/File.h>
 #include <globjects/globjects.h>
 #include <memory>
 
@@ -12,11 +13,11 @@
 //       They are only being retained because globjects::Shader tracks them
 
 class ShaderProgram {
-	std::unique_ptr<globjects::StaticStringSource> m_vertexSource;
-	std::unique_ptr<globjects::StaticStringSource> m_fragmentSource;
-	std::unique_ptr<globjects::Shader>             m_vertexShader;
-	std::unique_ptr<globjects::Shader>             m_fragmentShader;
-	std::unique_ptr<globjects::Program>            m_program;
+	std::unique_ptr<globjects::File>    m_vertexSource;
+	std::unique_ptr<globjects::File>    m_fragmentSource;
+	std::unique_ptr<globjects::Shader>  m_vertexShader;
+	std::unique_ptr<globjects::Shader>  m_fragmentShader;
+	std::unique_ptr<globjects::Program> m_program;
 
 	public:
 	explicit ShaderProgram(const std::string& name);

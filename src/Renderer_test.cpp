@@ -3,12 +3,18 @@
 #include <iostream>
 
 #include <GLFW/glfw3.h>
+#include <glbinding-aux/Meta.h>
+#include <glbinding-aux/types_to_string.h>
+#include <glbinding/AbstractFunction.h>
+#include <glbinding/FunctionCall.h>
 #include <glbinding/gl/gl.h>
+#include <glbinding/glbinding.h>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <plog/Appenders/ColorConsoleAppender.h>
 #include <plog/Log.h>
+#include <sstream>
 
 #include "RenderComponent.hpp"
 #include "Renderer.hpp"
@@ -16,6 +22,8 @@
 using namespace plog;
 using namespace std;
 using namespace glm;
+using namespace glbinding;
+using namespace gl;
 
 void glfw_error_callback(int, const char* description) {
 	LOG(error) << description;
@@ -51,7 +59,28 @@ int main() {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		globjects::init(glfwGetProcAddress);
+		/*glbinding::setCallbackMaskExcept(CallbackMask::After |
+		                                   CallbackMask::ParametersAndReturnValue,
+		                                 {"glGetError"});
+		setAfterCallback([](const FunctionCall& call) {
+			const GLenum error = glGetError();
+			if(error != GL_NO_ERROR) {
+				stringstream ss;
+				ss << call.function->name() << "(";
 
+				for(unsigned i = 0; i < call.parameters.size(); ++i) {
+					ss << call.parameters[i].get();
+					if(i < call.parameters.size() - 1) ss << ", ";
+				}
+
+				ss << ")";
+
+				if(call.returnValue) { ss << " -> " << call.returnValue.get(); }
+
+				LOG(plog::debug) << ss.str();
+				LOG(plog::error) << glbinding::aux::Meta::getString(error);
+			}
+		});*/
 		// Enable v-sync
 		glfwSwapInterval(1);
 
@@ -64,13 +93,13 @@ int main() {
 
 		RenderComponent component("ass/Models/Akari/diffuse.dds",
 		                          "ass/Models/Akari/specular.dds",
-		                          "test_shader",
+		                          "ass/Shaders/textured",
 		                          "ass/Models/Akari/model.mdl");
 
 		mat4 model(1.0f);
 
-		vec4 eye(1.0f, 1.0f, 1.0f, 1.0f);
-		mat4 view = lookAt(vec3{eye}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f});
+		vec3 eye(1.0f, 1.0f, 1.0f);
+		mat4 view = lookAt(eye, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f});
 
 		mat4 projection =
 		  ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height));
@@ -79,10 +108,13 @@ int main() {
 
 		LOG(debug) << "starting main loop";
 
-		glfwPollEvents();
 		while(!glfwWindowShouldClose(window)) {
+			glfwPollEvents();
+			if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			renderer.queue(task);
 			renderer.draw();
+			glfwSwapBuffers(window);
 		}
 
 		LOG(debug) << "loop finished";

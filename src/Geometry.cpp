@@ -1,11 +1,13 @@
 #include "Geometry.hpp"
 
 #include "pmdl.hpp"
-#include "utility.hpp"
+#include <algorithm>
 #include <glbinding/gl/gl.h>
 #include <glm/glm.hpp>
 #include <globjects/VertexAttributeBinding.h>
 #include <vector>
+
+#include <plog/Log.h>
 
 using namespace std;
 using namespace globjects;
@@ -17,6 +19,7 @@ Geometry::Geometry(const string& name)
   , m_vertexBuffer(new Buffer())
   , m_indexBuffer(new Buffer())
   , m_elementCount(0) {
+	LOG(plog::debug) << "constructing geometry";
 	struct Vertex final {
 		vec3 position;
 		vec3 normal;
@@ -26,11 +29,8 @@ Geometry::Geometry(const string& name)
 	// Prepare buffer data
 	vector<Vertex>       vertices;
 	vector<unsigned int> indices;
-	// FIXME: modelFilename is a magic string
-	const string  modelFilename = "Models/"s + name + "/model.mdl"s;
-	const string  buffer        = readFile(modelFilename);
-	istringstream fileStream(buffer, istringstream::binary);
-	PMDL::File    fileData = PMDL::File::parse(fileStream);
+	ifstream             fileStream(name, ios::binary);
+	PMDL::File           fileData = PMDL::File::parse(fileStream);
 
 	// Load model vertices into local buffer
 	for(PMDL::Vertex fileVert : fileData.body.vertices) {
@@ -45,12 +45,12 @@ Geometry::Geometry(const string& name)
 	// Load model indices into local buffer
 	copy(fileData.body.indices.begin(),
 	     fileData.body.indices.end(),
-	     indices.begin());
+	     back_inserter(indices));
 
 	m_elementCount = indices.size();
 
-	m_vertexBuffer->setData(vertices, GL_ARRAY_BUFFER);
-	m_indexBuffer->setData(indices, GL_ELEMENT_ARRAY_BUFFER);
+	m_vertexBuffer->setData(vertices, GL_STATIC_DRAW);
+	m_indexBuffer->setData(indices, GL_STATIC_DRAW);
 
 	m_vertexArray->bind();
 	m_vertexArray->bindElementBuffer(m_indexBuffer.get());

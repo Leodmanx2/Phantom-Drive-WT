@@ -25,8 +25,6 @@ class Application final {
 	static void
 	cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 
-	void initFilesystem(int argc, char** argv);
-
 	public:
 	Application(int argc, char** argv);
 	~Application();
