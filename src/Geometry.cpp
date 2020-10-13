@@ -56,18 +56,21 @@ Geometry::Geometry(const string& name)
 	m_vertexArray->bindElementBuffer(m_indexBuffer.get());
 
 	auto positionBinding = m_vertexArray->binding(0);
-	positionBinding->setBuffer(m_vertexBuffer.get(), 0, sizeof(Vertex));
-	positionBinding->setFormat(3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+	positionBinding->setAttribute(0);
+	positionBinding->setBuffer(m_vertexBuffer.get(), 0, 32);
+	positionBinding->setFormat(3, GL_FLOAT, GL_FALSE, 0);
 	m_vertexArray->enable(0);
 
 	auto normalBinding = m_vertexArray->binding(1);
-	normalBinding->setBuffer(m_vertexBuffer.get(), 0, sizeof(Vertex));
-	normalBinding->setFormat(3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+	normalBinding->setAttribute(1);
+	normalBinding->setBuffer(m_vertexBuffer.get(), 0, 32);
+	normalBinding->setFormat(3, GL_FLOAT, GL_FALSE, 12);
 	m_vertexArray->enable(1);
 
 	auto uvBinding = m_vertexArray->binding(2);
-	uvBinding->setBuffer(m_vertexBuffer.get(), 0, sizeof(Vertex));
-	uvBinding->setFormat(2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texCoord));
+	uvBinding->setAttribute(2);
+	uvBinding->setBuffer(m_vertexBuffer.get(), 0, 32);
+	uvBinding->setFormat(2, GL_FLOAT, GL_FALSE, 24);
 	m_vertexArray->enable(2);
 }
 

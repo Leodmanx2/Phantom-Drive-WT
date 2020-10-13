@@ -98,11 +98,14 @@ int main() {
 
 		mat4 model(1.0f);
 
-		vec3 eye(1.0f, 1.0f, 1.0f);
-		mat4 view = lookAt(eye, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f});
+		vec3 eye(-50.0f, 0.0f, 20.0f);
+		mat4 view = lookAt(eye, {0.0f, 0.0f, 20.0f}, {0.0f, 0.0f, 1.0f});
 
 		mat4 projection =
-		  ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height));
+		  glm::perspective(45.0f,
+		                   static_cast<float>(width) / static_cast<float>(height),
+		                   0.1f,
+		                   10000.0f);
 
 		RenderTask task(component, 0, model, view, projection, eye, 1.0f, lights);
 

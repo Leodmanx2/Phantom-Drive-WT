@@ -95,6 +95,8 @@ void Renderer::clear() {
 void Renderer::draw() {
 	clear();
 
+	m_frameBuffer->bind(GL_DRAW_FRAMEBUFFER);
+
 	while(!m_queue.empty()) {
 		RenderTask task = m_queue.front();
 
@@ -105,9 +107,10 @@ void Renderer::draw() {
 		shader->setUniform("model", task.model);
 		shader->setUniform("view", task.view);
 		shader->setUniform("projection", task.projection);
+		shader->setUniform("normalMatrix",
+		                   inverseTranspose(task.model * task.view));
 		shader->setUniform("eyePos", task.eye);
 		shader->setUniform("ambience", task.ambience);
-		shader->setUniform("normal", inverseTranspose(task.model * task.view));
 
 		m_textureCache.get(task.keys.diffuse)->bindActive(0);
 		m_textureCache.get(task.keys.specular)->bindActive(1);
