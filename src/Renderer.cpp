@@ -120,13 +120,12 @@ void Renderer::draw() {
 		int                  elements = geometry->elements();
 		vao.bind();
 
-		glEnable(GL_BLEND);
+		/*glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_CONSTANT_COLOR, GL_ONE);
 		const int lightFactor = 1.0 / task.lights.size();
-		glBlendColor(lightFactor, lightFactor, lightFactor, lightFactor);
+		glBlendColor(lightFactor, lightFactor, lightFactor, lightFactor);*/
 		for(const Light& light : task.lights) {
-			// TODO: Update test shaders to match new model
 			shader->setUniform("light.position", light.position);
 			shader->setUniform("light.direction", light.direction);
 			shader->setUniform("light.color", light.color);
@@ -135,7 +134,7 @@ void Renderer::draw() {
 			shader->setUniform("light.radius", light.radius);
 			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 		}
-		glDisable(GL_BLEND);
+		//glDisable(GL_BLEND);
 
 		vao.unbind();
 		shader->release();

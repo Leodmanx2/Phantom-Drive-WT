@@ -18,14 +18,7 @@ uniform float ambience;
 
 uniform int ID;
 
-struct PointLight {
-	vec3 position;
-	vec3 color;
-	float intensity;
-	float radius;
-};
-
-struct SpotLight {
+struct Light {
 	vec3 position;
 	vec3 direction;
 	vec3 color;
@@ -34,19 +27,7 @@ struct SpotLight {
 	float radius;
 };
 
-struct DirectionLight {
-	vec3 direction;
-	vec3 color;
-	float intensity;
-};
-
-#define POINT_LIGHT_COUNT 8
-#define SPOT_LIGHT_COUNT 8
-#define DIRECTION_LIGHT_COUNT 2
-
-uniform PointLight pointLights[POINT_LIGHT_COUNT];
-uniform SpotLight spotLights[SPOT_LIGHT_COUNT];
-uniform DirectionLight directionLights[DIRECTION_LIGHT_COUNT];
+uniform Light light;
 
 // ----------------------------------------------------------------------------
 //  Input
@@ -64,131 +45,40 @@ layout(location = 0) out vec4 out_color;
 layout(location = 1) out int out_id;
 
 // ----------------------------------------------------------------------------
-//  Helper functions
-// ----------------------------------------------------------------------------
-
-vec3 pointLight(PointLight light) {
-	vec3 lightPos = (view * vec4(light.position, 1.0)).xyz;
-
-	vec3 normal = normalize(frag_normal);
-	vec3 toLight = normalize(lightPos - frag_position);
-	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
-
-	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
-	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
-	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
-
-	float distanceToLight = abs(distance(lightPos, frag_position));
-	float falloff = 1.0 / (pow(light.radius, 2) * 0.05);
-	float attenuation = 1.0 / (1.0 + falloff * pow(distanceToLight, 2));
-
-	float diffuseIntensity = dot(normal, toLight);
-	      diffuseIntensity = max(diffuseIntensity, 0.0);
-	      diffuseIntensity *= attenuation;
-
-	float specularIntensity = dot(normal, halfVec);
-	      specularIntensity = max(specularIntensity, 0.0);
-	      specularIntensity = pow(specularIntensity, shine);
-	      specularIntensity *= attenuation;
-
-	diffuseColor *= light.color * light.intensity;
-	specularColor *= light.color * light.intensity;
-
-	vec3 color = diffuseIntensity * diffuseColor +
-	             specularIntensity * specularColor;
-
-	return color;
-}
-
-vec3 spotLight(SpotLight light) {
-	vec3 lightPos = (view * vec4(light.position, 1.0)).xyz;
-	vec3 lightDir = (view * vec4(light.position + light.direction, 1.0)).xyz - lightPos;
-
-	vec3 toLight = normalize(lightPos - frag_position);
-
-	float angle = degrees(acos(dot(-toLight, normalize(lightDir))));
-	if(angle > light.angle) return vec3(0);
-
-	vec3 normal = normalize(frag_normal);
-	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
-
-	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
-	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
-	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
-
-	float distanceToLight = abs(distance(lightPos, frag_position));
-	float falloff = 1.0 / (pow(light.radius, 2) * 0.05);
-	float attenuation = 1.0 / (1.0 + falloff * pow(distanceToLight, 2));
-
-	float diffuseIntensity = dot(normal, toLight);
-	      diffuseIntensity = max(diffuseIntensity, 0.0);
-	      diffuseIntensity *= attenuation;
-
-	float specularIntensity = dot(normal, halfVec);
-	      specularIntensity = max(specularIntensity, 0.0);
-	      specularIntensity = pow(specularIntensity, shine);
-	      specularIntensity *= attenuation;
-
-	diffuseColor *= light.color * light.intensity;
-	specularColor *= light.color * light.intensity;
-
-	vec3 color = diffuseIntensity * diffuseColor +
-	             specularIntensity * specularColor;
-
-	return color;
-}
-
-vec3 directionLight(DirectionLight light) {
-	vec3 lightDir = (view * vec4(light.direction, 0.0)).xyz;
-
-	vec3 normal = normalize(frag_normal);
-	vec3 toLight = normalize(-lightDir);
-	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
-
-	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
-	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
-	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
-
-	float diffuseIntensity = dot(normal, toLight);
-	      diffuseIntensity = max(diffuseIntensity, 0.0);
-
-	float specularIntensity = dot(normal, halfVec);
-	      specularIntensity = max(specularIntensity, 0.0);
-	      specularIntensity = pow(specularIntensity, shine);
-
-	diffuseColor *= light.color * light.intensity;
-	specularColor *= light.color * light.intensity;
-
-	vec3 color = diffuseIntensity * diffuseColor +
-	             specularIntensity * specularColor;
-
-	return color;
-}
-
-// ----------------------------------------------------------------------------
 //  Entry point
 // ----------------------------------------------------------------------------
 
 void main() {
-	// TODO: Some of the code in the helper functions should be moved into main to
-	//       prevent extraneous calculations
-
 	vec3 color = vec3(0);
 
-	// Directional lights
-	for(int i=0; i<DIRECTION_LIGHT_COUNT; ++i) {
-		color += directionLight(directionLights[i]);
-	}
+	vec3 lightPos = (view * vec4(light.position, 1.0)).xyz;
 
-	// Point lights
-	for(int i=0; i<POINT_LIGHT_COUNT; ++i) {
-		color += pointLight(pointLights[i]);
-	}
+	vec3 normal = normalize(frag_normal);
+	vec3 toLight = normalize(lightPos - frag_position);
+	vec3 halfVec = normalize(toLight + normalize(eyePos - frag_position));
 
-	// Spot lights
-	for(int i=0; i<SPOT_LIGHT_COUNT; ++i) {
-		color += spotLight(spotLights[i]);
-	}
+	vec3 diffuseColor = texture2D(diffuseMap, frag_texCoord).rgb;
+	vec3 specularColor = texture2D(specularMap, frag_texCoord).rgb;
+	float shine = 255.0 * texture2D(specularMap, frag_texCoord).a;
+
+	float distanceToLight = abs(distance(lightPos, frag_position));
+	float falloff = 1.0 / (pow(light.radius, 2) * 0.05);
+	float attenuation = 1.0 / (1.0 + falloff * pow(distanceToLight, 2));
+
+	float diffuseIntensity = dot(normal, toLight);
+	      diffuseIntensity = max(diffuseIntensity, 0.0);
+	      diffuseIntensity *= attenuation;
+
+	float specularIntensity = dot(normal, halfVec);
+	      specularIntensity = max(specularIntensity, 0.0);
+	      specularIntensity = pow(specularIntensity, shine);
+	      specularIntensity *= attenuation;
+
+	diffuseColor *= light.color * light.intensity;
+	specularColor *= light.color * light.intensity;
+
+	color += diffuseIntensity * diffuseColor +
+	             specularIntensity * specularColor;
 
 	color += ambience * texture2D(diffuseMap, frag_texCoord).rgb;
 

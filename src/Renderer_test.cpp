@@ -1,5 +1,6 @@
 #define GLFW_INCLUDE_NONE
 
+#include <cmath>
 #include <iostream>
 
 #include <GLFW/glfw3.h>
@@ -87,19 +88,20 @@ int main() {
 		Renderer renderer(width, height);
 
 		vector<Light> lights;
-		Light         light(
-      {0, 0, 0}, {0, 0, 0}, {255.0f, 255.0f, 255.0f}, 1.0f, 360.0f, 100.0f);
+		Light         light({0, 0, 100.0f},
+                {0, 0, 0},
+                {255.0f, 255.0f, 255.0f},
+                0.01f,
+                360.0f,
+                1000.0f);
 		lights.push_back(light);
 
 		RenderComponent component("ass/Models/Akari/diffuse.dds",
-		                          "ass/Models/Akari/specular.dds",
+		                          "ass/Models/Akari/diffuse.dds",
 		                          "ass/Shaders/textured",
 		                          "ass/Models/Akari/model.mdl");
 
 		mat4 model(1.0f);
-
-		vec3 eye(-50.0f, 0.0f, 20.0f);
-		mat4 view = lookAt(eye, {0.0f, 0.0f, 20.0f}, {0.0f, 0.0f, 1.0f});
 
 		mat4 projection =
 		  glm::perspective(45.0f,
@@ -107,17 +109,21 @@ int main() {
 		                   0.1f,
 		                   10000.0f);
 
-		RenderTask task(component, 0, model, view, projection, eye, 1.0f, lights);
-
 		LOG(debug) << "starting main loop";
 
+		float x = 0.0f;
 		while(!glfwWindowShouldClose(window)) {
 			glfwPollEvents();
 			if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
+
+			vec3       eye(cos(x) * 70.0f, sin(x) * 70.0f, 30.0f);
+			mat4       view = lookAt(eye, {0.0f, 0.0f, 30.0f}, {0.0f, 0.0f, 1.0f});
+			RenderTask task(component, 0, model, view, projection, eye, 1.0f, lights);
 			renderer.queue(task);
 			renderer.draw();
 			glfwSwapBuffers(window);
+			x += 0.01f;
 		}
 
 		LOG(debug) << "loop finished";
