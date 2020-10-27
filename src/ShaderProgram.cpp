@@ -7,17 +7,12 @@ using namespace std;
 using namespace gl;
 using namespace globjects;
 
-ShaderProgram::ShaderProgram(const string& name)
-  : m_vertexShader(nullptr)
-  , m_fragmentShader(nullptr)
-  , m_program(new Program()) {
-	auto vertexSource   = Shader::sourceFromFile(name + ".vert.glsl"s);
-	auto fragmentSource = Shader::sourceFromFile(name + ".frag.glsl"s);
-	m_vertexShader = make_unique<Shader>(GL_VERTEX_SHADER, vertexSource.get());
-	m_fragmentShader =
-	  make_unique<Shader>(GL_FRAGMENT_SHADER, fragmentSource.get());
-	m_program->attach(m_vertexShader.get());
-	m_program->attach(m_fragmentShader.get());
+ShaderProgram::ShaderProgram(const gl::GLenum type,
+                             const string&    file) // TODO: Take fs::path
+  : m_shader(nullptr), m_program(new Program()) {
+	auto source = Shader::sourceFromFile(file);
+	m_shader    = make_unique<Shader>(type, source.get());
+	m_program->attach(m_shader.get());
 }
 
 Program& ShaderProgram::get() const { return *m_program; }

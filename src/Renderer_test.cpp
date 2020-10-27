@@ -98,7 +98,8 @@ int main() {
 
 		RenderComponent component("ass/Models/Akari/diffuse.dds",
 		                          "ass/Models/Akari/diffuse.dds",
-		                          "ass/Shaders/textured",
+		                          "ass/Shaders/textured.vert.glsl",
+		                          "ass/Shaders/textured.frag.glsl",
 		                          "ass/Models/Akari/model.mdl");
 
 		mat4 model(1.0f);

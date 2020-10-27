@@ -5,12 +5,11 @@
 #include <memory>
 
 class ShaderProgram {
-	std::unique_ptr<globjects::Shader>  m_vertexShader;
-	std::unique_ptr<globjects::Shader>  m_fragmentShader;
+	std::unique_ptr<globjects::Shader>  m_shader;
 	std::unique_ptr<globjects::Program> m_program;
 
 	public:
-	explicit ShaderProgram(const std::string& name);
+	explicit ShaderProgram(const gl::GLenum type, const std::string& file);
 
 	globjects::Program& get() const;
 

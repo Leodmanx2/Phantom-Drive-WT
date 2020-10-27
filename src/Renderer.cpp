@@ -8,6 +8,7 @@
 #include <glbinding/gl/gl.h>
 #include <gli/gli.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include <globjects/ProgramPipeline.h>
 #include <globjects/Renderbuffer.h>
 #include <globjects/Shader.h>
 #include <globjects/Texture.h>
@@ -100,17 +101,26 @@ void Renderer::draw() {
 	while(!m_queue.empty()) {
 		RenderTask task = m_queue.front();
 
-		shared_ptr<ShaderProgram> shader = m_shaderCache.get(task.keys.shader);
-		shader->use();
+		shared_ptr<ShaderProgram> vertexShader =
+		  m_shaderCache.get(task.keys.vertexShader);
+		shared_ptr<ShaderProgram> fragmentShader =
+		  m_shaderCache.get(task.keys.fragmentShader);
 
-		shader->setUniform("id", task.id);
-		shader->setUniform("model", task.model);
-		shader->setUniform("view", task.view);
-		shader->setUniform("projection", task.projection);
-		shader->setUniform("normalMatrix",
-		                   inverseTranspose(task.model * task.view));
-		shader->setUniform("eyePos", task.eye);
-		shader->setUniform("ambience", task.ambience);
+		ProgramPipeline pipeline;
+		pipeline.useStages(&vertexShader->get(), gl::GL_VERTEX_SHADER_BIT);
+		pipeline.useStages(&fragmentShader->get(), gl::GL_FRAGMENT_SHADER_BIT);
+		pipeline.use();
+
+		vertexShader->setUniform("model", task.model);
+		vertexShader->setUniform("view", task.view);
+		vertexShader->setUniform("projection", task.projection);
+		vertexShader->setUniform("normalMatrix",
+		                         inverseTranspose(task.model * task.view));
+
+		fragmentShader->setUniform("view", task.view);
+		fragmentShader->setUniform("id", task.id);
+		fragmentShader->setUniform("eyePos", task.eye);
+		fragmentShader->setUniform("ambience", task.ambience);
 
 		m_textureCache.get(task.keys.diffuse)->bindActive(0);
 		m_textureCache.get(task.keys.specular)->bindActive(1);
@@ -126,18 +136,18 @@ void Renderer::draw() {
 		const int lightFactor = 1.0 / task.lights.size();
 		glBlendColor(lightFactor, lightFactor, lightFactor, lightFactor);*/
 		for(const Light& light : task.lights) {
-			shader->setUniform("light.position", light.position);
-			shader->setUniform("light.direction", light.direction);
-			shader->setUniform("light.color", light.color);
-			shader->setUniform("light.intensity", light.intensity);
-			shader->setUniform("light.angle", light.angle);
-			shader->setUniform("light.radius", light.radius);
+			fragmentShader->setUniform("light.position", light.position);
+			fragmentShader->setUniform("light.direction", light.direction);
+			fragmentShader->setUniform("light.color", light.color);
+			fragmentShader->setUniform("light.intensity", light.intensity);
+			fragmentShader->setUniform("light.angle", light.angle);
+			fragmentShader->setUniform("light.radius", light.radius);
 			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 		}
 		//glDisable(GL_BLEND);
 
 		vao.unbind();
-		shader->release();
+		pipeline.release();
 
 		m_queue.pop();
 	}
@@ -172,10 +182,16 @@ void Renderer::queue(RenderTask task) {
 		m_geometryCache.put(task.keys.geometry, geometry);
 	}
 
-	if(!m_shaderCache.get(task.keys.shader)) {
-		shared_ptr<ShaderProgram> shader =
-		  make_shared<ShaderProgram>(task.keys.shader);
-		m_shaderCache.put(task.keys.shader, shader);
+	if(!m_shaderCache.get(task.keys.vertexShader)) {
+		shared_ptr<ShaderProgram> vertexShader =
+		  make_shared<ShaderProgram>(GL_VERTEX_SHADER, task.keys.vertexShader);
+		m_shaderCache.put(task.keys.vertexShader, vertexShader);
+	}
+
+	if(!m_shaderCache.get(task.keys.fragmentShader)) {
+		shared_ptr<ShaderProgram> fragmentShader =
+		  make_shared<ShaderProgram>(GL_FRAGMENT_SHADER, task.keys.fragmentShader);
+		m_shaderCache.put(task.keys.fragmentShader, fragmentShader);
 	}
 
 	m_queue.push(task);
