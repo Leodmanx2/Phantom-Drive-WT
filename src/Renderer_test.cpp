@@ -88,13 +88,20 @@ int main() {
 		Renderer renderer(width, height);
 
 		vector<Light> lights;
-		Light         light({0, 0, 100.0f},
+		Light         light({10.0f, 0, 0.0f},
                 {0, 0, 0},
-                {255.0f, 255.0f, 255.0f},
-                0.01f,
+                {255.0f, 0.0f, 0.0f},
+                0.05f,
                 360.0f,
                 1000.0f);
+		Light         light2({-10.0f, 0, 0.0f},
+                 {0, 0, 0},
+                 {0.0f, 0.0f, 255.0f},
+                 0.05f,
+                 360.0f,
+                 1000.0f);
 		lights.push_back(light);
+		lights.push_back(light2);
 
 		RenderComponent component("ass/Models/Akari/diffuse.dds",
 		                          "ass/Models/Akari/diffuse.dds",
@@ -120,7 +127,7 @@ int main() {
 
 			vec3       eye(cos(x) * 70.0f, sin(x) * 70.0f, 30.0f);
 			mat4       view = lookAt(eye, {0.0f, 0.0f, 30.0f}, {0.0f, 0.0f, 1.0f});
-			RenderTask task(component, 0, model, view, projection, eye, 1.0f, lights);
+			RenderTask task(component, 0, model, view, projection, eye, 0.5f, lights);
 			renderer.queue(task);
 			renderer.draw();
 			glfwSwapBuffers(window);

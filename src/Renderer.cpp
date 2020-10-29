@@ -42,7 +42,10 @@ Renderer::Renderer(unsigned int width, unsigned int height)
   : m_width(width), m_height(height) {
 	// Enable back-face culling, z-buffering, and anti-aliasing
 	glEnable(GL_CULL_FACE);
+
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
 	glEnable(GL_LINE_SMOOTH);
 
 	init();
@@ -83,7 +86,7 @@ void Renderer::resize(int width, int height) {
 
 void Renderer::clear() {
 	// Clear the default framebuffer
-	glClearColor(0.53f, 0.88f, 0.96f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Clear custom buffer
@@ -130,12 +133,18 @@ void Renderer::draw() {
 		int                  elements = geometry->elements();
 		vao.bind();
 
-		/*glEnable(GL_BLEND);
+		fragmentShader->setUniform("useAmbient", true);
+		fragmentShader->setUniform("useDiffuse", false);
+		fragmentShader->setUniform("useSpecular", false);
+		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+
+		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_CONSTANT_COLOR, GL_ONE);
-		const int lightFactor = 1.0 / task.lights.size();
-		glBlendColor(lightFactor, lightFactor, lightFactor, lightFactor);*/
-		for(const Light& light : task.lights) {
+		glBlendFunc(GL_ONE, GL_ONE);
+		fragmentShader->setUniform("useAmbient", false);
+		fragmentShader->setUniform("useDiffuse", true);
+		fragmentShader->setUniform("useSpecular", true);
+		for(auto light : task.lights) {
 			fragmentShader->setUniform("light.position", light.position);
 			fragmentShader->setUniform("light.direction", light.direction);
 			fragmentShader->setUniform("light.color", light.color);
@@ -144,7 +153,7 @@ void Renderer::draw() {
 			fragmentShader->setUniform("light.radius", light.radius);
 			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 		}
-		//glDisable(GL_BLEND);
+		glDisable(GL_BLEND);
 
 		vao.unbind();
 		pipeline.release();
