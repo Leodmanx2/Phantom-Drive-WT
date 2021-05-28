@@ -8,6 +8,7 @@
 #include "RenderComponent.hpp"
 #include "ResourceCache.hpp"
 #include "ShaderProgram.hpp"
+
 #include <glm/glm.hpp>
 #include <globjects/Renderbuffer.h>
 #include <globjects/globjects.h>

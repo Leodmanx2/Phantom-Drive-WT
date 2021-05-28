@@ -1,9 +1,10 @@
 #define GLFW_INCLUDE_NONE
 
-#include <cmath>
-#include <iostream>
+#include "RenderComponent.hpp"
+#include "Renderer.hpp"
 
 #include <GLFW/glfw3.h>
+#include <cmath>
 #include <glbinding-aux/Meta.h>
 #include <glbinding-aux/types_to_string.h>
 #include <glbinding/AbstractFunction.h>
@@ -13,12 +14,10 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
+#include <iostream>
 #include <plog/Appenders/ColorConsoleAppender.h>
 #include <plog/Log.h>
 #include <sstream>
-
-#include "RenderComponent.hpp"
-#include "Renderer.hpp"
 
 using namespace plog;
 using namespace std;

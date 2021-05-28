@@ -1,6 +1,7 @@
 #include "Application.hpp"
 
 #include "Renderer.hpp"
+
 #include <plog/Log.h>
 
 using namespace plog;

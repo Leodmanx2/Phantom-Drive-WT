@@ -3,6 +3,7 @@
 
 #include "Actor.hpp"
 #include "Light.hpp"
+
 #include <cstddef>
 #include <memory>
 #include <queue>

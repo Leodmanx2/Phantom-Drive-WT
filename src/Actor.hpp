@@ -3,6 +3,7 @@
 
 #include "RenderComponent.hpp"
 #include "SpatialComponent.hpp"
+
 #include <memory>
 #include <string>
 

@@ -18,13 +18,13 @@ class ShaderProgram {
 	// RenderComponents track individual vertex/geometry/fragment shaders
 
 	template <typename T>
-	void setUniform(const std::string& name, const T&& value) {
-		m_program->setUniform(name, std::forward<T>(value));
+	void setUniform(const std::string& name, const T& value) {
+		m_program->setUniform(name, value);
 	}
 
 	template <typename T>
-	void setUniform(gl::GLint location, const T&& value) {
-		m_program->setUniform(location, std::forward<T>(value));
+	void setUniform(gl::GLint location, const T& value) {
+		m_program->setUniform(location, value);
 	}
 
 	void use() const { m_program->use(); }

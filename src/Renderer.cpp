@@ -1,7 +1,8 @@
 #include "Renderer.hpp"
 
 #include "Geometry.hpp"
-#include "pmdl.hpp"
+#include "PMDL.hpp"
+
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -14,7 +15,6 @@
 #include <globjects/Texture.h>
 #include <globjects/VertexArray.h>
 #include <globjects/VertexAttributeBinding.h>
-
 #include <plog/Log.h>
 
 using namespace globjects;
@@ -144,7 +144,7 @@ void Renderer::draw() {
 		fragmentShader->setUniform("useAmbient", false);
 		fragmentShader->setUniform("useDiffuse", true);
 		fragmentShader->setUniform("useSpecular", true);
-		for(auto light : task.lights) {
+		for(auto light: task.lights) {
 			fragmentShader->setUniform("light.position", light.position);
 			fragmentShader->setUniform("light.direction", light.direction);
 			fragmentShader->setUniform("light.color", light.color);

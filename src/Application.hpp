@@ -5,6 +5,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Renderer.hpp"
+
 #include <GLFW/glfw3.h>
 #include <memory>
 

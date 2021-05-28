@@ -1,13 +1,13 @@
 #include "Geometry.hpp"
 
-#include "pmdl.hpp"
+#include "PMDL.hpp"
+
 #include <algorithm>
 #include <glbinding/gl/gl.h>
 #include <glm/glm.hpp>
 #include <globjects/VertexAttributeBinding.h>
-#include <vector>
-
 #include <plog/Log.h>
+#include <vector>
 
 using namespace std;
 using namespace globjects;
@@ -33,7 +33,7 @@ Geometry::Geometry(const string& name)
 	PMDL::File           fileData = PMDL::File::parse(fileStream);
 
 	// Load model vertices into local buffer
-	for(PMDL::Vertex fileVert : fileData.body.vertices) {
+	for(PMDL::Vertex fileVert: fileData.body.vertices) {
 		Vertex vert;
 		vert.position =
 		  vec3(fileVert.position.x, fileVert.position.y, fileVert.position.z);
