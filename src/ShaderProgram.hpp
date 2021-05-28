@@ -1,10 +1,12 @@
 #ifndef PD_SHADERPROGRAM_HPP
 #define PD_SHADERPROGRAM_HPP
 
+#include <globjects/base/File.h>
 #include <globjects/globjects.h>
 #include <memory>
 
 class ShaderProgram {
+	std::unique_ptr<globjects::File>    m_source;
 	std::unique_ptr<globjects::Shader>  m_shader;
 	std::unique_ptr<globjects::Program> m_program;
 
