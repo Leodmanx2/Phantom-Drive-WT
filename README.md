@@ -1,19 +1,18 @@
 Phantom Drive
 =============
 
-**Update (2019-06-22):** This project is currently undergoing a significant
-rewrite. New functionality will not be added until this is complete.
-
 Description
 -----------
 
-Phantom Drive is the working title of a game based on the anime
-series *Gen'ei wo Kakeru Taiyou.*
+Phantom Drive *was* the working title of a game based on the anime
+series *Gen'ei wo Kakeru Taiyou*. That project is on hold indefinitely. I have
+long since learned that if you want to write a game, you should probably start
+with an existing engine and also have at least a vague concept of the kind of
+game you intend to make.
 
-In reality this project is more of a game engine upon which eventually
-a game will be built. It was begun primarily as a learning exercise, and
-consequently goes through periods of inactivity as I explore architectural
-options.
+Phantom Drive *is* a practice ground for learning about programming. It is
+what I hack on to learn about language features, rendering techniques, and
+software architecture.
 
 Download
 --------
@@ -23,39 +22,47 @@ Download
 Dependencies
 ------------
 
-*   [glbinding](https://github.com/cginternals/glbinding)
-*   [PHYSFS](https://icculus.org/physfs/)
+Phantom Drive (WT) requires...
+
+*   OpenGL 3.3 compatible hardware
+*   A C++20 compiler
+*   CMake
+
+...and the following libraries:
+
+*   [globjects](https://github.com/cginternals/globjects)
 *   [GLFW 3.x](http://www.glfw.org/)
-*   [Bullet](http://bulletphysics.org/)
 *   [GLM](http://glm.g-truc.net/)
 *   [GLI 0.7.0.0+](http://gli.g-truc.net/)
-*   [SWI-Prolog](http://www.swi-prolog.org/)
-*   Phantom Drive (WT) Format Libraries
-    *   [PMDL](https://bitbucket.org/leodmanx2/pmdl)
-    *   [PSCN](https://bitbucket.org/leodmanx2/pscn)
 *   [plog](https://github.com/SergiusTheBest/plog)
-
-Hardware Requirements
----------------------
-
-*   OpenGL 3.3 compatible GPU
 
 Project Status
 --------------
 
-This section is intended to provide you with a quick glance at our progress and 
-imminent goals. It is not a complete development roadmap.
+This section is intended to provide you with a quick glance at my progress and 
+imminent goals. It is not a complete development roadmap and may change wildly
+at any time.
 
 ### Current
 
-*   Scene editing tool, scene description files
+*   Migrate to glTF from internal formats
+*   Physically Based Rendering with:
+    *   Oren-Nayar Diffuse
+    *   Cook-Torrence Specular
 
-### To-Do
+### Planned
 
-*   (Re-)Integrate physics engine
-*   Behaviour/AI scripting framework
-*   Audio framework
-*   glbinding -> globjects (or maybe even Vulkan-Hpp)
-*   Rendering shadows
-*   Sorting for transparency or OIT
-*   Animation system
+*   Skeletal Animations
+*   Shadows
+*   Order-Independent Transparency
+*   Particle Generation
+*   Audio System
+*   Physics System
+*   Behaviour System
+
+### Deferred
+
+*   Normal/Relief/Parallax Occlusion/Displacement Mapping
+*   Frustum Culling
+*   Occlusion Culling
+*   Levels of Detail
