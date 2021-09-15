@@ -1,13 +1,11 @@
-#ifndef SPATIALMODEL_H
-#define SPATIALMODEL_H
+#ifndef PD_SPATIALCOMPONENT_HPP
+#define PD_SPATIALCOMPONENT_HPP
 
-#include <SWI-cpp.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <iostream>
 
-class SpatialModel final {
+class SpatialComponent final {
 	private:
 	glm::quat m_orientation;
 	glm::vec4 m_position;
@@ -17,7 +15,7 @@ class SpatialModel final {
 	static const glm::vec4 canonicalUp;
 	static const glm::vec4 canonicalLeft;
 
-	SpatialModel();
+	SpatialComponent();
 
 	void translate(float longitude, float latitude, float altitude);
 	void rotate(float roll, float pitch, float yaw);

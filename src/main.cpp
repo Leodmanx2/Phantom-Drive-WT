@@ -1,3 +1,5 @@
+/*
+
 #include "Application.hpp"
 
 #include <plog/Appenders/ColorConsoleAppender.h>
@@ -22,10 +24,6 @@ int main(int argc, char* argv[]) {
 	}
 
 	try {
-		const char* plArgv[] = {argv[0], "--quiet"};
-		LOG(info) << "starting Prolog engine";
-		PlEngine engine(2, const_cast<char**>(plArgv));
-
 		Application app(argc, argv);
 		app.run();
 	} catch(const std::exception& exception) {
@@ -38,3 +36,5 @@ int main(int argc, char* argv[]) {
 	LOG(info) << "exited program successfully";
 	return EXIT_SUCCESS;
 }
+
+*/

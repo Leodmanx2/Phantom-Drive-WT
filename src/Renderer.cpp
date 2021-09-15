@@ -1,139 +1,275 @@
 #include "Renderer.hpp"
 
-#include "Window.hpp"
+#include "Geometry.hpp"
+#include "PMDL.hpp"
 
-Renderer* Renderer::s_instance = nullptr;
+#include <algorithm>
+#include <filesystem>
+#include <fstream>
+#include <glbinding/gl/gl.h>
+#include <gli/gli.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+#include <globjects/ProgramPipeline.h>
+#include <globjects/Renderbuffer.h>
+#include <globjects/Shader.h>
+#include <globjects/Texture.h>
+#include <globjects/VertexArray.h>
+#include <globjects/VertexAttributeBinding.h>
+#include <plog/Log.h>
 
-// There can only be one instance of Renderer at a time to keep exposure of
-// tools like pick() to scripting functions simple. If you have a suggestion
-// to improve on this situation, I'm all ears.
-Renderer::Renderer(const std::shared_ptr<Window>& window) : m_window(window) {
-	if(s_instance != nullptr)
-		throw std::logic_error("Attempted to create second instance of class "
-		                       "Renderer. Only one is allowed at a time.");
+using namespace globjects;
+using namespace gl;
+using namespace std;
+
+RenderTask::RenderTask(const RenderComponent&    component,
+                       int                       id,
+                       glm::mat4                 model,
+                       glm::mat4                 view,
+                       glm::mat4                 projection,
+                       glm::vec3                 eye,
+                       float                     ambience,
+                       const std::vector<Light>& lights)
+  : keys(component)
+  , id(id)
+  , model(model)
+  , view(view)
+  , projection(projection)
+  , eye(eye)
+  , ambience(ambience)
+  , lights(lights) {}
+
+Renderer::Renderer(unsigned int width, unsigned int height)
+  : m_width(width), m_height(height) {
+	// Enable back-face culling, z-buffering, and anti-aliasing
+	glEnable(GL_CULL_FACE);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	glEnable(GL_LINE_SMOOTH);
+
 	init();
-	s_instance = this;
-}
-
-Renderer::~Renderer() {
-	clean();
-	s_instance = nullptr;
 }
 
 void Renderer::init() {
-	glfwGetFramebufferSize(&m_window->get(), &m_width, &m_height);
+	m_colorAttachment = make_unique<Renderbuffer>();
+	m_colorAttachment->storage(GL_RGBA32F, m_width, m_height);
 
-	gl::glGenFramebuffers(1, &m_frameBuffer);
-	gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, m_frameBuffer);
+	m_selectionAttachment = make_unique<Renderbuffer>();
+	m_selectionAttachment->storage(GL_R32UI, m_width, m_height);
 
-	makeRenderBuffer(
-	  &m_colorAttachment, gl::GL_RGBA32F, gl::GL_COLOR_ATTACHMENT0);
+	m_depthStencilAttachment = make_unique<Renderbuffer>();
+	m_depthStencilAttachment->storage(GL_DEPTH24_STENCIL8, m_width, m_height);
 
-	makeRenderBuffer(
-	  &m_selectionAttachment, gl::GL_R32UI, gl::GL_COLOR_ATTACHMENT1);
+	m_frameBuffer = make_unique<Framebuffer>();
+	m_frameBuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT0,
+	                                  m_colorAttachment.get());
+	m_frameBuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT1,
+	                                  m_selectionAttachment.get());
+	m_frameBuffer->attachRenderBuffer(GL_DEPTH_STENCIL_ATTACHMENT,
+	                                  m_depthStencilAttachment.get());
+	m_frameBuffer->setDrawBuffers({GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1});
 
-	makeRenderBuffer(&m_depthStencilAttachment,
-	                 gl::GL_DEPTH24_STENCIL8,
-	                 gl::GL_DEPTH_STENCIL_ATTACHMENT);
-
-	const gl::GLenum stat = gl::glCheckFramebufferStatus(gl::GL_FRAMEBUFFER);
-	if(stat != gl::GL_FRAMEBUFFER_COMPLETE) {
-		clean();
-		throw std::runtime_error("Could not build framebuffer");
+	const GLenum stat = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if(stat != GL_FRAMEBUFFER_COMPLETE) {
+		throw runtime_error("could not build framebuffer");
 	}
 }
 
-void Renderer::clean() {
-	gl::glDeleteFramebuffers(1, &m_frameBuffer);
-	gl::glDeleteRenderbuffers(1, &m_colorAttachment);
-	gl::glDeleteRenderbuffers(1, &m_selectionAttachment);
-	gl::glDeleteRenderbuffers(1, &m_depthStencilAttachment);
-}
-
-void Renderer::makeRenderBuffer(gl::GLuint* bufferID,
-                                gl::GLenum  format,
-                                gl::GLenum  target) {
-	gl::glGenRenderbuffers(1, bufferID);
-	gl::glBindRenderbuffer(gl::GL_RENDERBUFFER, *bufferID);
-	gl::glRenderbufferStorage(gl::GL_RENDERBUFFER, format, m_width, m_height);
-	gl::glFramebufferRenderbuffer(
-	  gl::GL_FRAMEBUFFER, target, gl::GL_RENDERBUFFER, *bufferID);
-}
-
-void Renderer::resize() {
-	int width, height;
-	glfwGetFramebufferSize(&m_window->get(), &width, &height);
+void Renderer::resize(int width, int height) {
 	if(width != m_width || height != m_height) {
 		m_width  = width;
 		m_height = height;
-		clean();
 		init();
 	}
 }
 
-// ---------------------------------------------------------------------------
-//  Public-facing functions
-// ---------------------------------------------------------------------------
-
 void Renderer::clear() {
-	// Resize buffers if glfw-controlled default buffer size changes
-	resize();
-
 	// Clear the default framebuffer
-	gl::glClearColor(0.53f, 0.88f, 0.96f, 0.0f);
-	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
-	            gl::GL_STENCIL_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Clear custom buffer
-	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, m_frameBuffer);
-	gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT |
-	            gl::GL_STENCIL_BUFFER_BIT);
+	m_frameBuffer->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+	                     GL_STENCIL_BUFFER_BIT);
 	const int color = 0;
-	gl::glClearBufferiv(gl::GL_COLOR, 1, &color);
+	m_frameBuffer->clearBuffer(GL_COLOR, 1, &color);
 }
 
-void Renderer::startNormalPass() {
-	const gl::GLenum drawBuffers[2] = {gl::GL_COLOR_ATTACHMENT0,
-	                                   gl::GL_COLOR_ATTACHMENT1};
-	gl::glDrawBuffers(2, drawBuffers);
+void Renderer::draw() {
+	clear();
+
+	m_frameBuffer->bind(GL_DRAW_FRAMEBUFFER);
+
+	while(!m_queue.empty()) {
+		RenderTask task = m_queue.front();
+
+		shared_ptr<ShaderProgram> vertexShader =
+		  m_shaderCache.get(task.keys.vertexShader);
+		shared_ptr<ShaderProgram> fragmentShader =
+		  m_shaderCache.get(task.keys.fragmentShader);
+
+		ProgramPipeline pipeline;
+		pipeline.useStages(&vertexShader->get(), gl::GL_VERTEX_SHADER_BIT);
+		pipeline.useStages(&fragmentShader->get(), gl::GL_FRAGMENT_SHADER_BIT);
+		pipeline.use();
+
+		vertexShader->setUniform("model", task.model);
+		vertexShader->setUniform("view", task.view);
+		vertexShader->setUniform("projection", task.projection);
+		vertexShader->setUniform("normalMatrix",
+		                         inverseTranspose(task.model * task.view));
+
+		fragmentShader->setUniform("view", task.view);
+		fragmentShader->setUniform("id", task.id);
+		fragmentShader->setUniform("eyePos", task.eye);
+		fragmentShader->setUniform("ambience", task.ambience);
+
+		m_textureCache.get(task.keys.diffuse)->bindActive(0);
+		m_textureCache.get(task.keys.specular)->bindActive(1);
+
+		shared_ptr<Geometry> geometry = m_geometryCache.get(task.keys.geometry);
+		const VertexArray&   vao      = geometry->vao();
+		int                  elements = geometry->elements();
+		vao.bind();
+
+		fragmentShader->setUniform("useAmbient", true);
+		fragmentShader->setUniform("useDiffuse", false);
+		fragmentShader->setUniform("useSpecular", false);
+		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+		fragmentShader->setUniform("useAmbient", false);
+		fragmentShader->setUniform("useDiffuse", true);
+		fragmentShader->setUniform("useSpecular", true);
+		for(auto light: task.lights) {
+			fragmentShader->setUniform("light.position", light.position);
+			fragmentShader->setUniform("light.direction", light.direction);
+			fragmentShader->setUniform("light.color", light.color);
+			fragmentShader->setUniform("light.intensity", light.intensity);
+			fragmentShader->setUniform("light.angle", light.angle);
+			fragmentShader->setUniform("light.radius", light.radius);
+			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+		}
+		glDisable(GL_BLEND);
+
+		vao.unbind();
+		pipeline.release();
+
+		m_queue.pop();
+	}
+
+	m_frameBuffer->bind(GL_READ_FRAMEBUFFER);
+	m_frameBuffer->unbind(GL_DRAW_FRAMEBUFFER);
+	glBlitFramebuffer(0,
+	                  0,
+	                  m_width,
+	                  m_height,
+	                  0,
+	                  0,
+	                  m_width,
+	                  m_height,
+	                  GL_COLOR_BUFFER_BIT,
+	                  GL_NEAREST);
 }
 
-void Renderer::finishNormalPass() {
-	// Copy framebuffer output to default framebuffer
-	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, m_frameBuffer);
-	gl::glBindFramebuffer(gl::GL_DRAW_FRAMEBUFFER, 0);
-	gl::glBlitFramebuffer(0,
-	                      0,
-	                      m_width,
-	                      m_height,
-	                      0,
-	                      0,
-	                      m_width,
-	                      m_height,
-	                      gl::GL_COLOR_BUFFER_BIT,
-	                      gl::GL_NEAREST);
+void Renderer::queue(RenderTask task) {
+	if(!m_textureCache.get(task.keys.diffuse)) {
+		shared_ptr<Texture> diffuse(loadTexture(task.keys.diffuse));
+		m_textureCache.put(task.keys.diffuse, diffuse);
+	}
 
-	// Clean up
-	// The draw buffer has already been reset.
-	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, 0);
+	if(!m_textureCache.get(task.keys.specular)) {
+		shared_ptr<Texture> specular(loadTexture(task.keys.specular));
+		m_textureCache.put(task.keys.specular, specular);
+	}
+
+	if(!m_geometryCache.get(task.keys.geometry)) {
+		shared_ptr<Geometry> geometry = make_shared<Geometry>(task.keys.geometry);
+		m_geometryCache.put(task.keys.geometry, geometry);
+	}
+
+	if(!m_shaderCache.get(task.keys.vertexShader)) {
+		shared_ptr<ShaderProgram> vertexShader =
+		  make_shared<ShaderProgram>(GL_VERTEX_SHADER, task.keys.vertexShader);
+		m_shaderCache.put(task.keys.vertexShader, vertexShader);
+	}
+
+	if(!m_shaderCache.get(task.keys.fragmentShader)) {
+		shared_ptr<ShaderProgram> fragmentShader =
+		  make_shared<ShaderProgram>(GL_FRAGMENT_SHADER, task.keys.fragmentShader);
+		m_shaderCache.put(task.keys.fragmentShader, fragmentShader);
+	}
+
+	m_queue.push(task);
 }
 
-int Renderer::pick(int frameCoordX, int frameCoordY) {
-	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, s_instance->m_frameBuffer);
-	gl::glReadBuffer(gl::GL_COLOR_ATTACHMENT1);
-	std::uint32_t selectedID;
-	gl::glReadPixels(frameCoordX,
-	                 frameCoordY,
-	                 1,
-	                 1,
-	                 gl::GL_RED_INTEGER,
-	                 gl::GL_UNSIGNED_INT,
-	                 &selectedID);
-	gl::glReadBuffer(gl::GL_COLOR_ATTACHMENT0);
-	gl::glBindFramebuffer(gl::GL_READ_FRAMEBUFFER, 0);
-	return selectedID;
+unique_ptr<Texture> Renderer::loadTexture(const string& name) {
+	gli::texture texture = gli::load(name);
+	if(texture.empty()) {
+		throw std::runtime_error(name + std::string(" is not a valid texture"));
+	}
+
+	gli::gl               gl(gli::gl::PROFILE_GL33);
+	const gli::gl::format format =
+	  gl.translate(texture.format(), texture.swizzles());
+	GLenum target = static_cast<GLenum>(gl.translate(texture.target()));
+	if(target != GL_TEXTURE_2D) {
+		throw std::runtime_error(
+		  "texture target is not GL_TEXTURE_2D/gli::TARGET_2D");
+	}
+
+	// Reserve memory on the GPU for texture and describe its layout
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+
+	glBindTexture(target, textureID);
+
+	glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, texture.levels() - 1);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_R, format.Swizzles[0]);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_G, format.Swizzles[1]);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_B, format.Swizzles[2]);
+	glTexParameteri(target, GL_TEXTURE_SWIZZLE_A, format.Swizzles[3]);
+
+	const gli::tvec3<GLsizei> extent(texture.extent());
+
+	glTexStorage2D(target,
+	               texture.levels(),
+	               static_cast<GLenum>(format.Internal),
+	               extent.x,
+	               extent.y);
+
+	// Write image data to GPU memory
+	for(std::size_t layer = 0; layer < texture.layers(); ++layer) {
+		for(std::size_t face = 0; face < texture.faces(); ++face) {
+			for(std::size_t level = 0; level < texture.levels(); ++level) {
+				if(gli::is_compressed(texture.format())) {
+					glCompressedTexSubImage2D(target,
+					                          level,
+					                          0,
+					                          0,
+					                          extent.x,
+					                          extent.y,
+					                          static_cast<GLenum>(format.Internal),
+					                          texture.size(level),
+					                          texture.data(layer, face, level));
+				} else {
+					glTexSubImage2D(target,
+					                level,
+					                0,
+					                0,
+					                extent.x,
+					                extent.y,
+					                static_cast<GLenum>(format.External),
+					                static_cast<GLenum>(format.Type),
+					                texture.data(layer, face, level));
+				}
+			}
+		}
+	}
+
+	return Texture::fromId(textureID, GL_TEXTURE_2D);
 }
-
-int Renderer::width() { return s_instance->m_width; }
-
-int Renderer::height() { return s_instance->m_height; }

@@ -1,53 +1,72 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef PD_RENDERER_HPP
+#define PD_RENDERER_HPP
 
-#include <glbinding/Binding.h>
-#include <glbinding/gl/gl.h>
 #define GLFW_INCLUDE_NONE
 
-#include <GLFW/glfw3.h>
-#include <cassert>
+#include "Geometry.hpp"
+#include "Light.hpp"
+#include "RenderComponent.hpp"
+#include "ResourceCache.hpp"
+#include "ShaderProgram.hpp"
+
+#include <glm/glm.hpp>
+#include <globjects/Renderbuffer.h>
+#include <globjects/globjects.h>
+#include <memory>
+#include <queue>
 
 // Forward declarations ------------------------------------------------------
 class Window;
 // ---------------------------------------------------------------------------
 
-class Renderer final {
-	private:
-	static Renderer* s_instance;
+// RenderTask collects all the information required to render a game entity.
+struct RenderTask {
+	RenderComponent    keys;
+	int                id;
+	glm::mat4          model;
+	glm::mat4          view;
+	glm::mat4          projection;
+	glm::vec3          eye;
+	float              ambience;
+	std::vector<Light> lights;
 
-	std::shared_ptr<Window> m_window;
+	RenderTask(const RenderComponent&    component,
+	           int                       id,
+	           glm::mat4                 model,
+	           glm::mat4                 view,
+	           glm::mat4                 projection,
+	           glm::vec3                 eye,
+	           float                     ambience,
+	           const std::vector<Light>& lights);
+};
+
+class Renderer {
+	private:
+	std::unique_ptr<globjects::Framebuffer>  m_frameBuffer;
+	std::unique_ptr<globjects::Renderbuffer> m_colorAttachment;
+	std::unique_ptr<globjects::Renderbuffer> m_selectionAttachment;
+	std::unique_ptr<globjects::Renderbuffer> m_depthStencilAttachment;
+
+	ResourceCache<globjects::Texture> m_textureCache;
+	ResourceCache<Geometry>           m_geometryCache;
+	ResourceCache<ShaderProgram>      m_shaderCache;
+
+	std::queue<RenderTask> m_queue;
 
 	int m_width;
 	int m_height;
 
-	gl::GLuint m_frameBuffer;
-	gl::GLuint m_colorAttachment;
-	gl::GLuint m_selectionAttachment;
-	gl::GLuint m_depthStencilAttachment;
-
-	void
-	     makeRenderBuffer(gl::GLuint* bufferID, gl::GLenum format, gl::GLenum target);
 	void init();
-	void clean();
-	void resize();
+	void resize(int width, int height);
+	void clear();
+
+	std::unique_ptr<globjects::Texture> loadTexture(const std::string& name);
 
 	public:
-	explicit Renderer(const std::shared_ptr<Window>& window);
-	Renderer(const Renderer&) = delete;
-	~Renderer();
+	Renderer(unsigned int width, unsigned int height);
 
-	// Render-related tools
-	static int pick(int frameCoordX, int frameCoordY);
-
-	// Rendering phase controls
-	void clear();
-	void startNormalPass();
-	void finishNormalPass();
-
-	// Member accessors
-	static int width();
-	static int height();
+	void queue(RenderTask task);
+	void draw();
 };
 
 #endif

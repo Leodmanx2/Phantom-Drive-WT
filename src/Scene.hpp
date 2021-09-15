@@ -1,54 +1,36 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef PD_SCENE_HPP
+#define PD_SCENE_HPP
 
-#define GLFW_INCLUDE_NONE
+#include "Actor.hpp"
+#include "Light.hpp"
 
-#include "Camera.hpp"
-#include "Shader.hpp"
-#include <GLFW/glfw3.h>
-#include <array>
-#include <chrono>
 #include <cstddef>
+#include <memory>
+#include <queue>
+//#include <unordered_set>
 #include <vector>
 
 // Forward declarations ------------------------------------------------------
-class Actor;
-struct PointLight;
-struct SpotLight;
-struct DirectionLight;
-struct KeyEvent;
-struct MouseMovementEvent;
-struct MouseButtonEvent;
+class Event {}; // TODO: Define Event
 // ---------------------------------------------------------------------------
 
-class Scene {
-	protected:
-	std::vector<Shader> m_shaders;
+class Scene final {
+	std::queue<Event> m_events;
+	//std::unordered_set<Actor> m_actors;
+	// TODO: Manage Actors
 
-	std::vector<Camera> m_cameras;
+	// Lights
+	std::vector<std::unique_ptr<Light>> m_pointLights;
+	float                               m_ambience;
 
-	std::map<std::uint32_t, std::unique_ptr<Actor>> m_actors;
-
-	std::array<std::unique_ptr<PointLight>, 8>     m_pointLights;
-	std::array<std::unique_ptr<SpotLight>, 8>      m_spotLights;
-	std::array<std::unique_ptr<DirectionLight>, 2> m_directionLights;
-
-	float m_ambience; // How bright the scene is on average
-
-	std::uint32_t m_highestID; // TODO: Rename. Highest is a misleading term.
+	void addObserver(const Actor& actor);
+	void removeObserver(const Actor& actor);
+	void notifyAll(); // Works through event queue, called by update()
 
 	public:
 	explicit Scene(const std::string& name);
-	Scene(const Scene&) = delete;
-	Scene& operator=(const Scene&) = delete;
-	virtual ~Scene();
-
-	virtual void update(const std::chrono::milliseconds& duration);
-	virtual void simulate(const std::chrono::milliseconds& duration);
-	virtual void draw();
-	virtual void process(std::queue<KeyEvent>& keyEvents);
-	virtual void process(std::queue<MouseButtonEvent>& buttonEvents);
-	virtual void process(std::queue<MouseMovementEvent>& movementEvents);
+	void queue(Event event);
+	void update();
 };
 
 #endif
