@@ -6,6 +6,10 @@
 #include <memory>
 
 class ShaderProgram {
+	// While m_source is not used after construction, m_shader holds a
+	// raw pointer to it and may segfault if it is not retained.
+	// globjects::Shader cannot be configured not to track the shader
+	// source.
 	std::unique_ptr<globjects::File>    m_source;
 	std::unique_ptr<globjects::Shader>  m_shader;
 	std::unique_ptr<globjects::Program> m_program;
@@ -14,10 +18,8 @@ class ShaderProgram {
 	explicit ShaderProgram(const gl::GLenum type, const std::string& file);
 
 	globjects::Program& get() const;
-
-	// TODO: Eliminate forwarding functions
-	// Either fork glObjects and change how it tracks resources, or let
-	// RenderComponents track individual vertex/geometry/fragment shaders
+	void                use() const;
+	void                release();
 
 	template <typename T>
 	void setUniform(const std::string& name, const T& value) {
@@ -28,9 +30,6 @@ class ShaderProgram {
 	void setUniform(gl::GLint location, const T& value) {
 		m_program->setUniform(location, value);
 	}
-
-	void use() const { m_program->use(); }
-	void release() { m_program->release(); }
 };
 
 #endif

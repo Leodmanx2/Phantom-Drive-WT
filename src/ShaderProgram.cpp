@@ -15,3 +15,7 @@ ShaderProgram::ShaderProgram(const gl::GLenum type,
 }
 
 Program& ShaderProgram::get() const { return *m_program; }
+
+void ShaderProgram::use() const { m_program->use(); }
+
+void ShaderProgram::release() { m_program->release(); }
