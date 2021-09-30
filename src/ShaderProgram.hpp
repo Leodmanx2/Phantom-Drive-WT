@@ -30,6 +30,8 @@ class ShaderProgram {
 	void setUniform(gl::GLint location, const T& value) {
 		m_program->setUniform(location, value);
 	}
+
+	operator globjects::Program*() const { return m_program.get(); }
 };
 
 #endif

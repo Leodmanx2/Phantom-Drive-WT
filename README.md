@@ -45,7 +45,6 @@ at any time.
 
 ### Current
 
-*   Migrate to glTF from internal formats
 *   Physically Based Rendering with:
     *   Oren-Nayar Diffuse
     *   Cook-Torrence Specular
