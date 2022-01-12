@@ -7,7 +7,6 @@ add_executable(pd-renderer-test
   PSCN.cpp
   RenderComponent.cpp
   Renderer.cpp
-  Renderer_test.cpp
   ResourceCache.cpp
   Scene.cpp
   ShaderProgram.cpp
@@ -15,7 +14,6 @@ add_executable(pd-renderer-test
 )
 
 install(TARGETS pd-renderer-test DESTINATION bin)
-
 target_link_libraries(pd-renderer-test PUBLIC glfw3 glbinding glbinding-aux globjects)
 
 target_compile_definitions(pd-renderer-test PUBLIC gsl_CONFIG_CONTRACT_VIOLATION_THROWS)

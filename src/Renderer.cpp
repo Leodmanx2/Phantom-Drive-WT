@@ -1,161 +1,230 @@
 #include "Renderer.hpp"
 
-#include "Framebuffer.hpp"
-
-#include <algorithm>
-#include <filesystem>
-#include <fstream>
+#include <GLFW/glfw3.h>
 #include <glbinding/gl/gl.h>
 #include <gli/gli.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <globjects/ProgramPipeline.h>
-#include <globjects/Renderbuffer.h>
-#include <globjects/Shader.h>
-#include <globjects/Texture.h>
-#include <globjects/VertexArray.h>
-#include <globjects/VertexAttributeBinding.h>
-#include <nlohmann/json.hpp>
-#include <plog/Log.h>
-
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include <globjects/globjects.h>
 
 using namespace globjects;
 using namespace gl;
 using namespace std;
 
-using json = nlohmann::json;
+namespace PD {
 
-void configure_gl() {
-	// Enable back-face culling, z-buffering, and anti-aliasing
-	glEnable(GL_CULL_FACE);
+	void init_gl() {}
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
+	void configure_gl() {
+		// Enable back-face culling, z-buffering, and anti-aliasing
+		glEnable(GL_CULL_FACE);
 
-	glEnable(GL_LINE_SMOOTH);
-}
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
 
-unique_ptr<PD::Framebuffer> build_framebuffer(int width, int height) {
-	auto color_attachment = make_unique<Renderbuffer>();
-	color_attachment->storage(GL_RGBA32F, width, height);
-
-	auto selection_attachment = make_unique<Renderbuffer>();
-	selection_attachment->storage(GL_R32UI, width, height);
-
-	auto depth_attachment = make_unique<Renderbuffer>();
-	depth_attachment->storage(GL_DEPTH24_STENCIL8, width, height);
-
-	auto framebuffer = make_unique<Framebuffer>();
-	framebuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT0, color_attachment.get());
-	framebuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT1,
-	                                selection_attachment.get());
-	framebuffer->attachRenderBuffer(GL_DEPTH_STENCIL_ATTACHMENT,
-	                                depth_attachment.get());
-	framebuffer->setDrawBuffers({GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1});
-
-	const GLenum stat = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if(stat != GL_FRAMEBUFFER_COMPLETE) {
-		throw runtime_error("could not build framebuffer");
+		glEnable(GL_LINE_SMOOTH);
 	}
 
-	return make_unique<PD::Framebuffer>(
-	  color_attachment, selection_attachment, depth_attachment, framebuffer);
-}
+	unique_ptr<PD::Framebuffer> build_framebuffer(int width, int height) {
+		auto color_attachment = make_unique<Renderbuffer>();
+		color_attachment->storage(GL_RGBA32F, width, height);
 
-void prepare_framebuffer(Framebuffer& framebuffer) {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	framebuffer.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-	                  GL_STENCIL_BUFFER_BIT);
-	const int color = 0;
-	framebuffer.clearBuffer(GL_COLOR, 1, &color);
+		auto selection_attachment = make_unique<Renderbuffer>();
+		selection_attachment->storage(GL_R32UI, width, height);
 
-	framebuffer.bind(GL_DRAW_FRAMEBUFFER);
-}
+		auto depth_attachment = make_unique<Renderbuffer>();
+		depth_attachment->storage(GL_DEPTH24_STENCIL8, width, height);
 
-void draw(const json& gltf_manifest) {
-	globjects::Program* vertexShader   = nullptr;
-	globjects::Program* fragmentShader = nullptr;
+		auto framebuffer = make_unique<globjects::Framebuffer>();
+		framebuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT0,
+		                                color_attachment.get());
+		framebuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT1,
+		                                selection_attachment.get());
+		framebuffer->attachRenderBuffer(GL_DEPTH_STENCIL_ATTACHMENT,
+		                                depth_attachment.get());
+		framebuffer->setDrawBuffers({GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1});
 
-	ProgramPipeline pipeline;
-	pipeline.useStages(vertexShader, gl::GL_VERTEX_SHADER_BIT);
-	pipeline.useStages(fragmentShader, gl::GL_FRAGMENT_SHADER_BIT);
-	pipeline.use();
+		const GLenum stat = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		if(stat != GL_FRAMEBUFFER_COMPLETE) {
+			throw runtime_error("could not build framebuffer");
+		}
 
-	// Upload transformation matrices
-	vertexShader->setUniform("model", task.model);
-	vertexShader->setUniform("view", task.view);
-	vertexShader->setUniform("projection", task.projection);
-	vertexShader->setUniform("normalMatrix",
-	                         inverseTranspose(task.model * task.view));
+		return make_unique<PD::Framebuffer>(std::move(color_attachment),
+		                                    std::move(selection_attachment),
+		                                    std::move(depth_attachment),
+		                                    std::move(framebuffer));
+	}
 
-	// Upload camera uniforms
-	fragmentShader->setUniform("view", task.view);
-	fragmentShader->setUniform("id", task.id);
-	fragmentShader->setUniform("eyePos", task.eye);
+	void prepare_framebuffer(globjects::Framebuffer& framebuffer) {
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		framebuffer.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+		                  GL_STENCIL_BUFFER_BIT);
+		const int color = 0;
+		framebuffer.clearBuffer(GL_COLOR, 1, &color);
 
-	// Bind textures
-	m_textureCache.get(task.keys.diffuse)->bindActive(0);
-	m_textureCache.get(task.keys.specular)->bindActive(1);
+		framebuffer.bind(GL_DRAW_FRAMEBUFFER);
+	}
 
-	// Bind geometry
-	shared_ptr<Geometry> geometry = m_geometryCache.get(task.keys.geometry);
-	const VertexArray&   vao      = geometry->vao();
-	int                  elements = geometry->elements();
-	vao.bind();
+	void draw(const globjects::Texture* diffuse,
+	          const globjects::Texture* specular,
+	          globjects::Program*       vertexShader,
+	          globjects::Program*       fragmentShader,
+	          const Geometry&           geometry,
+	          const int                 id,
+	          const glm::mat4           model,
+	          const glm::mat4           view,
+	          const glm::mat4           projection,
+	          const glm::vec3           eye,
+	          const float               ambience,
+	          const std::vector<Light>& lights) {
+		ProgramPipeline pipeline;
+		pipeline.useStages(vertexShader, gl::GL_VERTEX_SHADER_BIT);
+		pipeline.useStages(fragmentShader, gl::GL_FRAGMENT_SHADER_BIT);
+		pipeline.use();
 
-	// Ambient pass
-	fragmentShader->setUniform("useAmbient", true);
-	fragmentShader->setUniform("useDiffuse", false);
-	fragmentShader->setUniform("useSpecular", false);
-	fragmentShader->setUniform("ambience", task.ambience);
-	vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+		// Upload transformation matrices
+		vertexShader->setUniform("model", model);
+		vertexShader->setUniform("view", view);
+		vertexShader->setUniform("projection", projection);
+		vertexShader->setUniform("normalMatrix", inverseTranspose(model * view));
 
-	// Diffuse and specular pass
-	glEnable(GL_BLEND);
-	glBlendEquation(GL_FUNC_ADD);
-	glBlendFunc(GL_ONE, GL_ONE);
-	fragmentShader->setUniform("useAmbient", false);
-	fragmentShader->setUniform("useDiffuse", true);
-	fragmentShader->setUniform("useSpecular", true);
-	for(auto light: task.lights) {
-		fragmentShader->setUniform("light.position", light.position);
-		fragmentShader->setUniform("light.direction", light.direction);
-		fragmentShader->setUniform("light.color", light.color);
-		fragmentShader->setUniform("light.intensity", light.intensity);
-		fragmentShader->setUniform("light.angle", light.angle);
-		fragmentShader->setUniform("light.radius", light.radius);
+		// Upload camera uniforms
+		fragmentShader->setUniform("view", view);
+		fragmentShader->setUniform("id", id);
+		fragmentShader->setUniform("eyePos", eye);
 
+		// Bind textures
+		diffuse->bindActive(0);
+		specular->bindActive(1);
+
+		// Bind geometry
+		const VertexArray& vao      = geometry.vao();
+		int                elements = geometry.elements();
+		vao.bind();
+
+		// Ambient pass
+		fragmentShader->setUniform("useAmbient", true);
+		fragmentShader->setUniform("useDiffuse", false);
+		fragmentShader->setUniform("useSpecular", false);
+		fragmentShader->setUniform("ambience", ambience);
 		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+
+		// Diffuse and specular pass
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+		fragmentShader->setUniform("useAmbient", false);
+		fragmentShader->setUniform("useDiffuse", true);
+		fragmentShader->setUniform("useSpecular", true);
+		for(auto light: lights) {
+			fragmentShader->setUniform("light.position", light.position);
+			fragmentShader->setUniform("light.direction", light.direction);
+			fragmentShader->setUniform("light.color", light.color);
+			fragmentShader->setUniform("light.intensity", light.intensity);
+			fragmentShader->setUniform("light.angle", light.angle);
+			fragmentShader->setUniform("light.radius", light.radius);
+
+			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+		}
+		glDisable(GL_BLEND);
+
+		vao.unbind();
+		pipeline.release();
 	}
-	glDisable(GL_BLEND);
 
-	vao.unbind();
-	pipeline.release();
-}
+	void commit_frame(globjects::Framebuffer& framebuffer, GLFWwindow* window) {
+		framebuffer.bind(GL_READ_FRAMEBUFFER);
+		framebuffer.unbind(GL_DRAW_FRAMEBUFFER);
 
-void commit_frame(Framebuffer& framebuffer, GLFWwindow* window) {
-	framebuffer.bind(GL_READ_FRAMEBUFFER);
-	framebuffer.unbind(GL_DRAW_FRAMEBUFFER);
+		const int source_width = framebuffer.getAttachmentParameter(
+		  GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER_WIDTH);
+		const int source_height = framebuffer.getAttachmentParameter(
+		  GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER_HEIGHT);
 
-	const int source_width = framebuffer.getAttachmentParameter(
-	  GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER_WIDTH);
-	const int source_height = framebuffer.getAttachmentParameter(
-	  GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER_HEIGHT);
+		int destination_width, destination_height;
+		glfwGetFramebufferSize(window, &destination_width, &destination_height);
 
-	int destination_width, destination_height;
-	glfwGetFramebufferSize(window, &destination_width, &destination_height);
+		// NOTE: might be able to blit using globjects function
+		//       if framebuffer object is constructed from default buffer id
+		glBlitFramebuffer(0,
+		                  0,
+		                  source_width,
+		                  source_height,
+		                  0,
+		                  0,
+		                  destination_width,
+		                  destination_height,
+		                  GL_COLOR_BUFFER_BIT,
+		                  GL_NEAREST);
+	}
 
-	// NOTE: might be able to blit using globjects function
-	//       if framebuffer object is constructed from default buffer id
-	glBlitFramebuffer(0,
-	                  0,
-	                  source_width,
-	                  source_height,
-	                  0,
-	                  0,
-	                  destination_width,
-	                  destination_height,
-	                  GL_COLOR_BUFFER_BIT,
-	                  GL_NEAREST);
-}
+	// TODO: Rewrite to load using globjects methods, move to appropriate file
+	unique_ptr<globjects::Texture> loadTexture(const string& name) {
+		gli::texture texture = gli::load(name);
+		if(texture.empty()) {
+			throw std::runtime_error(name + std::string(" is not a valid texture"));
+		}
+
+		gli::gl               gl(gli::gl::PROFILE_GL33);
+		const gli::gl::format format =
+		  gl.translate(texture.format(), texture.swizzles());
+		GLenum target = static_cast<GLenum>(gl.translate(texture.target()));
+		if(target != GL_TEXTURE_2D) {
+			throw std::runtime_error(
+			  "texture target is not GL_TEXTURE_2D/gli::TARGET_2D");
+		}
+
+		// Reserve memory on the GPU for texture and describe its layout
+		GLuint textureID;
+		glGenTextures(1, &textureID);
+
+		glBindTexture(target, textureID);
+
+		glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, texture.levels() - 1);
+		glTexParameteri(target, GL_TEXTURE_SWIZZLE_R, format.Swizzles[0]);
+		glTexParameteri(target, GL_TEXTURE_SWIZZLE_G, format.Swizzles[1]);
+		glTexParameteri(target, GL_TEXTURE_SWIZZLE_B, format.Swizzles[2]);
+		glTexParameteri(target, GL_TEXTURE_SWIZZLE_A, format.Swizzles[3]);
+
+		const gli::tvec3<GLsizei> extent(texture.extent());
+
+		glTexStorage2D(target,
+		               texture.levels(),
+		               static_cast<GLenum>(format.Internal),
+		               extent.x,
+		               extent.y);
+
+		// Write image data to GPU memory
+		for(std::size_t layer = 0; layer < texture.layers(); ++layer) {
+			for(std::size_t face = 0; face < texture.faces(); ++face) {
+				for(std::size_t level = 0; level < texture.levels(); ++level) {
+					if(gli::is_compressed(texture.format())) {
+						glCompressedTexSubImage2D(target,
+						                          level,
+						                          0,
+						                          0,
+						                          extent.x,
+						                          extent.y,
+						                          static_cast<GLenum>(format.Internal),
+						                          texture.size(level),
+						                          texture.data(layer, face, level));
+					} else {
+						glTexSubImage2D(target,
+						                level,
+						                0,
+						                0,
+						                extent.x,
+						                extent.y,
+						                static_cast<GLenum>(format.External),
+						                static_cast<GLenum>(format.Type),
+						                texture.data(layer, face, level));
+					}
+				}
+			}
+		}
+
+		return globjects::Texture::fromId(textureID, GL_TEXTURE_2D);
+	}
+
+} // namespace PD

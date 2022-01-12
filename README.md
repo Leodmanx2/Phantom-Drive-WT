@@ -45,12 +45,11 @@ at any time.
 
 ### Current
 
+### Planned
+
 *   Physically Based Rendering with:
     *   Oren-Nayar Diffuse
     *   Cook-Torrence Specular
-
-### Planned
-
 *   Skeletal Animations
 *   Shadows
 *   Order-Independent Transparency

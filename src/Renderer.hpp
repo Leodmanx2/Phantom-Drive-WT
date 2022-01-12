@@ -3,70 +3,43 @@
 
 #define GLFW_INCLUDE_NONE
 
+#include "Framebuffer.hpp"
 #include "Geometry.hpp"
 #include "Light.hpp"
-#include "RenderComponent.hpp"
-#include "ResourceCache.hpp"
-#include "ShaderProgram.hpp"
 
-#include <glm/glm.hpp>
-#include <globjects/Renderbuffer.h>
-#include <globjects/globjects.h>
+#include <GLFW\glfw3.h>
+#include <glm\glm.hpp>
+#include <globjects\Program.h>
+#include <globjects\Texture.h>
 #include <memory>
-#include <queue>
 
-// Forward declarations ------------------------------------------------------
-class Window;
-// ---------------------------------------------------------------------------
+namespace PD {
 
-// RenderTask collects all the information required to render a game entity.
-struct RenderTask {
-	RenderComponent    keys;
-	int                id;
-	glm::mat4          model;
-	glm::mat4          view;
-	glm::mat4          projection;
-	glm::vec3          eye;
-	float              ambience;
-	std::vector<Light> lights;
+	void init_gl();
 
-	RenderTask(const RenderComponent&    component,
-	           int                       id,
-	           glm::mat4                 model,
-	           glm::mat4                 view,
-	           glm::mat4                 projection,
-	           glm::vec3                 eye,
-	           float                     ambience,
-	           const std::vector<Light>& lights);
-};
+	void configure_gl();
 
-class Renderer {
-	private:
-	std::unique_ptr<globjects::Framebuffer>  m_frameBuffer;
-	std::unique_ptr<globjects::Renderbuffer> m_colorAttachment;
-	std::unique_ptr<globjects::Renderbuffer> m_selectionAttachment;
-	std::unique_ptr<globjects::Renderbuffer> m_depthStencilAttachment;
+	std::unique_ptr<Framebuffer> build_framebuffer(int width, int height);
 
-	ResourceCache<globjects::Texture> m_textureCache;
-	ResourceCache<Geometry>           m_geometryCache;
-	ResourceCache<ShaderProgram>      m_shaderCache;
+	void prepare_framebuffer(Framebuffer& framebuffer);
 
-	std::queue<RenderTask> m_queue;
+	void draw(const globjects::Texture* diffuse,
+	          const globjects::Texture* specular,
+	          globjects::Program*       vertexShader,
+	          globjects::Program*       fragmentShader,
+	          const Geometry&           geometry,
+	          const int                 id,
+	          const glm::mat4           model,
+	          const glm::mat4           view,
+	          const glm::mat4           projection,
+	          const glm::vec3           eye,
+	          const float               ambience,
+	          const std::vector<Light>& lights);
 
-	int m_width;
-	int m_height;
-
-	void init();
-	void resize(int width, int height);
-	void clear();
+	void commit_frame(Framebuffer& framebuffer, GLFWwindow* window);
 
 	std::unique_ptr<globjects::Texture> loadTexture(const std::string& name);
 
-	public:
-	Renderer(unsigned int width, unsigned int height);
-
-	void queue(RenderTask task);
-	void draw();
-};
+} // namespace PD
 
 #endif

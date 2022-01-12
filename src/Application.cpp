@@ -1,7 +1,13 @@
 #include "Application.hpp"
 
+#define GLFW_INCLUDE_NONE
+
 #include "Renderer.hpp"
 
+#include <GLFW/glfw3.h>
+#include <globjects/globjects.h>
+#include <plog/Appenders/ColorConsoleAppender.h>
+#include <plog/Appenders/RollingFileAppender.h>
 #include <plog/Log.h>
 
 using namespace plog;
@@ -9,58 +15,64 @@ using namespace plog;
 const unsigned int INIT_WIDTH  = 640;
 const unsigned int INIT_HEIGHT = 480;
 
-// ---------------------------------------------------------------------------
-//  Constructors & Destructors
-// ---------------------------------------------------------------------------
+void key_callback(GLFWwindow* window, int key, int, int action, int modifiers) {
+	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
 
-Application::Application(int argc, char** argv)
-  : m_renderer(new Renderer(INIT_WIDTH, INIT_HEIGHT)) {
-// Make window and OpenGl context with available extensions
+void mouse_button_callback(GLFWwindow*, int button, int action, int modifiers) {
+}
+
+void cursor_position_callback(GLFWwindow*, double xpos, double ypos) {}
+
+void glfw_error_callback(int, const char* description) {
+	LOG(error) << description;
+}
+
+int main(int argc, char** argv) {
+	// Initialize plog
+	RollingFileAppender<TxtFormatter>  fileAppender("log/log.txt", 1000000, 2);
+	ColorConsoleAppender<TxtFormatter> consoleAppender;
+	plog::init(debug, &fileAppender).addAppender(&consoleAppender);
+
+	// Initialize glfw
+	glfwSetErrorCallback(glfw_error_callback);
+	if(!glfwInit()) {
+		LOG(fatal) << "GLFW initialization failed";
+		return EXIT_FAILURE;
+	}
+
+	// Make window
 #ifdef DEBUG
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	m_window = glfwCreateWindow(
+	GLFWwindow* window = glfwCreateWindow(
 	  INIT_WIDTH, INIT_HEIGHT, "Phantom Drive (WT)", nullptr, nullptr);
-	if(!m_window) {
+	if(!window) {
+		LOG(fatal) << "Window or OpenGL context could not be created";
 		glfwTerminate();
-		throw std::runtime_error("Window or OpenGL context could not be created");
+		return EXIT_FAILURE;
 	}
-	glfwMakeContextCurrent(m_window);
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Enable v-sync
 	glfwSwapInterval(1);
 
-	glfwSetKeyCallback(m_window, key_callback);
-	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
-	glfwSetCursorPosCallback(m_window, cursor_position_callback);
-}
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
 
-Application::~Application() { glfwDestroyWindow(m_window); }
+	// Initialize globjects
+	globjects::init(glfwGetProcAddress);
+	globjects::setCurrentContext();
 
-// ---------------------------------------------------------------------------
-//  Internal utility functions
-// ---------------------------------------------------------------------------
+	while(!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+		//TODO: Do stuff
+		glfwSwapBuffers(window);
+	}
 
-void Application::key_callback(
-  GLFWwindow*, int key, int, int action, int modifiers) {}
-
-void Application::mouse_button_callback(GLFWwindow*,
-                                        int button,
-                                        int action,
-                                        int modifiers) {}
-
-void Application::cursor_position_callback(GLFWwindow*,
-                                           double xpos,
-                                           double ypos) {}
-
-// ---------------------------------------------------------------------------
-//  Public-facing functions
-// ---------------------------------------------------------------------------
-
-// Needs to be called once in order for the application to begin processing
-void Application::run() {
-	glfwPollEvents();
-	while(!glfwWindowShouldClose(m_window)) { m_renderer->draw(); }
+	glfwDestroyWindow(window);
 }
