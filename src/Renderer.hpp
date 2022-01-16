@@ -11,6 +11,8 @@
 #include <glm\glm.hpp>
 #include <globjects\Program.h>
 #include <globjects\Texture.h>
+#include <globjects\VertexArray.h>
+#include <iterator>
 #include <memory>
 
 namespace PD {
@@ -22,6 +24,31 @@ namespace PD {
 	std::unique_ptr<Framebuffer> build_framebuffer(int width, int height);
 
 	void prepare_framebuffer(Framebuffer& framebuffer);
+
+	void update_transforms(globjects::Program* vertexShader,
+	                       const glm::mat4     model,
+	                       const glm::mat4     view,
+	                       const glm::mat4     projection);
+
+	void update_camera(globjects::Program* fragmentShader,
+	                   const glm::mat4     view,
+	                   const glm::vec3     eye);
+
+	void use_textures(globjects::Program*       fragmentShader,
+	                  const globjects::Texture* diffuse,
+	                  const globjects::Texture* specular);
+
+	void ambient_pass(globjects::Program*           ambientShader,
+	                  const globjects::VertexArray& vao,
+	                  const int                     elements,
+	                  const float                   ambience);
+
+	template <std::input_iterator Iterator>
+	void highlight_pass(globjects::Program*           highlightShader,
+	                    Iterator                      begin,
+	                    Iterator                      end,
+	                    const globjects::VertexArray& vao,
+	                    const int                     elements);
 
 	void draw(const globjects::Texture* diffuse,
 	          const globjects::Texture* specular,

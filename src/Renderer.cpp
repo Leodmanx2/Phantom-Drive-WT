@@ -65,11 +65,82 @@ namespace PD {
 		framebuffer.bind(GL_DRAW_FRAMEBUFFER);
 	}
 
+	std::unique_ptr<ProgramPipeline>
+	use_shaders(globjects::Program* vertexShader,
+	            globjects::Program* fragmentShader) {
+		auto pipeline = make_unique<ProgramPipeline>();
+		pipeline->useStages(vertexShader, gl::GL_VERTEX_SHADER_BIT);
+		pipeline->useStages(fragmentShader, gl::GL_FRAGMENT_SHADER_BIT);
+		pipeline->use();
+		return pipeline;
+	}
+
+	void update_transforms(globjects::Program* vertexShader,
+	                       const glm::mat4     model,
+	                       const glm::mat4     view,
+	                       const glm::mat4     projection) {
+		vertexShader->setUniform("model", model);
+		vertexShader->setUniform("view", view);
+		vertexShader->setUniform("projection", projection);
+		vertexShader->setUniform("normalMatrix", inverseTranspose(model * view));
+	}
+
+	void update_camera(globjects::Program* fragmentShader,
+	                   const glm::mat4     view,
+	                   const glm::vec3     eye) {
+		fragmentShader->setUniform("view", view);
+		fragmentShader->setUniform("eyePos", eye);
+	}
+
+	void use_textures(globjects::Program*       fragmentShader,
+	                  const globjects::Texture* diffuse,
+	                  const globjects::Texture* specular) {
+		fragmentShader->setUniform("diffuseMap", 0);
+		diffuse->bindActive(0);
+		fragmentShader->setUniform("specularMap", 1);
+		specular->bindActive(1);
+	}
+
+	void ambient_pass(globjects::Program* ambientShader,
+	                  const VertexArray&  vao,
+	                  const int           elements,
+	                  const float         ambience) {
+		vao.bind();
+		ambientShader->setUniform("ambience", ambience);
+		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+	}
+
+	template <input_iterator Iterator>
+	void highlight_pass(globjects::Program* highlightShader,
+	                    Iterator            begin,
+	                    Iterator            end,
+	                    const VertexArray&  vao,
+	                    const int           elements) {
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+		while(begin != end) {
+			auto light = *begin;
+			highlightShader->setUniform("light.position", light.position);
+			highlightShader->setUniform("light.direction", light.direction);
+			highlightShader->setUniform("light.color", light.color);
+			highlightShader->setUniform("light.intensity", light.intensity);
+			highlightShader->setUniform("light.angle", light.angle);
+			highlightShader->setUniform("light.radius", light.radius);
+
+			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
+			++begin;
+		}
+		glDisable(GL_BLEND);
+	}
+
 	void draw(const globjects::Texture* diffuse,
 	          const globjects::Texture* specular,
 	          globjects::Program*       vertexShader,
-	          globjects::Program*       fragmentShader,
-	          const Geometry&           geometry,
+	          globjects::Program*       ambientShader,
+	          globjects::Program*       highlightShader,
+	          const VertexArray&        vao,
+	          const int                 elements,
 	          const int                 id,
 	          const glm::mat4           model,
 	          const glm::mat4           view,
@@ -77,59 +148,21 @@ namespace PD {
 	          const glm::vec3           eye,
 	          const float               ambience,
 	          const std::vector<Light>& lights) {
-		ProgramPipeline pipeline;
-		pipeline.useStages(vertexShader, gl::GL_VERTEX_SHADER_BIT);
-		pipeline.useStages(fragmentShader, gl::GL_FRAGMENT_SHADER_BIT);
-		pipeline.use();
+		auto pipeline = use_shaders(vertexShader, ambientShader);
+		update_transforms(vertexShader, model, view, projection);
 
-		// Upload transformation matrices
-		vertexShader->setUniform("model", model);
-		vertexShader->setUniform("view", view);
-		vertexShader->setUniform("projection", projection);
-		vertexShader->setUniform("normalMatrix", inverseTranspose(model * view));
+		update_camera(ambientShader, view, eye);
+		use_textures(ambientShader, diffuse, specular);
+		ambient_pass(ambientShader, vao, elements, ambience);
 
-		// Upload camera uniforms
-		fragmentShader->setUniform("view", view);
-		fragmentShader->setUniform("id", id);
-		fragmentShader->setUniform("eyePos", eye);
-
-		// Bind textures
-		diffuse->bindActive(0);
-		specular->bindActive(1);
-
-		// Bind geometry
-		const VertexArray& vao      = geometry.vao();
-		int                elements = geometry.elements();
-		vao.bind();
-
-		// Ambient pass
-		fragmentShader->setUniform("useAmbient", true);
-		fragmentShader->setUniform("useDiffuse", false);
-		fragmentShader->setUniform("useSpecular", false);
-		fragmentShader->setUniform("ambience", ambience);
-		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
-
-		// Diffuse and specular pass
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
-		fragmentShader->setUniform("useAmbient", false);
-		fragmentShader->setUniform("useDiffuse", true);
-		fragmentShader->setUniform("useSpecular", true);
-		for(auto light: lights) {
-			fragmentShader->setUniform("light.position", light.position);
-			fragmentShader->setUniform("light.direction", light.direction);
-			fragmentShader->setUniform("light.color", light.color);
-			fragmentShader->setUniform("light.intensity", light.intensity);
-			fragmentShader->setUniform("light.angle", light.angle);
-			fragmentShader->setUniform("light.radius", light.radius);
-
-			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
-		}
-		glDisable(GL_BLEND);
+		update_camera(highlightShader, view, eye);
+		use_textures(highlightShader, diffuse, specular);
+		highlight_pass(
+		  highlightShader, lights.cbegin(), lights.cend(), vao, elements);
 
 		vao.unbind();
 		pipeline.release();
+		// TODO: return ID map
 	}
 
 	void commit_frame(globjects::Framebuffer& framebuffer, GLFWwindow* window) {
