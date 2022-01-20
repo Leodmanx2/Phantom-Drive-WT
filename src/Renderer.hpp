@@ -21,9 +21,7 @@ namespace PD {
 
 	void configure_gl();
 
-	std::unique_ptr<Framebuffer> build_framebuffer(int width, int height);
-
-	void prepare_framebuffer(Framebuffer& framebuffer);
+	void clear(globjects::Framebuffer* frameBuffer);
 
 	void update_transforms(globjects::Program* vertexShader,
 	                       const glm::mat4     model,

@@ -26,6 +26,8 @@ namespace PD {
 		  , depth_buffer(std::move(depth_buffer))
 		  , frame_buffer(std::move(frame_buffer)) {}
 
+		Framebuffer(int width, int height);
+
 		operator globjects::Framebuffer*() const { return frame_buffer.get(); }
 	};
 

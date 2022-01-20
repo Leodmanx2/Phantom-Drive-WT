@@ -25,44 +25,12 @@ namespace PD {
 		glEnable(GL_LINE_SMOOTH);
 	}
 
-	unique_ptr<PD::Framebuffer> build_framebuffer(int width, int height) {
-		auto color_attachment = make_unique<Renderbuffer>();
-		color_attachment->storage(GL_RGBA32F, width, height);
-
-		auto selection_attachment = make_unique<Renderbuffer>();
-		selection_attachment->storage(GL_R32UI, width, height);
-
-		auto depth_attachment = make_unique<Renderbuffer>();
-		depth_attachment->storage(GL_DEPTH24_STENCIL8, width, height);
-
-		auto framebuffer = make_unique<globjects::Framebuffer>();
-		framebuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT0,
-		                                color_attachment.get());
-		framebuffer->attachRenderBuffer(GL_COLOR_ATTACHMENT1,
-		                                selection_attachment.get());
-		framebuffer->attachRenderBuffer(GL_DEPTH_STENCIL_ATTACHMENT,
-		                                depth_attachment.get());
-		framebuffer->setDrawBuffers({GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1});
-
-		const GLenum stat = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-		if(stat != GL_FRAMEBUFFER_COMPLETE) {
-			throw runtime_error("could not build framebuffer");
-		}
-
-		return make_unique<PD::Framebuffer>(std::move(color_attachment),
-		                                    std::move(selection_attachment),
-		                                    std::move(depth_attachment),
-		                                    std::move(framebuffer));
-	}
-
-	void prepare_framebuffer(globjects::Framebuffer& framebuffer) {
+	void clear(globjects::Framebuffer* frameBuffer) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		framebuffer.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-		                  GL_STENCIL_BUFFER_BIT);
+		frameBuffer->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+		                   GL_STENCIL_BUFFER_BIT);
 		const int color = 0;
-		framebuffer.clearBuffer(GL_COLOR, 1, &color);
-
-		framebuffer.bind(GL_DRAW_FRAMEBUFFER);
+		frameBuffer->clearBuffer(GL_COLOR, 1, &color);
 	}
 
 	std::unique_ptr<ProgramPipeline>
@@ -101,11 +69,12 @@ namespace PD {
 		specular->bindActive(1);
 	}
 
-	void ambient_pass(globjects::Program* ambientShader,
+	void ambient_pass(globjects::Program* vertexShader,
+	                  globjects::Program* ambientShader,
 	                  const VertexArray&  vao,
 	                  const int           elements,
 	                  const float         ambience) {
-		vao.bind();
+		auto pipeline = use_shaders(vertexShader, ambientShader);
 		ambientShader->setUniform("ambience", ambience);
 		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 	}
@@ -148,9 +117,7 @@ namespace PD {
 	          const glm::vec3           eye,
 	          const float               ambience,
 	          const std::vector<Light>& lights) {
-		auto pipeline = use_shaders(vertexShader, ambientShader);
 		update_transforms(vertexShader, model, view, projection);
-
 		update_camera(ambientShader, view, eye);
 		use_textures(ambientShader, diffuse, specular);
 		ambient_pass(ambientShader, vao, elements, ambience);
@@ -159,9 +126,6 @@ namespace PD {
 		use_textures(highlightShader, diffuse, specular);
 		highlight_pass(
 		  highlightShader, lights.cbegin(), lights.cend(), vao, elements);
-
-		vao.unbind();
-		pipeline.release();
 		// TODO: return ID map
 	}
 
