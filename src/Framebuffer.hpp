@@ -28,7 +28,9 @@ namespace PD {
 
 		Framebuffer(int width, int height);
 
-		operator globjects::Framebuffer*() const { return frame_buffer.get(); }
+		globjects::Framebuffer* raw() const;
+
+		operator globjects::Framebuffer*() const { return raw(); }
 	};
 
 }; // namespace PD

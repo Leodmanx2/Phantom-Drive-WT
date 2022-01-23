@@ -16,22 +16,11 @@ class ShaderProgram {
 
 	public:
 	explicit ShaderProgram(const gl::GLenum type, const std::string& file);
+	~ShaderProgram();
 
-	globjects::Program& get() const;
-	void                use() const;
-	void                release();
+	globjects::Program* raw() const;
 
-	template <typename T>
-	void setUniform(const std::string& name, const T& value) {
-		m_program->setUniform(name, value);
-	}
-
-	template <typename T>
-	void setUniform(gl::GLint location, const T& value) {
-		m_program->setUniform(location, value);
-	}
-
-	operator globjects::Program*() const { return m_program.get(); }
+	operator globjects::Program*() const { return raw(); }
 };
 
 #endif

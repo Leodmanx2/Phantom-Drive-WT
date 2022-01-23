@@ -30,4 +30,8 @@ namespace PD {
 		}
 	}
 
+	globjects::Framebuffer* Framebuffer::raw() const {
+		return frame_buffer.get();
+	}
+
 } // namespace PD
