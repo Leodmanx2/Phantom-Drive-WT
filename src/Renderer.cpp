@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <glbinding/gl/gl.h>
 #include <gli/gli.hpp>
-#include <glm/gtc/matrix_inverse.hpp>
 #include <globjects/ProgramPipeline.h>
 #include <globjects/globjects.h>
 
@@ -41,32 +40,6 @@ namespace PD {
 		pipeline->useStages(fragmentShader, gl::GL_FRAGMENT_SHADER_BIT);
 		pipeline->use();
 		return pipeline;
-	}
-
-	void update_transforms(globjects::Program* vertexShader,
-	                       const glm::mat4     model,
-	                       const glm::mat4     view,
-	                       const glm::mat4     projection) {
-		vertexShader->setUniform("model", model);
-		vertexShader->setUniform("view", view);
-		vertexShader->setUniform("projection", projection);
-		vertexShader->setUniform("normalMatrix", inverseTranspose(model * view));
-	}
-
-	void update_camera(globjects::Program* fragmentShader,
-	                   const glm::mat4     view,
-	                   const glm::vec3     eye) {
-		fragmentShader->setUniform("view", view);
-		fragmentShader->setUniform("eyePos", eye);
-	}
-
-	void use_textures(globjects::Program*       fragmentShader,
-	                  const globjects::Texture* diffuse,
-	                  const globjects::Texture* specular) {
-		fragmentShader->setUniform("diffuseMap", 0);
-		diffuse->bindActive(0);
-		fragmentShader->setUniform("specularMap", 1);
-		specular->bindActive(1);
 	}
 
 	void ambient_pass(globjects::Program* vertexShader,
