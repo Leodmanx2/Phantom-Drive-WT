@@ -68,8 +68,7 @@ namespace PD {
 		glDisable(GL_BLEND);
 	}
 
-	void draw(const globjects::Texture* diffuse,
-	          const globjects::Texture* specular,
+	void draw(const globjects::Texture* albedo,
 	          const ShaderPipeline&     ambientPipeline,
 	          const ShaderPipeline&     highlightPipeline,
 	          const VertexArray&        vao,
@@ -81,14 +80,14 @@ namespace PD {
 	          const glm::vec3           eye,
 	          const float               ambience,
 	          const std::vector<Light>& lights) {
+		albedo->bindActive(FragmentShaderProgram::ALBEDO_TEXTURE_UNIT);
+
 		ambientPipeline.vs().transforms(model, view, projection);
 		ambientPipeline.fs().camera(view, eye);
-		ambientPipeline.fs().textures(diffuse, specular);
 		ambient_pass(ambientPipeline, vao, elements, ambience);
 
 		highlightPipeline.vs().transforms(model, view, projection);
 		highlightPipeline.fs().camera(view, eye);
-		highlightPipeline.fs().textures(diffuse, specular);
 		highlight_pass(
 		  highlightPipeline, lights.cbegin(), lights.cend(), vao, elements);
 		// TODO: return ID map

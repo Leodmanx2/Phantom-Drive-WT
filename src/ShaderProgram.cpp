@@ -46,17 +46,15 @@ void VertexShaderProgram::transforms(const glm::mat4 model,
 
 // TODO: Validate fragment shader has bindings required by renderer
 FragmentShaderProgram::FragmentShaderProgram(const std::string& file)
-  : ShaderProgram(GL_FRAGMENT_SHADER, file) {}
+  : ShaderProgram(GL_FRAGMENT_SHADER, file) {
+	m_program->setUniform("albedoMap", ALBEDO_TEXTURE_UNIT);
+	m_program->setUniform("roughnessMap", ROUGHNESS_TEXTURE_UNIT);
+	m_program->setUniform("metalnessMap", METALNESS_TEXTURE_UNIT);
+	m_program->setUniform("occlusionMap", OCCLUSION_TEXTURE_UNIT);
+	m_program->setUniform("emissionMap", EMISSION_TEXTURE_UNIT);
+}
 
 void FragmentShaderProgram::camera(const glm::mat4 view, const glm::vec3 eye) {
 	m_program->setUniform("view", view);
 	m_program->setUniform("eyePos", eye);
-}
-
-void FragmentShaderProgram::textures(const globjects::Texture* diffuse,
-                                     const globjects::Texture* specular) {
-	m_program->setUniform("diffuseMap", 0);
-	diffuse->bindActive(0);
-	m_program->setUniform("specularMap", 1);
-	specular->bindActive(1);
 }

@@ -50,12 +50,15 @@ class VertexShaderProgram final : public ShaderProgram {
 
 class FragmentShaderProgram final : public ShaderProgram {
 	public:
+	static const unsigned int ALBEDO_TEXTURE_UNIT    = 0;
+	static const unsigned int ROUGHNESS_TEXTURE_UNIT = 1;
+	static const unsigned int METALNESS_TEXTURE_UNIT = 2;
+	static const unsigned int OCCLUSION_TEXTURE_UNIT = 3;
+	static const unsigned int EMISSION_TEXTURE_UNIT  = 4;
+
 	explicit FragmentShaderProgram(const std::string& file);
 
 	void camera(const glm::mat4 view, const glm::vec3 eye);
-
-	void textures(const globjects::Texture* diffuse,
-	              const globjects::Texture* specular);
 };
 
 #endif
