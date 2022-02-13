@@ -23,20 +23,7 @@ namespace PD {
 
 	void configure_gl();
 
-	void clear(globjects::Framebuffer* frameBuffer);
-
-	void update_transforms(globjects::Program* vertexShader,
-	                       const glm::mat4     model,
-	                       const glm::mat4     view,
-	                       const glm::mat4     projection);
-
-	void update_camera(globjects::Program* fragmentShader,
-	                   const glm::mat4     view,
-	                   const glm::vec3     eye);
-
-	void use_textures(globjects::Program*       fragmentShader,
-	                  const globjects::Texture* diffuse,
-	                  const globjects::Texture* specular);
+	void clear(globjects::Framebuffer& frameBuffer);
 
 	void ambient_pass(const ShaderPipeline&         pipeline,
 	                  const globjects::VertexArray& vao,
