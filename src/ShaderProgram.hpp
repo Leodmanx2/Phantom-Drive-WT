@@ -24,9 +24,9 @@ class ShaderProgram {
 	explicit ShaderProgram(const gl::GLenum type, const std::string& file);
 	~ShaderProgram();
 
-	globjects::Program* raw() const;
+	constexpr globjects::Program* raw() const { return m_program.get(); };
 
-	operator globjects::Program*() const { return raw(); }
+	constexpr operator globjects::Program*() const { return raw(); }
 };
 
 // -------------------
@@ -39,8 +39,9 @@ class VertexShaderProgram final : public ShaderProgram {
 
 	void update_camera(const glm::mat4 view, const glm::vec3 eye);
 
-	void use_textures(const globjects::Texture* diffuse,
-	                  const globjects::Texture* specular);
+	void transforms(const glm::mat4 model,
+	                const glm::mat4 view,
+	                const glm::mat4 projection);
 };
 
 // ---------------------
@@ -51,9 +52,10 @@ class FragmentShaderProgram final : public ShaderProgram {
 	public:
 	explicit FragmentShaderProgram(const std::string& file);
 
-	void update_transforms(const glm::mat4 model,
-	                       const glm::mat4 view,
-	                       const glm::mat4 projection);
+	void camera(const glm::mat4 view, const glm::vec3 eye);
+
+	void textures(const globjects::Texture* diffuse,
+	              const globjects::Texture* specular);
 };
 
 #endif

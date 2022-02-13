@@ -24,51 +24,43 @@ namespace PD {
 		glEnable(GL_LINE_SMOOTH);
 	}
 
-	void clear(globjects::Framebuffer* frameBuffer) {
+	void clear(globjects::Framebuffer& frameBuffer) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		frameBuffer->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-		                   GL_STENCIL_BUFFER_BIT);
+		frameBuffer.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+		                  GL_STENCIL_BUFFER_BIT);
 		const int color = 0;
-		frameBuffer->clearBuffer(GL_COLOR, 1, &color);
+		frameBuffer.clearBuffer(GL_COLOR, 1, &color);
 	}
 
-	std::unique_ptr<ProgramPipeline>
-	use_shaders(globjects::Program* vertexShader,
-	            globjects::Program* fragmentShader) {
-		auto pipeline = make_unique<ProgramPipeline>();
-		pipeline->useStages(vertexShader, gl::GL_VERTEX_SHADER_BIT);
-		pipeline->useStages(fragmentShader, gl::GL_FRAGMENT_SHADER_BIT);
-		pipeline->use();
-		return pipeline;
-	}
-
-	void ambient_pass(globjects::Program* vertexShader,
-	                  globjects::Program* ambientShader,
-	                  const VertexArray&  vao,
-	                  const int           elements,
-	                  const float         ambience) {
-		auto pipeline = use_shaders(vertexShader, ambientShader);
-		ambientShader->setUniform("ambience", ambience);
+	void ambient_pass(const ShaderPipeline& pipeline,
+	                  const VertexArray&    vao,
+	                  const int             elements,
+	                  const float           ambience) {
+		pipeline.raw()->use();
+		globjects::Program* vertexShader = pipeline.vs();
+		vertexShader->setUniform("ambience", ambience);
 		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 	}
 
 	template <input_iterator Iterator>
-	void highlight_pass(globjects::Program* highlightShader,
-	                    Iterator            begin,
-	                    Iterator            end,
-	                    const VertexArray&  vao,
-	                    const int           elements) {
+	void highlight_pass(const ShaderPipeline& pipeline,
+	                    Iterator              begin,
+	                    Iterator              end,
+	                    const VertexArray&    vao,
+	                    const int             elements) {
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
+		pipeline.raw()->use();
+		globjects::Program* fragmentShader = pipeline.fs();
 		while(begin != end) {
 			auto light = *begin;
-			highlightShader->setUniform("light.position", light.position);
-			highlightShader->setUniform("light.direction", light.direction);
-			highlightShader->setUniform("light.color", light.color);
-			highlightShader->setUniform("light.intensity", light.intensity);
-			highlightShader->setUniform("light.angle", light.angle);
-			highlightShader->setUniform("light.radius", light.radius);
+			fragmentShader->setUniform("light.position", light.position);
+			fragmentShader->setUniform("light.direction", light.direction);
+			fragmentShader->setUniform("light.color", light.color);
+			fragmentShader->setUniform("light.intensity", light.intensity);
+			fragmentShader->setUniform("light.angle", light.angle);
+			fragmentShader->setUniform("light.radius", light.radius);
 
 			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
 			++begin;
@@ -78,9 +70,8 @@ namespace PD {
 
 	void draw(const globjects::Texture* diffuse,
 	          const globjects::Texture* specular,
-	          globjects::Program*       vertexShader,
-	          globjects::Program*       ambientShader,
-	          globjects::Program*       highlightShader,
+	          const ShaderPipeline&     ambientPipeline,
+	          const ShaderPipeline&     highlightPipeline,
 	          const VertexArray&        vao,
 	          const int                 elements,
 	          const int                 id,
@@ -90,15 +81,16 @@ namespace PD {
 	          const glm::vec3           eye,
 	          const float               ambience,
 	          const std::vector<Light>& lights) {
-		update_transforms(vertexShader, model, view, projection);
-		update_camera(ambientShader, view, eye);
-		use_textures(ambientShader, diffuse, specular);
-		ambient_pass(ambientShader, vao, elements, ambience);
+		ambientPipeline.vs().transforms(model, view, projection);
+		ambientPipeline.fs().camera(view, eye);
+		ambientPipeline.fs().textures(diffuse, specular);
+		ambient_pass(ambientPipeline, vao, elements, ambience);
 
-		update_camera(highlightShader, view, eye);
-		use_textures(highlightShader, diffuse, specular);
+		highlightPipeline.vs().transforms(model, view, projection);
+		highlightPipeline.fs().camera(view, eye);
+		highlightPipeline.fs().textures(diffuse, specular);
 		highlight_pass(
-		  highlightShader, lights.cbegin(), lights.cend(), vao, elements);
+		  highlightPipeline, lights.cbegin(), lights.cend(), vao, elements);
 		// TODO: return ID map
 	}
 

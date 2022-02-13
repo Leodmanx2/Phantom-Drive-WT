@@ -8,21 +8,22 @@
 namespace PD {
 
 	class ShaderPipeline final {
-		using shader_ptr   = std::unique_ptr<ShaderProgram>;
+		using vs_ptr       = std::unique_ptr<VertexShaderProgram>;
+		using fs_ptr       = std::unique_ptr<FragmentShaderProgram>;
 		using pipeline_ptr = std::unique_ptr<globjects::ProgramPipeline>;
 
-		shader_ptr   vertex_shader;
-		shader_ptr   fragment_shader;
+		vs_ptr       vertex_shader;
+		fs_ptr       fragment_shader;
 		pipeline_ptr pipeline;
 
 		public:
-		ShaderPipeline(shader_ptr vertex_shader, shader_ptr fragment_shader);
+		ShaderPipeline(vs_ptr vertex_shader, fs_ptr fragment_shader);
 
-		globjects::Program*         vs() const;
-		globjects::Program*         fs() const;
-		globjects::ProgramPipeline* raw() const;
+		constexpr VertexShaderProgram&   vs() const { return *vertex_shader; }
+		constexpr FragmentShaderProgram& fs() const { return *fragment_shader; }
+		constexpr globjects::ProgramPipeline* raw() const { return pipeline.get(); }
 
-		operator globjects::ProgramPipeline*() const { return raw(); }
+		constexpr operator globjects::ProgramPipeline*() const { return raw(); }
 	};
 
 } // namespace PD

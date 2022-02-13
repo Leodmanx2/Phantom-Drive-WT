@@ -6,6 +6,8 @@
 #include "Framebuffer.hpp"
 #include "Geometry.hpp"
 #include "Light.hpp"
+#include "ShaderPipeline.hpp"
+#include "ShaderProgram.hpp"
 
 #include <GLFW\glfw3.h>
 #include <glm\glm.hpp>
@@ -36,13 +38,13 @@ namespace PD {
 	                  const globjects::Texture* diffuse,
 	                  const globjects::Texture* specular);
 
-	void ambient_pass(globjects::Program*           ambientShader,
+	void ambient_pass(const ShaderPipeline&         pipeline,
 	                  const globjects::VertexArray& vao,
 	                  const int                     elements,
 	                  const float                   ambience);
 
 	template <std::input_iterator Iterator>
-	void highlight_pass(globjects::Program*           highlightShader,
+	void highlight_pass(const ShaderPipeline&         pipeline,
 	                    Iterator                      begin,
 	                    Iterator                      end,
 	                    const globjects::VertexArray& vao,
