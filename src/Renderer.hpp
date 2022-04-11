@@ -25,31 +25,6 @@ namespace PD {
 
 	void clear(globjects::Framebuffer& frameBuffer);
 
-	void ambient_pass(const ShaderPipeline&         pipeline,
-	                  const globjects::VertexArray& vao,
-	                  const int                     elements,
-	                  const float                   ambience);
-
-	template <std::input_iterator Iterator>
-	void highlight_pass(const ShaderPipeline&         pipeline,
-	                    Iterator                      begin,
-	                    Iterator                      end,
-	                    const globjects::VertexArray& vao,
-	                    const int                     elements);
-
-	void draw(const globjects::Texture* diffuse,
-	          const globjects::Texture* specular,
-	          globjects::Program*       vertexShader,
-	          globjects::Program*       fragmentShader,
-	          const Geometry&           geometry,
-	          const int                 id,
-	          const glm::mat4           model,
-	          const glm::mat4           view,
-	          const glm::mat4           projection,
-	          const glm::vec3           eye,
-	          const float               ambience,
-	          const std::vector<Light>& lights);
-
 	void commit_frame(Framebuffer& framebuffer, GLFWwindow* window);
 
 	std::unique_ptr<globjects::Texture> loadTexture(const std::string& name);

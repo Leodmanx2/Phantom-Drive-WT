@@ -12,6 +12,10 @@ using namespace std;
 
 namespace PD {
 
+	// NOTE: gl initialization and configuration will take place at
+	//       the application level. The RenderContext must be constructed as
+	//       part of init_gl().
+
 	void init_gl() {}
 
 	void configure_gl() {
@@ -32,67 +36,7 @@ namespace PD {
 		frameBuffer.clearBuffer(GL_COLOR, 1, &color);
 	}
 
-	void ambient_pass(const ShaderPipeline& pipeline,
-	                  const VertexArray&    vao,
-	                  const int             elements,
-	                  const float           ambience) {
-		pipeline.raw()->use();
-		globjects::Program* vertexShader = pipeline.vs();
-		vertexShader->setUniform("ambience", ambience);
-		vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
-	}
-
-	template <input_iterator Iterator>
-	void highlight_pass(const ShaderPipeline& pipeline,
-	                    Iterator              begin,
-	                    Iterator              end,
-	                    const VertexArray&    vao,
-	                    const int             elements) {
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
-		pipeline.raw()->use();
-		globjects::Program* fragmentShader = pipeline.fs();
-		while(begin != end) {
-			auto light = *begin;
-			fragmentShader->setUniform("light.position", light.position);
-			fragmentShader->setUniform("light.direction", light.direction);
-			fragmentShader->setUniform("light.color", light.color);
-			fragmentShader->setUniform("light.intensity", light.intensity);
-			fragmentShader->setUniform("light.angle", light.angle);
-			fragmentShader->setUniform("light.radius", light.radius);
-
-			vao.drawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT);
-			++begin;
-		}
-		glDisable(GL_BLEND);
-	}
-
-	void draw(const globjects::Texture* albedo,
-	          const ShaderPipeline&     ambientPipeline,
-	          const ShaderPipeline&     highlightPipeline,
-	          const VertexArray&        vao,
-	          const int                 elements,
-	          const int                 id,
-	          const glm::mat4           model,
-	          const glm::mat4           view,
-	          const glm::mat4           projection,
-	          const glm::vec3           eye,
-	          const float               ambience,
-	          const std::vector<Light>& lights) {
-		albedo->bindActive(FragmentShaderProgram::ALBEDO_TEXTURE_UNIT);
-
-		ambientPipeline.vs().transforms(model, view, projection);
-		ambientPipeline.fs().camera(view, eye);
-		ambient_pass(ambientPipeline, vao, elements, ambience);
-
-		highlightPipeline.vs().transforms(model, view, projection);
-		highlightPipeline.fs().camera(view, eye);
-		highlight_pass(
-		  highlightPipeline, lights.cbegin(), lights.cend(), vao, elements);
-		// TODO: return ID map
-	}
-
+	// NOTE: Will take place at application level
 	void commit_frame(globjects::Framebuffer& framebuffer, GLFWwindow* window) {
 		framebuffer.bind(GL_READ_FRAMEBUFFER);
 		framebuffer.unbind(GL_DRAW_FRAMEBUFFER);
