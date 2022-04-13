@@ -70,9 +70,6 @@ namespace PD {
 
 	// NOTE: Will take place at application level
 	void commit_frame(globjects::Framebuffer& framebuffer, GLFWwindow* window) {
-		framebuffer.bind(GL_READ_FRAMEBUFFER);
-		framebuffer.unbind(GL_DRAW_FRAMEBUFFER);
-
 		const int source_width = framebuffer.getAttachmentParameter(
 		  GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER_WIDTH);
 		const int source_height = framebuffer.getAttachmentParameter(
@@ -81,18 +78,15 @@ namespace PD {
 		int destination_width, destination_height;
 		glfwGetFramebufferSize(window, &destination_width, &destination_height);
 
-		// NOTE: might be able to blit using globjects function
-		//       if framebuffer object is constructed from default buffer id
-		glBlitFramebuffer(0,
-		                  0,
-		                  source_width,
-		                  source_height,
-		                  0,
-		                  0,
-		                  destination_width,
-		                  destination_height,
-		                  GL_COLOR_BUFFER_BIT,
-		                  GL_NEAREST);
+		auto default_framebuffer = globjects::Framebuffer::defaultFBO();
+
+		framebuffer.blit(GL_BACK,
+		                 {0, 0, source_width, source_height},
+		                 default_framebuffer.get(),
+		                 GL_BACK,
+		                 {0, 0, destination_width, destination_height},
+		                 GL_COLOR_BUFFER_BIT,
+		                 GL_NEAREST);
 	}
 
 	// TODO: Rewrite to load using globjects methods, move to appropriate file
