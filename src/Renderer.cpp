@@ -28,6 +28,38 @@ namespace PD {
 		glEnable(GL_LINE_SMOOTH);
 	}
 
+	std::unique_ptr<Framebuffer> init_framebuffer(unsigned int width,
+	                                              unsigned int height) {
+		auto color_buffer = make_unique<globjects::Renderbuffer>();
+		color_buffer->storage(GL_RGBA32F, width, height);
+
+		auto selection_buffer = make_unique<globjects::Renderbuffer>();
+		selection_buffer->storage(GL_R32UI, width, height);
+
+		auto depth_buffer = make_unique<globjects::Renderbuffer>();
+		depth_buffer->storage(GL_DEPTH24_STENCIL8, width, height);
+
+		auto frame_buffer_raw = make_unique<globjects::Framebuffer>();
+
+		frame_buffer_raw->attachRenderBuffer(GL_COLOR_ATTACHMENT0,
+		                                     color_buffer.get());
+		frame_buffer_raw->attachRenderBuffer(GL_COLOR_ATTACHMENT1,
+		                                     selection_buffer.get());
+		frame_buffer_raw->attachRenderBuffer(GL_DEPTH_STENCIL_ATTACHMENT,
+		                                     depth_buffer.get());
+		frame_buffer_raw->setDrawBuffers(
+		  {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1});
+
+		if(frame_buffer_raw->checkStatus() != GL_FRAMEBUFFER_COMPLETE) {
+			throw std::runtime_error("could not build framebuffer");
+		}
+
+		return make_unique<PD::Framebuffer>(move(color_buffer),
+		                                    move(selection_buffer),
+		                                    move(depth_buffer),
+		                                    move(frame_buffer_raw));
+	}
+
 	void clear(globjects::Framebuffer& frameBuffer) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		frameBuffer.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |

@@ -2,15 +2,22 @@
 
 #define GLFW_INCLUDE_NONE
 
+#include "RenderContext.hpp"
 #include "Renderer.hpp"
+#include "ShaderProgram.hpp"
 
 #include <GLFW/glfw3.h>
+#include <glbinding\gl\gl.h>
 #include <globjects/globjects.h>
 #include <plog/Appenders/ColorConsoleAppender.h>
 #include <plog/Appenders/RollingFileAppender.h>
 #include <plog/Log.h>
 
 using namespace plog;
+using std::make_shared;
+using std::make_unique;
+using namespace gl;
+using std::move;
 
 const unsigned int INIT_WIDTH  = 640;
 const unsigned int INIT_HEIGHT = 480;
@@ -67,6 +74,24 @@ int main(int argc, char** argv) {
 	// Initialize globjects
 	globjects::init(glfwGetProcAddress);
 	globjects::setCurrentContext();
+
+	// Initialize rendering pipeline
+	auto frame_buffer = PD::init_framebuffer(INIT_WIDTH, INIT_HEIGHT);
+
+	auto vertex_shader = make_shared<VertexShaderProgram>("sample_vs.glsl");
+	auto ambient_shader =
+	  make_shared<FragmentShaderProgram>("sample_ambient_fs.glsl");
+	auto highlight_shader =
+	  make_shared<FragmentShaderProgram>("sample_highlight_fs.glsl");
+
+	auto ambient_pipeline =
+	  make_unique<PD::ShaderPipeline>(vertex_shader, ambient_shader);
+
+	auto highlight_pipeline =
+	  make_unique<PD::ShaderPipeline>(vertex_shader, highlight_shader);
+
+	auto context = make_unique<PD::RenderContext>(
+	  move(frame_buffer), move(ambient_pipeline), move(highlight_pipeline));
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();

@@ -23,6 +23,9 @@ namespace PD {
 
 	void configure_gl();
 
+	std::unique_ptr<Framebuffer> init_framebuffer(unsigned int width,
+	                                              unsigned int height);
+
 	void clear(globjects::Framebuffer& frameBuffer);
 
 	void commit_frame(Framebuffer& framebuffer, GLFWwindow* window);
