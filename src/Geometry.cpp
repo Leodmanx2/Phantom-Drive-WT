@@ -27,10 +27,10 @@ Geometry::Geometry(const string& name)
 	};
 
 	// Prepare buffer data
-	vector<Vertex>       vertices;
-	vector<unsigned int> indices;
-	ifstream             fileStream(name, ios::binary);
-	PMDL::File           fileData = PMDL::File::parse(fileStream);
+	vector<Vertex>     vertices;
+	vector<gl::GLuint> indices;
+	ifstream           fileStream(name, ios::binary);
+	PMDL::File         fileData = PMDL::File::parse(fileStream);
 
 	// Load model vertices into local buffer
 	for(PMDL::Vertex fileVert: fileData.body.vertices) {

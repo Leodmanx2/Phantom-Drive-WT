@@ -28,8 +28,7 @@ namespace PD {
 		glEnable(GL_LINE_SMOOTH);
 	}
 
-	std::unique_ptr<Framebuffer> init_framebuffer(unsigned int width,
-	                                              unsigned int height) {
+	std::unique_ptr<Framebuffer> init_framebuffer(int width, int height) {
 		auto color_buffer = make_unique<globjects::Renderbuffer>();
 		color_buffer->storage(GL_RGBA32F, width, height);
 
@@ -69,24 +68,19 @@ namespace PD {
 	}
 
 	// NOTE: Will take place at application level
-	void commit_frame(globjects::Framebuffer& framebuffer, GLFWwindow* window) {
-		const int source_width = framebuffer.getAttachmentParameter(
-		  GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER_WIDTH);
-		const int source_height = framebuffer.getAttachmentParameter(
-		  GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER_HEIGHT);
-
+	void commit_frame(const Framebuffer& framebuffer, GLFWwindow* window) {
 		int destination_width, destination_height;
 		glfwGetFramebufferSize(window, &destination_width, &destination_height);
 
 		auto default_framebuffer = globjects::Framebuffer::defaultFBO();
 
-		framebuffer.blit(GL_BACK,
-		                 {0, 0, source_width, source_height},
-		                 default_framebuffer.get(),
-		                 GL_BACK,
-		                 {0, 0, destination_width, destination_height},
-		                 GL_COLOR_BUFFER_BIT,
-		                 GL_NEAREST);
+		framebuffer.raw()->blit(GL_BACK,
+		                        {0, 0, framebuffer.width, framebuffer.height},
+		                        default_framebuffer.get(),
+		                        GL_BACK,
+		                        {0, 0, destination_width, destination_height},
+		                        GL_COLOR_BUFFER_BIT,
+		                        GL_NEAREST);
 	}
 
 	// TODO: Rewrite to load using globjects methods, move to appropriate file

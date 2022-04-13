@@ -19,8 +19,8 @@ using std::make_unique;
 using namespace gl;
 using std::move;
 
-const unsigned int INIT_WIDTH  = 640;
-const unsigned int INIT_HEIGHT = 480;
+const int INIT_WIDTH  = 640;
+const int INIT_HEIGHT = 480;
 
 void key_callback(GLFWwindow* window, int key, int, int action, int modifiers) {
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)

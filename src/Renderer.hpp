@@ -23,8 +23,7 @@ namespace PD {
 
 	void configure_gl();
 
-	std::unique_ptr<Framebuffer> init_framebuffer(unsigned int width,
-	                                              unsigned int height);
+	std::unique_ptr<Framebuffer> init_framebuffer(int width, int height);
 
 	void clear(globjects::Framebuffer& frameBuffer);
 

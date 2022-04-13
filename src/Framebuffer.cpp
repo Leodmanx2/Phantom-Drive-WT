@@ -12,7 +12,9 @@ namespace PD {
 	  : color_buffer(new Renderbuffer())
 	  , selection_buffer(new Renderbuffer())
 	  , depth_buffer(new Renderbuffer())
-	  , frame_buffer(new globjects::Framebuffer()) {
+	  , frame_buffer(new globjects::Framebuffer())
+	  , width(width)
+	  , height(height) {
 		color_buffer->storage(GL_RGBA32F, width, height);
 		selection_buffer->storage(GL_R32UI, width, height);
 		depth_buffer->storage(GL_DEPTH24_STENCIL8, width, height);
@@ -28,10 +30,6 @@ namespace PD {
 		if(stat != GL_FRAMEBUFFER_COMPLETE) {
 			throw runtime_error("could not build framebuffer");
 		}
-	}
-
-	globjects::Framebuffer* Framebuffer::raw() const {
-		return frame_buffer.get();
 	}
 
 } // namespace PD
