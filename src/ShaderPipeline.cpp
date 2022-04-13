@@ -4,12 +4,11 @@
 
 namespace PD {
 	ShaderPipeline::ShaderPipeline(vs_ptr vertex_shader, fs_ptr fragment_shader)
-	  : vertex_shader(std::move(vertex_shader))
-	  , fragment_shader(std::move(fragment_shader))
-	  , pipeline(new globjects::ProgramPipeline()) {
-		pipeline->useStages(this->vertex_shader->raw(), gl::GL_VERTEX_SHADER_BIT);
-		pipeline->useStages(this->fragment_shader->raw(),
-		                    gl::GL_FRAGMENT_SHADER_BIT);
+	  : m_vertex_shader(vertex_shader)
+	  , m_fragment_shader(fragment_shader)
+	  , m_pipeline(new globjects::ProgramPipeline()) {
+		m_pipeline->useStages(m_vertex_shader->raw(), gl::GL_VERTEX_SHADER_BIT);
+		m_pipeline->useStages(m_fragment_shader->raw(), gl::GL_FRAGMENT_SHADER_BIT);
 	}
 
 } // namespace PD

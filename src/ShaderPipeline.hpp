@@ -8,8 +8,8 @@
 namespace PD {
 
 	class ShaderPipeline final {
-		using vs_ptr       = std::unique_ptr<VertexShaderProgram>;
-		using fs_ptr       = std::unique_ptr<FragmentShaderProgram>;
+		using vs_ptr       = std::shared_ptr<VertexShaderProgram>;
+		using fs_ptr       = std::shared_ptr<FragmentShaderProgram>;
 		using pipeline_ptr = std::unique_ptr<globjects::ProgramPipeline>;
 
 		vs_ptr       m_vertex_shader;
