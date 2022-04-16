@@ -5,6 +5,7 @@
 #include "RenderContext.hpp"
 #include "Renderer.hpp"
 #include "ShaderProgram.hpp"
+#include "SpatialComponent.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glbinding\gl\gl.h>
@@ -93,9 +94,49 @@ int main(int argc, char** argv) {
 	auto context = make_unique<PD::RenderContext>(
 	  move(frame_buffer), move(ambient_pipeline), move(highlight_pipeline));
 
+	// Load model assets
+	Geometry         geometry("model.mdl");
+	auto             albedo = PD::load_texture("albedo.dds");
+	const int        id     = 0;
+	SpatialComponent spatial;
+
+	// Define scene parameters
+	const double ambience = 1.0;
+
+	// Define lights
+	std::vector<Light> lights;
+	Light              light(
+    {10.0f, 0, 0.0f}, {0, 0, 0}, {255.0f, 0.0f, 0.0f}, 0.05f, 360.0f, 1000.0f);
+	Light light2(
+	  {-10.0f, 0, 0.0f}, {0, 0, 0}, {0.0f, 0.0f, 255.0f}, 0.05f, 360.0f, 1000.0f);
+	lights.push_back(light);
+	lights.push_back(light2);
+
+	// Define view transform
+	glm::vec3 eye(0.0, 0.0, -10.0);
+	glm::vec3 up(0.0, 1.0, 0.0);
+	glm::vec3 center(spatial.position());
+	auto      view = glm::lookAt(eye, center, up);
+
+	// Define projection transform
+	const double     field_of_view = 45.0;
+	constexpr double aspect_ratio =
+	  static_cast<double>(INIT_WIDTH) / static_cast<double>(INIT_HEIGHT);
+	const double near_plane_distance = 0.1;
+	const double far_plane_distance  = 10'000;
+	auto         projection          = glm::perspective(
+    field_of_view, aspect_ratio, near_plane_distance, far_plane_distance);
+
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		//TODO: Do stuff
+		context->draw({albedo.get()},
+		              geometry,
+		              id,
+		              {spatial.matrix(), view, projection},
+		              eye,
+		              ambience,
+		              lights.begin(),
+		              lights.end());
 		glfwSwapBuffers(window);
 	}
 

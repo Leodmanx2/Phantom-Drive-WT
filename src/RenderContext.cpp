@@ -51,27 +51,28 @@ namespace PD {
 	}
 
 	template <std::input_iterator Iterator>
-	void RenderContext::draw(const globjects::Texture* albedo,
-	                         const Geometry&           geometry,
-	                         const int                 id,
-	                         const glm::mat4           model,
-	                         const glm::mat4           view,
-	                         const glm::mat4           projection,
-	                         const glm::vec3           eye,
-	                         const float               ambience,
-	                         Iterator                  begin,
-	                         Iterator                  end) {
-		albedo->bindActive(FragmentShaderProgram::ALBEDO_TEXTURE_UNIT);
-
-		m_ambient_pipeline->vertex_shader().transforms(model, view, projection);
-		m_ambient_pipeline->fragment_shader().camera(view, eye);
-		ambient_pass(geometry.vao(), geometry.elements(), ambience);
-
+	void RenderContext::draw(const textures       textures,
+	                         const Geometry&      geometry,
+	                         const int            id,
+	                         const mvp_transforms transforms,
+	                         const glm::vec3      eye,
+	                         const float          ambience,
+	                         Iterator             lights_begin,
+	                         Iterator             lights_end) {
+		geometry.vao().bind();
+		textures.albedo->bindActive(FragmentShaderProgram::ALBEDO_TEXTURE_UNIT);
 		// TODO: Bind other texture units
 
-		m_highlight_pipeline->vertex_shader().transforms(model, view, projection);
-		m_highlight_pipeline->fragment_shader().camera(view, eye);
-		highlight_pass(begin(), end(), geometry.vao(), geometry.elements());
+		m_ambient_pipeline->vertex_shader().transforms(
+		  transforms.model, transforms.view, transforms.projection);
+		m_ambient_pipeline->fragment_shader().camera(transforms.view, eye);
+		ambient_pass(geometry.vao(), geometry.elements(), ambience);
+
+		m_highlight_pipeline->vertex_shader().transforms(
+		  transforms.model, transforms.view, transforms.projection);
+		m_highlight_pipeline->fragment_shader().camera(transforms.view, eye);
+		highlight_pass(
+		  lights_begin(), lights_end(), geometry.vao(), geometry.elements());
 		// TODO: return ID map
 	}
 

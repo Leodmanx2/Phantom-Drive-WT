@@ -19,7 +19,15 @@
 
 namespace PD {
 
-	void init_gl();
+	struct mvp_transforms {
+		const glm::mat4 model;
+		const glm::mat4 view;
+		const glm::mat4 projection;
+	};
+
+	struct textures {
+		const globjects::Texture* albedo;
+	};
 
 	void configure_gl();
 
@@ -29,7 +37,7 @@ namespace PD {
 
 	void commit_frame(Framebuffer& framebuffer, GLFWwindow* window);
 
-	std::unique_ptr<globjects::Texture> loadTexture(const std::string& name);
+	std::unique_ptr<globjects::Texture> load_texture(const std::string& name);
 
 } // namespace PD
 

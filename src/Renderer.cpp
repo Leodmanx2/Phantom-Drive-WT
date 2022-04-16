@@ -11,13 +11,6 @@ using namespace gl;
 using namespace std;
 
 namespace PD {
-
-	// NOTE: gl initialization and configuration will take place at
-	//       the application level. The RenderContext must be constructed as
-	//       part of init_gl().
-
-	void init_gl() {}
-
 	void configure_gl() {
 		// Enable back-face culling, z-buffering, and anti-aliasing
 		glEnable(GL_CULL_FACE);
@@ -84,7 +77,7 @@ namespace PD {
 	}
 
 	// TODO: Rewrite to load using globjects methods, move to appropriate file
-	unique_ptr<globjects::Texture> loadTexture(const string& name) {
+	unique_ptr<globjects::Texture> load_texture(const string& name) {
 		gli::texture texture = gli::load(name);
 		if(texture.empty()) {
 			throw std::runtime_error(name + std::string(" is not a valid texture"));

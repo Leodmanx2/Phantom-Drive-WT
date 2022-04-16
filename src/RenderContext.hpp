@@ -4,6 +4,7 @@
 #include "Framebuffer.hpp"
 #include "Geometry.hpp"
 #include "Light.hpp"
+#include "Renderer.hpp"
 #include "ShaderPipeline.hpp"
 
 #include <globjects/ProgramPipeline.h>
@@ -26,8 +27,8 @@ namespace PD {
 		                  const float                   ambience);
 
 		template <std::input_iterator Iterator>
-		void highlight_pass(Iterator                      begin,
-		                    Iterator                      end,
+		void highlight_pass(Iterator                      lights_begin,
+		                    Iterator                      lights_end,
 		                    const globjects::VertexArray& vao,
 		                    const int                     elements);
 
@@ -45,16 +46,14 @@ namespace PD {
 		}
 
 		template <std::input_iterator Iterator>
-		void draw(const globjects::Texture* albedo,
-		          const Geometry&           geometry,
-		          const int                 id,
-		          const glm::mat4           model,
-		          const glm::mat4           view,
-		          const glm::mat4           projection,
-		          const glm::vec3           eye,
-		          const float               ambience,
-		          Iterator                  begin,
-		          Iterator                  end);
+		void draw(const textures       albedo,
+		          const Geometry&      geometry,
+		          const int            id,
+		          const mvp_transforms transforms,
+		          const glm::vec3      eye,
+		          const float          ambience,
+		          Iterator             lights_begin,
+		          Iterator             lights_end);
 	};
 
 } // namespace PD
