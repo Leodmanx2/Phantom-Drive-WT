@@ -1,14 +1,17 @@
 add_executable(pd-renderer-test
   Actor.cpp
   Application.cpp
+  Framebuffer.cpp
   Geometry.cpp
   Light.cpp
   PMDL.cpp
   PSCN.cpp
   RenderComponent.cpp
+  RenderContext.cpp
   Renderer.cpp
   ResourceCache.cpp
   Scene.cpp
+  ShaderPipeline.cpp
   ShaderProgram.cpp
   SpatialComponent.cpp
 )
