@@ -20,11 +20,6 @@ namespace PD {
 		const int width;
 		const int height;
 
-		Framebuffer(renderbuffer_ptr color_buffer,
-		            renderbuffer_ptr selection_buffer,
-		            renderbuffer_ptr depth_buffer,
-		            framebuffer_ptr  frame_buffer);
-
 		Framebuffer(int width, int height);
 
 		constexpr globjects::Framebuffer* raw() const { return frame_buffer.get(); }

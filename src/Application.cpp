@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 	globjects::setCurrentContext();
 
 	// Initialize rendering pipeline
-	auto frame_buffer = PD::init_framebuffer(INIT_WIDTH, INIT_HEIGHT);
+	auto frame_buffer = make_unique<PD::Framebuffer>(INIT_WIDTH, INIT_HEIGHT);
 
 	auto vertex_shader = make_shared<VertexShaderProgram>("sample_vs.glsl");
 	auto ambient_shader =
