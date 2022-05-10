@@ -50,11 +50,11 @@ class VertexShaderProgram final : public ShaderProgram {
 
 class FragmentShaderProgram final : public ShaderProgram {
 	public:
-	static const gl::GLuint ALBEDO_TEXTURE_UNIT    = 0;
-	static const gl::GLuint ROUGHNESS_TEXTURE_UNIT = 1;
-	static const gl::GLuint METALNESS_TEXTURE_UNIT = 2;
-	static const gl::GLuint OCCLUSION_TEXTURE_UNIT = 3;
-	static const gl::GLuint EMISSION_TEXTURE_UNIT  = 4;
+	static const gl::GLuint ALBEDO_TEXTURE_UNIT;
+	static const gl::GLuint ROUGHNESS_TEXTURE_UNIT;
+	static const gl::GLuint METALNESS_TEXTURE_UNIT;
+	static const gl::GLuint OCCLUSION_TEXTURE_UNIT;
+	static const gl::GLuint EMISSION_TEXTURE_UNIT;
 
 	explicit FragmentShaderProgram(const std::string& file);
 

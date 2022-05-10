@@ -44,6 +44,12 @@ void VertexShaderProgram::transforms(const glm::mat4 model,
 // FragmentShaderProgram
 // -------------------
 
+const gl::GLuint FragmentShaderProgram::ALBEDO_TEXTURE_UNIT    = 0;
+const gl::GLuint FragmentShaderProgram::ROUGHNESS_TEXTURE_UNIT = 1;
+const gl::GLuint FragmentShaderProgram::METALNESS_TEXTURE_UNIT = 2;
+const gl::GLuint FragmentShaderProgram::OCCLUSION_TEXTURE_UNIT = 3;
+const gl::GLuint FragmentShaderProgram::EMISSION_TEXTURE_UNIT  = 4;
+
 // TODO: Validate fragment shader has bindings required by renderer
 FragmentShaderProgram::FragmentShaderProgram(const std::string& file)
   : ShaderProgram(GL_FRAGMENT_SHADER, file) {
