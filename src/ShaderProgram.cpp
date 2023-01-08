@@ -34,10 +34,10 @@ VertexShaderProgram::VertexShaderProgram(const std::string& file)
 void VertexShaderProgram::transforms(const glm::mat4 model,
                                      const glm::mat4 view,
                                      const glm::mat4 projection) {
-	m_program->setUniform("model", model);
-	m_program->setUniform("view", view);
-	m_program->setUniform("projection", projection);
-	m_program->setUniform("normalMatrix", inverseTranspose(model * view));
+	m_program->setUniform("model_transform", model);
+	m_program->setUniform("view_transform", view);
+	m_program->setUniform("projection_transform", projection);
+	m_program->setUniform("normal_transform", inverseTranspose(model * view));
 }
 
 // -------------------
@@ -53,14 +53,14 @@ const gl::GLuint FragmentShaderProgram::EMISSION_TEXTURE_UNIT  = 4;
 // TODO: Validate fragment shader has bindings required by renderer
 FragmentShaderProgram::FragmentShaderProgram(const std::string& file)
   : ShaderProgram(GL_FRAGMENT_SHADER, file) {
-	m_program->setUniform("albedoMap", ALBEDO_TEXTURE_UNIT);
-	m_program->setUniform("roughnessMap", ROUGHNESS_TEXTURE_UNIT);
-	m_program->setUniform("metalnessMap", METALNESS_TEXTURE_UNIT);
-	m_program->setUniform("occlusionMap", OCCLUSION_TEXTURE_UNIT);
-	m_program->setUniform("emissionMap", EMISSION_TEXTURE_UNIT);
+	m_program->setUniform("albedo_map", ALBEDO_TEXTURE_UNIT);
+	m_program->setUniform("roughness_map", ROUGHNESS_TEXTURE_UNIT);
+	m_program->setUniform("metalness_map", METALNESS_TEXTURE_UNIT);
+	m_program->setUniform("occlusion_map", OCCLUSION_TEXTURE_UNIT);
+	m_program->setUniform("emission_map", EMISSION_TEXTURE_UNIT);
 }
 
 void FragmentShaderProgram::camera(const glm::mat4 view, const glm::vec3 eye) {
 	m_program->setUniform("view", view);
-	m_program->setUniform("eyePos", eye);
+	m_program->setUniform("eye_position", eye);
 }
