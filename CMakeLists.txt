@@ -15,14 +15,14 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "Build example applications")
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
 if(COMPILER_SUPPORTS_MARCH_NATIVE AND ENABLE_NONPORTABLE_OPTIMIZATIONS)
-		add_compile_options(PRIVATE -march=native>)
+		add_compile_options(-march=native>)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-	add_compile_options(PRIVATE -Wdeprecated;-Wdocumentation;-Werror=documentation)
+	add_compile_options(-Wdeprecated;-Wdocumentation;-Werror=documentation)
 endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	add_compile_options(PRIVATE
+	add_compile_options(
 	  -Wall
 	  -Wextra
 	  -Wpedantic
@@ -53,7 +53,7 @@ file(GLOB_RECURSE ENGINE_SOURCES src/*.cpp)
 add_library(PhantomEngine ${ENGINE_SOURCES})
 
 # Include Directories
-target_include_directories(PhantomEngine PUBLIC include)
+target_include_directories(PhantomEngine PUBLIC include include/asset_management include/audio include/common include/game_logic include/graphics include/physics)
 
 # Runtime Dependencies
 target_link_libraries(PhantomEngine PUBLIC glfw3 glbinding glbinding-aux globjects)
