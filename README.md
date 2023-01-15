@@ -36,31 +36,19 @@ Phantom Drive (WT) requires...
 *   [GLI 0.7.0.0+](http://gli.g-truc.net/)
 *   [plog](https://github.com/SergiusTheBest/plog)
 
-Project Status
---------------
+Project Roadmap
+---------------
 
 This section is intended to provide you with a quick glance at my progress and 
-imminent goals. It is not a complete development roadmap and may change wildly
+imminent goals. It is not a complete development plan and may change wildly
 at any time.
 
-### Current
-
-### Planned
-
-*   Physically Based Rendering with:
-    *   Oren-Nayar Diffuse
-    *   Cook-Torrence Specular
-*   Skeletal Animations
-*   Shadows
-*   Order-Independent Transparency
-*   Particle Generation
-*   Audio System
-*   Physics System
-*   Behaviour System
-
-### Deferred
-
-*   Normal/Relief/Parallax Occlusion/Displacement Mapping
-*   Frustum Culling
-*   Occlusion Culling
-*   Levels of Detail
+* [ ] Physically-based shaders
+* [ ] Skeletal animations
+* [ ] Shadows
+* [ ] Order-independent transparency
+* [ ] Particle generators
+* [ ] Relief mapping
+* [ ] Frustum culling
+* [ ] Occlusion culling
+* [ ] Levels of detail
